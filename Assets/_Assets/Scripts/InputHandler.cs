@@ -1,14 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputHandler : MonoBehaviour
-{
-    public static InputHandler Instance;
-
-    private bool dialogueInteractPressed;
-
+public class InputHandler : Singleton<InputHandler>
+{ 
     public struct ButtonState
     {
         private bool firstFrame;
@@ -40,126 +34,150 @@ public class InputHandler : MonoBehaviour
     }
 
     //Movement Buttons
-    private ButtonState up;
-    public ButtonState Up => up;
+    private ButtonState accelerateBoost;
+    public ButtonState AccelerateBoost => accelerateBoost;
 
-    private ButtonState down;
-    public ButtonState Down => down;
+    private ButtonState brake;
+    public ButtonState Brake => brake;
 
-    private ButtonState left;
-    public ButtonState Left => left;
+    private float steering;
+    public float Steering => steering;
 
-    private ButtonState right;
-    public ButtonState Right => right;
+    private ButtonState leftDrift;
+    public ButtonState LeftDrift => leftDrift;
+
+    private ButtonState rightDrift;
+    public ButtonState RightDrift => rightDrift;
+
 
     //Combat Buttons
     private ButtonState attack;
     public ButtonState Attack => attack;
 
-    private ButtonState block;
-    public ButtonState Block => block;
 
-    //Interaction buttons
-    private ButtonState interact;
-    public ButtonState Interact => interact;
+    //Camera buttons
+    private float look;
+    public float Look => look;
 
-    private ButtonState menu;
-    public ButtonState Menu => menu;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (Instance == null)
-            Instance = this;
-    }
+    //Menu Buttons
+    private ButtonState menu_Up;
+    public ButtonState Menu_Up => menu_Up;
 
-    void Update()
-    {
-        dialogueInteractPressed = interact.down;
-    }
+    private ButtonState menu_Down;
+    public ButtonState Menu_Down => menu_Down;
+
+    private ButtonState menu_Left;
+    public ButtonState Menu_Left => menu_Left;
+
+    private ButtonState menu_Right;
+    public ButtonState Menu_Right => menu_Right;
+
+
+    private ButtonState menu_Toggle;
+    public ButtonState Menu_Toggle => menu_Toggle;
+
+    private ButtonState menu_Confirm;
+    public ButtonState Menu_Confirm => menu_Confirm;
+
+    private ButtonState menu_Back;
+    public ButtonState Menu_Back => menu_Back;
 
     // Update is called once per frame
     void LateUpdate()
     {
-        direction = GetDirection();
-
         //Rest direction buttons
-        up.Reset();
-        down.Reset();
-        left.Reset();
-        right.Reset();
+        accelerateBoost.Reset();
+        brake.Reset();
+        //steering = 0;
+
+        leftDrift.Reset();
+        rightDrift.Reset();
 
         //reset attack inputs
         attack.Reset();
-        block.Reset();
+
+        //reset camera buttons
+        //look = 0;
 
         //reset menu buttons
-        interact.Reset();
-        menu.Reset();
+        menu_Up.Reset();
+        menu_Down.Reset();
+        menu_Left.Reset();
+        menu_Right.Reset();
+
+        menu_Toggle.Reset();
+        menu_Confirm.Reset();
+        menu_Back.Reset();
     }
-
-    private Vector2 GetDirection()
-    {
-        float x = 0;
-        float y = 0;
-
-        if(up.held)
-            y++;
-        if (down.held)
-            y--;
-
-        if (left.held)
-            x--;
-        if (right.held)
-            x++;
-
-        Vector2 dir = new Vector2(x, y);
-        dir = dir.normalized;
-
-        //Debug.Log(dir);
-
-        return dir;
-    }
-
-    private Vector2 direction;
-    public Vector2 Direction => direction;
 
     //Set movement
-    public void Button_Up(InputAction.CallbackContext ctx)
+    public void Button_AccelerateBoost(InputAction.CallbackContext ctx)
     {
-        up.Set(ctx);
+        accelerateBoost.Set(ctx);
     }
-    public void Button_Down(InputAction.CallbackContext ctx)
+    public void Button_Brake(InputAction.CallbackContext ctx)
     {
-        down.Set(ctx);
+        brake.Set(ctx);
     }
-    public void Button_Left(InputAction.CallbackContext ctx)
+
+    public void Axis_Steering(InputAction.CallbackContext ctx)
     {
-        left.Set(ctx);
+        steering = ctx.ReadValue<float>();
     }
-    public void Button_Right(InputAction.CallbackContext ctx)
+
+    public void Button_LeftDrift(InputAction.CallbackContext ctx)
     {
-        right.Set(ctx);
+        leftDrift.Set(ctx);
     }
+    public void Button_RightDrift(InputAction.CallbackContext ctx)
+    {
+        rightDrift.Set(ctx);
+    }
+
 
     //Set Combat Buttons
     public void Button_Attack(InputAction.CallbackContext ctx)
     {
         attack.Set(ctx);
     }
-    public void Button_Block(InputAction.CallbackContext ctx)
+
+
+    //Set Camera Buttons
+    public void Axis_Look(InputAction.CallbackContext ctx)
     {
-        block.Set(ctx);
+        look = ctx.ReadValue<float>();
     }
 
-    //Set Misc Buttons
-    public void Button_Menu(InputAction.CallbackContext ctx)
+
+    //Set Menu buttons
+    public void Button_Menu_Up(InputAction.CallbackContext ctx)
     {
-        menu.Set(ctx);
+        menu_Up.Set(ctx);
+    }
+    public void Button_Menu_Down(InputAction.CallbackContext ctx)
+    {
+        menu_Down.Set(ctx);
+    }
+    public void Button_Menu_Left(InputAction.CallbackContext ctx)
+    {
+        menu_Left.Set(ctx);
+    }
+    public void Button_Menu_Right(InputAction.CallbackContext ctx)
+    {
+        menu_Right.Set(ctx);
     }
 
-    public void Button_Interact(InputAction.CallbackContext ctx)
+    public void Button_Menu_Toggle(InputAction.CallbackContext ctx)
     {
-        interact.Set(ctx);
+        menu_Toggle.Set(ctx);
+    }
+    public void Button_Menu_Confirm(InputAction.CallbackContext ctx)
+    {
+        menu_Confirm.Set(ctx);
+    }
+    public void Button_Menu_Back(InputAction.CallbackContext ctx)
+    {
+        menu_Back.Set(ctx);
     }
 }

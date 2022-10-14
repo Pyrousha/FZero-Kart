@@ -1,5 +1,5 @@
 {
-    "name": "FZero Kart",
+    "name": "PlayerControls",
     "maps": [
         {
             "name": "Menus",
@@ -275,36 +275,9 @@
             "id": "35408f3c-7fb5-436b-b184-7fbd565dd81c",
             "actions": [
                 {
-                    "name": "Accelerate",
+                    "name": "AccelerateBoost",
                     "type": "Button",
                     "id": "5bf538db-d477-45fa-af12-b90f7a97c188",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Steering",
-                    "type": "Value",
-                    "id": "a1eb0b7c-ab48-464b-81c9-327ab8efd04e",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "LDrift",
-                    "type": "Button",
-                    "id": "cf124000-aa45-4eed-afd5-20546096a027",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "RDrift",
-                    "type": "Button",
-                    "id": "048f8846-26d5-461b-a830-2ee2c673c701",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -320,13 +293,49 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Boost",
+                    "name": "Steering",
+                    "type": "Value",
+                    "id": "a1eb0b7c-ab48-464b-81c9-327ab8efd04e",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftDrift",
                     "type": "Button",
-                    "id": "c0998d23-b17d-41fc-a8ab-4476f7ccfe6c",
+                    "id": "cf124000-aa45-4eed-afd5-20546096a027",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "RightDrift",
+                    "type": "Button",
+                    "id": "048f8846-26d5-461b-a830-2ee2c673c701",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "380fd7cb-c07d-49a4-adcc-8eae6e8ebe13",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Look",
+                    "type": "Value",
+                    "id": "db135efb-1066-4582-91eb-ab6e628870f4",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -403,18 +412,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "LDrift",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b2aa8999-0828-40ec-bb2f-5e01b6100281",
-                    "path": "<Gamepad>/leftTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "LDrift",
+                    "action": "LeftDrift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -425,18 +423,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "LDrift",
+                    "action": "LeftDrift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "f57518f3-d35f-4362-8b6a-ea376e817f5b",
-                    "path": "<Gamepad>/leftShoulder",
+                    "id": "c0535382-e359-4852-97bb-2334a8651daf",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "LDrift",
+                    "action": "LeftDrift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b2aa8999-0828-40ec-bb2f-5e01b6100281",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftDrift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -447,18 +456,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RDrift",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "7950c187-e978-4d91-a213-ccc82ed634c5",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RDrift",
+                    "action": "RightDrift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -469,18 +467,51 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RDrift",
+                    "action": "RightDrift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "26364a3e-675f-4a02-948b-60e0d711ade2",
-                    "path": "<Gamepad>/rightShoulder",
+                    "id": "a4015372-793e-4bcd-93f0-03ed74323264",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RDrift",
+                    "action": "RightDrift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7950c187-e978-4d91-a213-ccc82ed634c5",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightDrift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "065199b8-8565-4172-8ff6-d23da0655665",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AccelerateBoost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c36bbd86-2211-4682-a3f1-5ad0e206817c",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AccelerateBoost",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -498,7 +529,7 @@
                 {
                     "name": "",
                     "id": "1889cd30-bc8b-4e4d-9987-81613eca2512",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -508,69 +539,113 @@
                 },
                 {
                     "name": "",
-                    "id": "065199b8-8565-4172-8ff6-d23da0655665",
-                    "path": "<Keyboard>/w",
+                    "id": "9d97a421-984d-4d4b-9b87-f70b78609642",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Accelerate",
+                    "action": "Brake",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "c36bbd86-2211-4682-a3f1-5ad0e206817c",
-                    "path": "<Gamepad>/buttonEast",
+                    "id": "7e807a8c-a9ab-4928-9a81-8fcfde8c64df",
+                    "path": "<Mouse>/middleButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Accelerate",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "50cc876e-83aa-457e-8f4f-deb38dcc0601",
+                    "id": "29d7be56-365f-4f22-afec-41a6fdda70f2",
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Boost",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "ca56b30b-dd9b-4af2-844f-067a55ff7996",
-                    "path": "<Keyboard>/upArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Boost",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "5389da7e-573f-4bbf-a436-374fdd3b9695",
-                    "path": "<Keyboard>/i",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Boost",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d0c176db-c412-4748-93b1-c6f8016556a4",
+                    "id": "4e2579a8-f907-483e-b26f-4f15dd9521be",
                     "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Boost",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "29b6dbae-d897-4239-91b8-679da7a9ab71",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "f644a1d0-9cc7-4d4e-b19e-8ab5487eceb1",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "a6039a62-3b0b-4546-b1ac-617cd864e1c1",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "fb5d6dca-93a8-4634-8709-096619c121f3",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "2c74e53b-2cfe-4aa4-9b9b-c7fa5312537a",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "978d976d-d5f7-4988-bc63-c87e14e571ee",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }
