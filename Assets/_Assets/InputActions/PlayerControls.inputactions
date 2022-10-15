@@ -550,6 +550,17 @@
                 },
                 {
                     "name": "",
+                    "id": "d7748d49-b91f-4ec1-9552-665688841c7a",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Brake",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "7e807a8c-a9ab-4928-9a81-8fcfde8c64df",
                     "path": "<Mouse>/middleButton",
                     "interactions": "",

@@ -111,6 +111,17 @@ public class InputHandler : Singleton<InputHandler>
         menu_Back.Reset();
     }
 
+    public int DriftAxis()
+    {
+        int toReturn = 0;
+        if (leftDrift.held)
+            toReturn -= 1;
+        if (rightDrift.held)
+            toReturn += 1;
+
+        return toReturn;
+    }
+
     //Set movement
     public void Button_AccelerateBoost(InputAction.CallbackContext ctx)
     {
