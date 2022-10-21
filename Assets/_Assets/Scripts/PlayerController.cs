@@ -13,8 +13,14 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Transform playerModel;
-    [SerializeField] private TextMeshProUGUI speedNumberText;
     [SerializeField] private Animator driftAnim;
+    [Space(10)] //ground checking stuff
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform groundRaycastPoint;
+    [SerializeField] private float raycastLength;
+    private bool isGrounded;
+    [Space(10)] //UI + Effects stuff
+    [SerializeField] private TextMeshProUGUI speedNumberText;
     [SerializeField] private ParticleSystemModifier speedLines;
 
     [Header("Parameters")]
@@ -65,11 +71,53 @@ public class PlayerController : MonoBehaviour
         //set speedometer
         speedNumberText.text = (currSpeed * 100).ToString("F1");
 
+
+        //Ground checking and such
+        #region ground checking and rotation
+        RaycastHit hit;
+
+        Vector3 upDirection = -gravityDirection;
+
+        isGrounded = false;
+
+        if (Physics.Raycast(groundRaycastPoint.position, gravityDirection, out hit, raycastLength, groundLayer))
+        {
+            upDirection = hit.normal;
+            isGrounded = true;
+        }
+
+        //Debug.DrawRay(groundRaycastPoint.position, Vector3.down * raycastLength, Color.red, 1f);
+        //Debug.DrawRay(hit.point, hit.normal, Color.red, 1f);
+
+        float angleBetween = Vector3.Angle(transform.up, upDirection);
+        Debug.Log(angleBetween);
+
+        if(angleBetween >= 2)
+        {
+            //for sake of testing, just don't lerp for now
+            upDirection = Vector3.Lerp(transform.up, upDirection, 0.05f);
+        }
+
+        Quaternion newRotateTransform = Quaternion.FromToRotation(transform.up, upDirection);
+        transform.rotation = newRotateTransform * transform.rotation;
+
+        if(isGrounded)
+        {
+            //rb.velocity = newRotateTransform * rb.velocity;
+        }
+        //playerModel.transform.eulerAngles = Quaternion.LookRotation(playerModel.transform.forward, upDirection);
+        #endregion
+
+
         //Move player based on speed
         Vector3 currGravProjection = Vector3.Project(rb.velocity, gravityDirection);
         rb.velocity = (transform.forward * currSpeed) + ((currDriftSpeed / maxDriftSpeed) * driftScootSpeed * transform.right);
         //rb.velocity = Utils.ModifyVector(rb.velocity, null, currYVelocity, null);
-        rb.velocity += gravityDirection * (gravityStrength * Time.deltaTime) + currGravProjection;
+
+        if(isGrounded == false)
+        {
+            rb.velocity += gravityDirection * (gravityStrength * Time.deltaTime) + currGravProjection;
+        }
 
         //Set drift anim
         driftAnim.SetFloat("Drift", currDriftSpeed/maxDriftSpeed);
