@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private Transform playerModelParent;
     [SerializeField] private Transform playerModel;
     [SerializeField] private Animator driftAnim;
     [Space(10)] //ground checking stuff
@@ -31,6 +32,9 @@ public class PlayerController : MonoBehaviour
     [Space(5)]
     [SerializeField] private float frictionSpeed; //friction in units/second
     [SerializeField] private float brakeSpeed; //deceleration in units/second
+    [Space(5)]
+    [SerializeField] private float turnFricPow;
+    [SerializeField] private float turnFrictionMultiplier; //uses current turn speed to apply friction
 
     //Turning
     private float currTurnSpeed; //current turning speed in degrees/second
@@ -76,36 +80,31 @@ public class PlayerController : MonoBehaviour
         #region ground checking and rotation
         RaycastHit hit;
 
-        Vector3 upDirection = -gravityDirection;
-
-        isGrounded = false;
+        Vector3 upDirection; 
 
         if (Physics.Raycast(groundRaycastPoint.position, gravityDirection, out hit, raycastLength, groundLayer))
         {
+            //player is grounded, rotate to have feet face ground
             upDirection = hit.normal;
             isGrounded = true;
         }
-
-        //Debug.DrawRay(groundRaycastPoint.position, Vector3.down * raycastLength, Color.red, 1f);
-        //Debug.DrawRay(hit.point, hit.normal, Color.red, 1f);
-
-        float angleBetween = Vector3.Angle(transform.up, upDirection);
-        Debug.Log(angleBetween);
-
-        if(angleBetween >= 2)
+        else
         {
-            //for sake of testing, just don't lerp for now
-            upDirection = Vector3.Lerp(transform.up, upDirection, 0.05f);
+            //Player is in air, rotate to have feet face gravity
+            upDirection = -gravityDirection;
+            isGrounded = false;
         }
 
-        Quaternion newRotateTransform = Quaternion.FromToRotation(transform.up, upDirection);
-        transform.rotation = newRotateTransform * transform.rotation;
-
-        if(isGrounded)
+        if(Vector3.Angle(playerModelParent.transform.up, upDirection) >= 2)
         {
-            //rb.velocity = newRotateTransform * rb.velocity;
+            //Angle between current rotation and target rotation big enough to lerp
+            upDirection = Vector3.Lerp(playerModelParent.transform.up, upDirection, 0.05f);
         }
-        //playerModel.transform.eulerAngles = Quaternion.LookRotation(playerModel.transform.forward, upDirection);
+
+        //Rotate the player to face the new "down"
+        Quaternion newRotateTransform = Quaternion.FromToRotation(playerModelParent.transform.up, upDirection);
+        playerModelParent.transform.rotation = newRotateTransform * playerModelParent.transform.rotation;
+
         #endregion
 
 
@@ -114,7 +113,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = (transform.forward * currSpeed) + ((currDriftSpeed / maxDriftSpeed) * driftScootSpeed * transform.right);
         //rb.velocity = Utils.ModifyVector(rb.velocity, null, currYVelocity, null);
 
-        if(isGrounded == false)
+        //if(isGrounded == false)
         {
             rb.velocity += gravityDirection * (gravityStrength * Time.deltaTime) + currGravProjection;
         }
@@ -170,6 +169,9 @@ public class PlayerController : MonoBehaviour
                 currSpeed = Mathf.Min(currSpeed + frictionSpeed * Time.deltaTime, 0);
             }
         }
+
+        //turn-based friction
+        currSpeed = Mathf.Max(0, currSpeed - Mathf.Pow(currTurnSpeed + currDriftSpeed,turnFricPow) * turnFrictionMultiplier * Time.deltaTime);
     }
 
     /// <summary>
