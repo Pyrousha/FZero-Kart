@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 gravityDirection;
     [SerializeField] private float gravityStrength;
+    [SerializeField] private float lerpSpeed;
 
     [Header("References")]
     [SerializeField] private Rigidbody rb;
@@ -64,9 +65,9 @@ public class PlayerController : MonoBehaviour
         CalcFriction();
         UpdateAndApplyTurning();
 
-        //Set speedlines based on speed
-        float speedPercent = Mathf.Max(Mathf.Abs(currSpeed)-(maxSpeed/4.0f),0) / (maxSpeed - (maxSpeed / 4.0f));
 
+        //Set speedlines based on speed
+        float speedPercent = Mathf.Max(Mathf.Abs(currSpeed) - (maxSpeed / 4.0f), 0) / (maxSpeed - (maxSpeed / 4.0f));
         speedLines.UpdateParticleSystem(speedPercent);
 
         //Set Fov based on speed
@@ -76,17 +77,23 @@ public class PlayerController : MonoBehaviour
         speedNumberText.text = (currSpeed * 100).ToString("F1");
 
 
-        //Ground checking and such
-        #region ground checking and rotation
+        //Set drift anim
+        driftAnim.SetFloat("Drift", currDriftSpeed / maxDriftSpeed);
+
+
+
+        //Set target up-direction
         RaycastHit hit;
-
-        Vector3 upDirection; 
-
-        if (Physics.Raycast(groundRaycastPoint.position, gravityDirection, out hit, raycastLength, groundLayer))
+        Vector3 upDirection;
+        if (Physics.Raycast(groundRaycastPoint.position, -transform.up, out hit, raycastLength, groundLayer))
         {
             //player is grounded, rotate to have feet face ground
             upDirection = hit.normal;
             isGrounded = true;
+
+            //(Debug) show up normal
+            Debug.DrawRay(hit.point, hit.normal, Color.red, 1f);
+            //Debug.Log("normal dir: "+hit.normal);
         }
         else
         {
@@ -95,31 +102,40 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
         }
 
-        if(Vector3.Angle(playerModelParent.transform.up, upDirection) >= 2)
+        //Lerp up-direction (or jump if close enough)
+        if (Vector3.Angle(transform.up, upDirection) >= 2)
         {
-            //Angle between current rotation and target rotation big enough to lerp
-            upDirection = Vector3.Lerp(playerModelParent.transform.up, upDirection, 0.05f);
+            if (isGrounded)  //Angle between current rotation and target rotation big enough to lerp
+                upDirection = Vector3.Lerp(transform.up, upDirection, lerpSpeed);
+            else
+                upDirection = Vector3.Lerp(transform.up, upDirection, lerpSpeed / 2.0f);
         }
 
         //Rotate the player to face the new "down"
-        Quaternion newRotateTransform = Quaternion.FromToRotation(playerModelParent.transform.up, upDirection);
-        playerModelParent.transform.rotation = newRotateTransform * playerModelParent.transform.rotation;
+        Quaternion newRotateTransform = Quaternion.FromToRotation(transform.up, upDirection);
+        transform.rotation = newRotateTransform * transform.rotation;
+    }
 
-        #endregion
+    private void FixedUpdate()
+    {
+        //TEMP: Set gravity to face ground
+        Vector3 trueGravDir = gravityDirection;
+        if (isGrounded)
+            gravityDirection = -transform.up;
 
-
-        //Move player based on speed
+        //Calculate what the new gravity-component of velocity should be
         Vector3 currGravProjection = Vector3.Project(rb.velocity, gravityDirection);
-        rb.velocity = (transform.forward * currSpeed) + ((currDriftSpeed / maxDriftSpeed) * driftScootSpeed * transform.right);
-        //rb.velocity = Utils.ModifyVector(rb.velocity, null, currYVelocity, null);
+        Vector3 newGravProjection = currGravProjection + gravityDirection * gravityStrength;
 
-        //if(isGrounded == false)
-        {
-            rb.velocity += gravityDirection * (gravityStrength * Time.deltaTime) + currGravProjection;
-        }
+        //Calculate what the new gravityless-component of velocity should be
+        Vector3 noGravVelocity = transform.forward * currSpeed;
+        noGravVelocity = noGravVelocity - Vector3.Project(noGravVelocity, gravityDirection);
 
-        //Set drift anim
-        driftAnim.SetFloat("Drift", currDriftSpeed/maxDriftSpeed);
+        //calculate and set new composite velocity
+        rb.velocity = noGravVelocity + newGravProjection;
+
+        //reset gravity back to normal
+        gravityDirection = trueGravDir;
     }
 
     /// <summary>
@@ -171,7 +187,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //turn-based friction
-        currSpeed = Mathf.Max(0, currSpeed - Mathf.Pow(currTurnSpeed + currDriftSpeed,turnFricPow) * turnFrictionMultiplier * Time.deltaTime);
+        //currSpeed = Mathf.Max(0, currSpeed - Mathf.Pow(currTurnSpeed + currDriftSpeed, turnFricPow) * turnFrictionMultiplier * Time.deltaTime);
     }
 
     /// <summary>
@@ -182,20 +198,20 @@ public class PlayerController : MonoBehaviour
         float inputAxis = InputHandler.Instance.Steering;
         float targetTurnSpeed = inputAxis * maxTurnSpeed;
 
-        if(targetTurnSpeed < 0)
+        if (targetTurnSpeed < 0)
         {
             currTurnSpeed = Mathf.Max(-maxTurnSpeed, currTurnSpeed - turnSpeedAccel * Time.deltaTime);
             goto AfterTurnCalculation;
         }
 
-        if(targetTurnSpeed > 0)
+        if (targetTurnSpeed > 0)
         {
             currTurnSpeed = Mathf.Min(currTurnSpeed + turnSpeedAccel * Time.deltaTime, maxTurnSpeed);
             goto AfterTurnCalculation;
         }
 
         //TargetTurnSpeed = 0
-        if(currTurnSpeed < 0)
+        if (currTurnSpeed < 0)
         {
             currTurnSpeed = Mathf.Min(currTurnSpeed + turnSpeedFriction * Time.deltaTime, 0);
             goto AfterTurnCalculation;
@@ -213,7 +229,7 @@ public class PlayerController : MonoBehaviour
 
         float driftMultiplier = 1;
 
-        if(targetDriftSpeed * currDriftSpeed < 0)
+        if (targetDriftSpeed * currDriftSpeed < 0)
         {
             //trying to swap drift direction, make drift faster
             driftMultiplier = 2;
@@ -246,7 +262,8 @@ public class PlayerController : MonoBehaviour
     AfterDriftCalculation:
 
         //Spin player based on new turn speed
-        transform.localEulerAngles += new Vector3(0, (currTurnSpeed + currDriftSpeed) * Time.deltaTime, 0);
+        float amountToTurn = (currTurnSpeed + currDriftSpeed) * Time.deltaTime;
+        transform.rotation = Quaternion.AngleAxis(amountToTurn, transform.up) * transform.rotation;
 
         //spin player model based on if turning
         Vector3 newModelRotation = playerModel.localEulerAngles;
