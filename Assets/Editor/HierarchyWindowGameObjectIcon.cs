@@ -35,7 +35,7 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class HierarchyWindowGameObjectIcon
 {
-    static string[] IgnoreIcons = new string[]{"d_GameObject Icon"};
+    static string[] IgnoreIcons = new string[]{"d_GameObject Icon", "d_Prefab Icon"};
 
     static HierarchyWindowGameObjectIcon()
     {
