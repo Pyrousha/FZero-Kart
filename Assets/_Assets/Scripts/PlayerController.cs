@@ -107,6 +107,7 @@ public class PlayerController : MonoBehaviour
 
         if(numRaysHit > 0)
         {
+            //Average all raycasts that hit the ground
             upDirection /= numRaysHit;
             isGrounded = true;
         }
@@ -138,7 +139,7 @@ public class PlayerController : MonoBehaviour
         if (isGrounded)
         {
             gravityDirection = -transform.up;
-            gravityStrength *= 25; //Stupid way to make character not ramp on lil gaps
+            gravityStrength *= 10; //Stupid way to make character not ramp on lil gaps
         }
 
         //Calculate what the new gravity-component of velocity should be
