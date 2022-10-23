@@ -64,4 +64,21 @@ public class Utils
 
         return toReturn;
     }
+
+    /// <summary>
+    /// Returns a list of transforms, which are the children of the specified transform
+    /// </summary>
+    /// <param name="parent"></param> parent transform to get children of
+    /// <returns></returns>
+    public static List<Transform> GetChildrenOfTransform(Transform parent)
+    {
+        List<Transform> children = new List<Transform>();
+
+        for(int i = 0; i < parent.childCount; i++)
+        {
+            children.Add(parent.GetChild(i));
+        }
+
+        return children;
+    }
 }

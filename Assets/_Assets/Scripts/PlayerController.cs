@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator driftAnim;
     [Space(10)] //ground checking stuff
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Transform groundRaycastPoint;
+    [SerializeField] private Transform groundRaycastParent;
+    private List<Transform> raycastPoints;
     [SerializeField] private float raycastLength;
     private bool isGrounded;
     [Space(10)] //UI + Effects stuff
@@ -56,6 +57,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         gravityDirection = Vector3.down;
+
+        raycastPoints = Utils.GetChildrenOfTransform(groundRaycastParent);
     }
 
     // Update is called once per frame
@@ -83,23 +86,34 @@ public class PlayerController : MonoBehaviour
 
 
         //Set target up-direction
-        RaycastHit hit;
-        Vector3 upDirection;
-        if (Physics.Raycast(groundRaycastPoint.position, -transform.up, out hit, raycastLength, groundLayer))
-        {
-            //player is grounded, rotate to have feet face ground
-            upDirection = hit.normal;
-            isGrounded = true;
 
-            //(Debug) show up normal
-            Debug.DrawRay(hit.point, hit.normal, Color.red, 1f);
-            //Debug.Log("normal dir: "+hit.normal);
+        //Assume player is not grounded
+        int numRaysHit = 0;
+        Vector3 upDirection = new Vector3();
+        foreach (Transform point in raycastPoints)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(point.position, -transform.up, out hit, raycastLength, groundLayer))
+            {
+                //player is grounded, rotate to have feet face ground
+                upDirection += hit.normal;
+                numRaysHit++;
+
+                //(Debug) show up normal
+                Debug.DrawRay(hit.point, hit.normal, Color.red, 1f);
+                //Debug.Log("normal dir: "+hit.normal);
+            }
+        }
+
+        if(numRaysHit > 0)
+        {
+            upDirection /= numRaysHit;
+            isGrounded = true;
         }
         else
         {
-            //Player is in air, rotate to have feet face gravity
-            upDirection = -gravityDirection;
             isGrounded = false;
+            upDirection = -gravityDirection;
         }
 
         //Lerp up-direction (or jump if close enough)
@@ -120,8 +134,12 @@ public class PlayerController : MonoBehaviour
     {
         //TEMP: Set gravity to face ground
         Vector3 trueGravDir = gravityDirection;
+        float trueGravStr =  gravityStrength;
         if (isGrounded)
+        {
             gravityDirection = -transform.up;
+            gravityStrength *= 25; //Stupid way to make character not ramp on lil gaps
+        }
 
         //Calculate what the new gravity-component of velocity should be
         Vector3 currGravProjection = Vector3.Project(rb.velocity, gravityDirection);
@@ -136,6 +154,7 @@ public class PlayerController : MonoBehaviour
 
         //reset gravity back to normal
         gravityDirection = trueGravDir;
+        gravityStrength = trueGravStr;
     }
 
     /// <summary>
