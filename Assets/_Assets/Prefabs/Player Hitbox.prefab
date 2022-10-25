@@ -1321,7 +1321,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityStrength: 3
-  lerpSpeed: 0.05
+  groundedGravityMultiplier: 30
+  lerpSpeed: 0.1
   rb: {fileID: 8307567329534496167}
   playerModelParent: {fileID: 604613087020212618}
   playerModel: {fileID: 604613086867738512}
@@ -1330,16 +1331,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundRaycastParent: {fileID: 604613087280804958}
-  raycastLength: 5
+  raycastLength: 6
   speedNumberText: {fileID: 0}
   speedLines: {fileID: 0}
-  maxSpeed: 99.999
+  maxSpeedWhileStraight: 169.99
+  maxSpeedWhileMaxTurning: 99.999
   maxSpeedReverse: 48
   accelSpeed: 50
   frictionSpeed: 40
   brakeSpeed: 120
-  turnFricPow: 2
-  turnFrictionMultiplier: 0.006
+  turnFriction: 60
   maxTurnSpeed: 45
   turnSpeedAccel: 120
   turnSpeedFriction: 90
