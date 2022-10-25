@@ -11,9 +11,10 @@ public class MainCamera : Singleton<MainCamera>
     [SerializeField] private float minFov;
     [SerializeField] private float maxFov;
 
-    [Header("Camera Follow Settings")]
-    [SerializeField] private Transform targetPoint;
-    [SerializeField] private float rotationLerpSpeed;
+    // [Header("Camera Follow Settings")]
+    // [SerializeField] private Transform targetPoint;
+    // // [SerializeField] private float positionLerpSpeed;
+    // // [SerializeField] private float rotationLerpSpeed;
 
     // Start is called before the first frame update
     void Start()
@@ -24,15 +25,15 @@ public class MainCamera : Singleton<MainCamera>
     // Update is called once per frame
     void Update()
     {
-        // transform.position = targetPoint.position;
+        // transform.position = Vector3.Lerp(transform.position, targetPoint.position, positionLerpSpeed);
 
         // Vector3 newForward;
-        // // float angleBetween = Vector3.Angle(transform.forward, targetPoint.forward);
-        // // if(angleBetween >= 2)
-        // // {
-        // //     newForward = Vector3.Lerp(transform.forward, targetPoint.forward, rotationLerpSpeed);
-        // // }
-        // // else
+        // float angleBetween = Vector3.Angle(transform.forward, targetPoint.forward);
+        // if(angleBetween >= 2)
+        // {
+        //     newForward = Vector3.Lerp(transform.forward, targetPoint.forward, rotationLerpSpeed);
+        // }
+        // else
         // {
         //     newForward = targetPoint.forward;
         // }

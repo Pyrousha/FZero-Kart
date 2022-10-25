@@ -293,7 +293,8 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras: []
+  m_Cameras:
+  - {fileID: 0}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
@@ -325,8 +326,6 @@ MonoBehaviour:
   playerHitbox: {fileID: 8307567329534496162}
   minFov: 80
   maxFov: 120
-  targetPoint: {fileID: 604613087898032607}
-  rotationLerpSpeed: 0.05
 --- !u!1 &604613087011884379
 GameObject:
   m_ObjectHideFlags: 0
@@ -1331,14 +1330,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundRaycastParent: {fileID: 604613087280804958}
-  raycastLength: 3
+  raycastLength: 5
   speedNumberText: {fileID: 0}
   speedLines: {fileID: 0}
   maxSpeed: 99.999
   maxSpeedReverse: 48
   accelSpeed: 50
   frictionSpeed: 40
-  brakeSpeed: 60
+  brakeSpeed: 120
   turnFricPow: 2
   turnFrictionMultiplier: 0.006
   maxTurnSpeed: 45

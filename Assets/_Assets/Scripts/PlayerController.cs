@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 gravityDirection;
     [SerializeField] private float gravityStrength;
+    [SerializeField] private float groundedGravityMultiplier;
     [SerializeField] private float lerpSpeed;
 
     [Header("References")]
@@ -28,15 +29,17 @@ public class PlayerController : MonoBehaviour
 
     [Header("Parameters")]
     //Forward/back driving
-    [SerializeField] private float maxSpeed;
+    private float currMaxSpeed;
+    [SerializeField] private float maxSpeedWhileStraight;
+    [SerializeField] private float maxSpeedWhileMaxTurning;
     [SerializeField] private float maxSpeedReverse;
     [SerializeField] private float accelSpeed; //acceleration in units/second
     [Space(5)]
     [SerializeField] private float frictionSpeed; //friction in units/second
     [SerializeField] private float brakeSpeed; //deceleration in units/second
     [Space(5)]
-    [SerializeField] private float turnFricPow;
-    [SerializeField] private float turnFrictionMultiplier; //uses current turn speed to apply friction
+    [SerializeField] private float turnFriction;
+    //[SerializeField] private float turnFrictionMultiplier; //uses current turn speed to apply friction
 
     //Turning
     private float currTurnSpeed; //current turning speed in degrees/second
@@ -64,20 +67,26 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateAndApplyTurning();
+
+        float turnPercent = Mathf.Max(0, (Mathf.Abs(currTurnSpeed + currDriftSpeed) - maxTurnSpeed)/(maxDriftSpeed));
+        //float turnPercent = Mathf.Abs(currDriftSpeed)/(maxDriftSpeed) - ;
+        currMaxSpeed = Utils.RemapPercent(1 - turnPercent, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
+
         CalcAcceleration();
         CalcFriction();
-        UpdateAndApplyTurning();
 
 
         //Set speedlines based on speed
-        float speedPercent = Mathf.Max(Mathf.Abs(currSpeed) - (maxSpeed / 4.0f), 0) / (maxSpeed - (maxSpeed / 4.0f));
+        float maxSpeedForVisuals = Utils.RemapPercent(0.35f, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
+        float speedPercent = Mathf.Max(Mathf.Abs(currSpeed) - (maxSpeedForVisuals / 4.0f), 0) / (maxSpeedForVisuals - (maxSpeedForVisuals / 4.0f));
         speedLines.UpdateParticleSystem(speedPercent);
 
         //Set Fov based on speed
-        MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeed);
+        MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
 
         //set speedometer
-        speedNumberText.text = (currSpeed * 100).ToString("F1");
+        speedNumberText.text = (currSpeed * 100).ToString("F1") + " fasts/h";
 
 
         //Set drift anim
@@ -123,7 +132,7 @@ public class PlayerController : MonoBehaviour
             if (isGrounded)  //Angle between current rotation and target rotation big enough to lerp
                 upDirection = Vector3.Lerp(transform.up, upDirection, lerpSpeed);
             else
-                upDirection = Vector3.Lerp(transform.up, upDirection, lerpSpeed / 2.0f);
+                upDirection = Vector3.Lerp(transform.up, upDirection, lerpSpeed / 1.25f);
         }
 
         //Rotate the player to face the new "down"
@@ -139,7 +148,7 @@ public class PlayerController : MonoBehaviour
         if (isGrounded)
         {
             gravityDirection = -transform.up;
-            gravityStrength *= 10; //Stupid way to make character not ramp on lil gaps
+            gravityStrength *= groundedGravityMultiplier; //Stupid way to make character not ramp on lil gaps
         }
 
         //Calculate what the new gravity-component of velocity should be
@@ -172,10 +181,10 @@ public class PlayerController : MonoBehaviour
         //Accelerate forward
         if (InputHandler.Instance.AccelerateBoost.held)
         {
-            if (currSpeed < maxSpeed)
+            if (currSpeed < currMaxSpeed)
             {
                 //increase speed, but don't pass maxspeed
-                currSpeed = Mathf.Min(currSpeed + accelSpeed * Time.deltaTime, maxSpeed);
+                currSpeed = Mathf.Min(currSpeed + accelSpeed * Time.deltaTime, currMaxSpeed);
             }
         }
 
@@ -204,6 +213,11 @@ public class PlayerController : MonoBehaviour
                 //speed up towards 0
                 currSpeed = Mathf.Min(currSpeed + frictionSpeed * Time.deltaTime, 0);
             }
+        }
+
+        if(currSpeed > currMaxSpeed)
+        {
+            currSpeed = Mathf.Max(maxSpeedWhileMaxTurning, currSpeed - turnFriction * Time.deltaTime);
         }
 
         //turn-based friction
