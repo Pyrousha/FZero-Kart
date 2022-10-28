@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class ParticleSystemModifier : MonoBehaviour
 {
+    [SerializeField] private bool modifySpeed = true;
     [SerializeField] private float minStartSpeed;
     [SerializeField] private float maxStartSpeed;
 
+    [SerializeField] private bool modifyRadius = true;
     [SerializeField] private float minRadius;
     [SerializeField] private float maxRadius;
 
+    [SerializeField] private bool modifyEmission = true;
     [SerializeField] private float minEmission;
     [SerializeField] private float maxEmission;
 
@@ -24,11 +27,16 @@ public class ParticleSystemModifier : MonoBehaviour
     // Update is called once per frame
     public void UpdateParticleSystem(float percent)
     {
-        pSystem.startSpeed = Utils.RemapPercent(percent, minStartSpeed, maxStartSpeed);
+        if (modifySpeed)
+            pSystem.startSpeed = Utils.RemapPercent(percent, minStartSpeed, maxStartSpeed);
 
-        var shape = pSystem.shape;
-        shape.radius = Utils.RemapPercent(percent, minRadius, maxRadius);
+        if (modifyRadius)
+        {
+            var shape = pSystem.shape;
+            shape.radius = Utils.RemapPercent(percent, minRadius, maxRadius);
+        }
 
-        pSystem.emissionRate = Utils.RemapPercent(percent, minEmission, maxEmission);
+        if (modifyEmission)
+            pSystem.emissionRate = Utils.RemapPercent(percent, minEmission, maxEmission);
     }
 }

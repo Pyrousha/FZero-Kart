@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
     [Space(10)] //UI + Effects stuff
     [SerializeField] private TextMeshProUGUI speedNumberText;
     [SerializeField] private ParticleSystemModifier speedLines;
+    [SerializeField] private ParticleSystemModifier leftTurnFX;
+    [SerializeField] private ParticleSystemModifier rightTurnFX;
 
     [Header("Parameters")]
     //Forward/back driving
@@ -81,6 +83,10 @@ public class PlayerController : MonoBehaviour
         float maxSpeedForVisuals = Utils.RemapPercent(0.35f, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
         float speedPercent = Mathf.Max(Mathf.Abs(currSpeed) - (maxSpeedForVisuals / 4.0f), 0) / (maxSpeedForVisuals - (maxSpeedForVisuals / 4.0f));
         speedLines.UpdateParticleSystem(speedPercent);
+
+        //Set left/right turn particleSystems
+        leftTurnFX.UpdateParticleSystem(Mathf.Abs(Mathf.Min(currDriftSpeed, 0))/maxDriftSpeed);
+        rightTurnFX.UpdateParticleSystem(Mathf.Max(0, currDriftSpeed)/maxDriftSpeed);
 
         //Set Fov based on speed
         MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
