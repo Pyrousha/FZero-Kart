@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PlayerController : MonoBehaviour
+public class NPCController : MonoBehaviour
 {
     private float currSpeed;
 
@@ -24,8 +24,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float raycastLength;
     private bool isGrounded;
     [Space(10)] //UI + Effects stuff
-    [SerializeField] private TextMeshProUGUI speedNumberText;
-    [SerializeField] private ParticleSystemModifier speedLines;
     [SerializeField] private ParticleSystemModifier leftTurnFX;
     [SerializeField] private ParticleSystemModifier rightTurnFX;
 
@@ -57,12 +55,88 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float driftSpeedAccel; //angles/sec to turn when holding drift left/right
     [SerializeField] private float driftSpeedFriction; //angles/sec to turn when holding drift left/right
 
+
+    #region NPC Buttons
+    public struct NPCButtonState
+    {
+        private bool firstFrame;
+        public bool held { get; private set; }
+        public bool down
+        {
+            get
+            {
+                return held && firstFrame;
+            }
+        }
+        public bool released
+        {
+            get
+            {
+                return !held && firstFrame;
+            }
+        }
+
+        public void Set(bool toSet)
+        {
+            held = toSet;
+            firstFrame = true;
+        }
+        public void Reset()
+        {
+            firstFrame = false;
+        }
+    }
+
+    //Movement Buttons
+    private NPCButtonState accelerateBoost;
+
+    private NPCButtonState brake;
+
+    private float steering;
+
+    private NPCButtonState leftDrift;
+
+    private NPCButtonState rightDrift;
+
+    //Combat Buttons
+    private NPCButtonState attack;
+    #endregion
+
+
     // Start is called before the first frame update
     void Start()
     {
         gravityDirection = Vector3.down;
 
         raycastPoints = Utils.GetChildrenOfTransform(groundRaycastParent);
+    }
+
+    private void LateUpdate()
+    {
+        //Rest direction buttons
+        accelerateBoost.Reset();
+        brake.Reset();
+
+        leftDrift.Reset();
+        rightDrift.Reset();
+
+        //reset attack inputs
+        attack.Reset();
+    }
+
+    /// <summary>
+    /// Direction this racer is currently drifting, where -1 is max left, and 1 is max right.
+    /// </summary>
+    /// <returns></returns>
+    private int DriftAxis()
+    {
+        int toReturn = 0;
+        if (leftDrift.held)
+            toReturn -= 1;
+        if (rightDrift.held)
+            toReturn += 1;
+
+        return toReturn;
     }
 
     // Update is called once per frame
@@ -77,22 +151,9 @@ public class PlayerController : MonoBehaviour
         CalcAcceleration();
         CalcFriction();
 
-
-        //Set speedlines based on speed
-        float maxSpeedForVisuals = Utils.RemapPercent(0.35f, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
-        float speedPercent = Mathf.Max(Mathf.Abs(currSpeed) - (maxSpeedForVisuals / 4.0f), 0) / (maxSpeedForVisuals - (maxSpeedForVisuals / 4.0f));
-        speedLines.UpdateParticleSystem(speedPercent);
-
         //Set left/right turn particleSystems
         leftTurnFX.UpdateParticleSystem(Mathf.Abs(Mathf.Min(currDriftSpeed, 0))/maxDriftSpeed);
         rightTurnFX.UpdateParticleSystem(Mathf.Max(0, currDriftSpeed)/maxDriftSpeed);
-
-        //Set Fov based on speed
-        MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
-
-        //set speedometer
-        speedNumberText.text = (currSpeed * 100).ToString("F1") + " fasts/h";
-
 
         //Set drift anim
         driftAnim.SetFloat("Drift", currDriftSpeed / maxDriftSpeed);
@@ -178,13 +239,13 @@ public class PlayerController : MonoBehaviour
     private void CalcAcceleration()
     {
         //TODO: Do boost
-        if (InputHandler.Instance.AccelerateBoost.down)
+        if (accelerateBoost.down)
         {
 
         }
 
         //Accelerate forward
-        if (InputHandler.Instance.AccelerateBoost.held)
+        if (accelerateBoost.held)
         {
             if (currSpeed < currMaxSpeed)
             {
@@ -194,7 +255,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //slow down/reverse
-        if (InputHandler.Instance.Brake.held)
+        if (brake.held)
         {
             currSpeed = Mathf.Max(currSpeed - brakeSpeed * Time.deltaTime, -maxSpeedReverse);
         }
@@ -206,7 +267,7 @@ public class PlayerController : MonoBehaviour
     private void CalcFriction()
     {
         //not pressing accelerate or brake, apply friction
-        if ((InputHandler.Instance.Brake.held == false) && (InputHandler.Instance.AccelerateBoost.held == false))
+        if ((brake.held == false) && (accelerateBoost.held == false))
         {
             if (currSpeed > 0)
             {
@@ -234,7 +295,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void UpdateAndApplyTurning()
     {
-        float inputAxis = InputHandler.Instance.Steering;
+        float inputAxis = steering;
         float targetTurnSpeed = inputAxis * maxTurnSpeed;
 
         if (targetTurnSpeed < 0)
@@ -263,7 +324,7 @@ public class PlayerController : MonoBehaviour
 
     AfterTurnCalculation:
 
-        float driftInputAxis = InputHandler.Instance.DriftAxis();
+        float driftInputAxis = DriftAxis();
         float targetDriftSpeed = driftInputAxis * maxDriftSpeed;
 
         float driftMultiplier = 1;

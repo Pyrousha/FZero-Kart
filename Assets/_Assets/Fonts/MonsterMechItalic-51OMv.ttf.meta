@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: f135a1897d8e2d149a3b2e79245d9d4d
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Monster Mech
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: b1093a3540e8fd94eab3732769cb3fa2, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

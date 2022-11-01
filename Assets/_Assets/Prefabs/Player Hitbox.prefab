@@ -1284,6 +1284,7 @@ GameObject:
   - component: {fileID: 8307567329534496165}
   - component: {fileID: 8307567329534496167}
   - component: {fileID: 8307567329534496166}
+  - component: {fileID: 6054639271780748374}
   m_Layer: 7
   m_Name: Player Hitbox
   m_TagString: Untagged
@@ -1334,6 +1335,8 @@ MonoBehaviour:
   raycastLength: 6
   speedNumberText: {fileID: 0}
   speedLines: {fileID: 0}
+  leftTurnFX: {fileID: 0}
+  rightTurnFX: {fileID: 0}
   maxSpeedWhileStraight: 169.99
   maxSpeedWhileMaxTurning: 99.999
   maxSpeedReverse: 48
@@ -1377,6 +1380,18 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6054639271780748374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8647395980506502936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 795ba470b82f7c248b48407ca172326a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8939990778961022497
 GameObject:
   m_ObjectHideFlags: 0

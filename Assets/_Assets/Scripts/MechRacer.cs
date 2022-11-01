@@ -7,7 +7,8 @@ using UnityEngine;
 /// </summary>
 public class MechRacer : MonoBehaviour
 {
-    public int racePosition {get;set;}
+    private bool isLocalPlayer;
+    public bool IsLocalPlayer => isLocalPlayer;
 
     private bool raceFinished = false;
 
@@ -23,6 +24,13 @@ public class MechRacer : MonoBehaviour
 
     private float trackPos;
     public float TrackPos => trackPos;
+
+    void Start()
+    {
+        RaceController.Instance.AddRacer(this);
+
+        isLocalPlayer = GetComponent<PlayerController>() != null;
+    }
 
     void Update()
     {
@@ -41,17 +49,26 @@ public class MechRacer : MonoBehaviour
 
         if (checkpoint != nextCheckpoint) //make sure right checkpoint was hit
         {
-            Debug.Log("Wrong checkpoint hit!");
+            //Debug.Log("Wrong checkpoint hit!");
             return;
         }
 
         checkpointsHit++;
+        Debug.Log("Racer " + name + " has hit checkpoint " + checkpointsHit);
+
+        if (isLocalPlayer)
+        {
+            //change color, for testing
+            checkpoint.gameObject.GetComponent<MeshRenderer>().material = RaceController.Instance.inactiveCheckpointMaterial;
+            checkpoint.NextCheckpoint.gameObject.GetComponent<MeshRenderer>().material = RaceController.Instance.activeCheckpointMaterial;
+        }
 
         if (checkpoint == RaceController.Instance.endCheckpoint)
         {
             //lap finished
             lapsFinished++;
-            if (lapsFinished >= RaceController.Instance.totalLaps)
+            Debug.Log("Racer " + name + " has completed lap " + lapsFinished);
+            if (lapsFinished >= RaceController.Instance.TotalLaps)
             {
                 //Race Finished
                 raceFinished = true;
