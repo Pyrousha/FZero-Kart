@@ -16,6 +16,7 @@ public class MechRacer : MonoBehaviour
     private int checkpointsHit = 0;
 
     private Checkpoint nextCheckpoint;
+    public Checkpoint NextCheckpoint => nextCheckpoint;
 
     public void SetNextCheckpoint(Checkpoint check)
     {

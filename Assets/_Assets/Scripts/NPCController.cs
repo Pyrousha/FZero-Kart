@@ -12,6 +12,13 @@ public class NPCController : MonoBehaviour
     [SerializeField] private float groundedGravityMultiplier;
     [SerializeField] private float lerpSpeed;
 
+    [Header("NPC-Specific Parameters")]
+    [SerializeField] private MechRacer mechRacer;
+    [SerializeField] private float turnThreshold; //how much of an angle difference to target to start turning
+    [SerializeField] private float driftThreshold; //how much of an angle difference to target to start drifting
+    [SerializeField] private float noAccelerateThreshold; //how much of an angle difference to target to stop accelerating
+    [SerializeField] private float brakeThreshold; //how much of an angle difference to target to stop accelerating
+
     [Header("References")]
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Transform playerModelParent;
@@ -93,10 +100,7 @@ public class NPCController : MonoBehaviour
     private NPCButtonState brake;
 
     private float steering;
-
-    private NPCButtonState leftDrift;
-
-    private NPCButtonState rightDrift;
+    private float driftAxis;
 
     //Combat Buttons
     private NPCButtonState attack;
@@ -117,34 +121,43 @@ public class NPCController : MonoBehaviour
         accelerateBoost.Reset();
         brake.Reset();
 
-        leftDrift.Reset();
-        rightDrift.Reset();
-
         //reset attack inputs
         attack.Reset();
-    }
-
-    /// <summary>
-    /// Direction this racer is currently drifting, where -1 is max left, and 1 is max right.
-    /// </summary>
-    /// <returns></returns>
-    private int DriftAxis()
-    {
-        int toReturn = 0;
-        if (leftDrift.held)
-            toReturn -= 1;
-        if (rightDrift.held)
-            toReturn += 1;
-
-        return toReturn;
     }
 
     // Update is called once per frame
     void Update()
     {
+        Vector3 toNextCheckpoint = mechRacer.NextCheckpoint.transform.position - transform.position;
+        Vector3 downProj = Vector3.Project(toNextCheckpoint, -transform.up);
+        Vector3 toNextHorizontal = toNextCheckpoint - downProj;
+        float angleToTurn = -Vector3.SignedAngle(toNextHorizontal, transform.forward, transform.up);
+        //Debug.Log(angleToTurn);
+
+        float absAngle = Mathf.Abs(angleToTurn);
+        if (absAngle >= turnThreshold)
+            steering = Mathf.Clamp(Mathf.Sign(angleToTurn), -1, 1);
+        else
+            steering = 0;
+
+        if (absAngle >= driftThreshold)
+            driftAxis = Mathf.Clamp(Mathf.Sign(angleToTurn), -1, 1);
+        else
+            driftAxis = 0;
+
+        if (absAngle >= noAccelerateThreshold)
+            accelerateBoost.Set(false);
+        else
+            accelerateBoost.Set(true);
+
+        if (absAngle >= brakeThreshold)
+            brake.Set(true);
+        else
+            brake.Set(false);
+
         UpdateAndApplyTurning();
 
-        float turnPercent = Mathf.Max(0, (Mathf.Abs(currTurnSpeed + currDriftSpeed) - maxTurnSpeed)/(maxDriftSpeed));
+        float turnPercent = Mathf.Max(0, (Mathf.Abs(currTurnSpeed + currDriftSpeed) - maxTurnSpeed) / (maxDriftSpeed));
         //float turnPercent = Mathf.Abs(currDriftSpeed)/(maxDriftSpeed) - ;
         currMaxSpeed = Utils.RemapPercent(1 - turnPercent, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
 
@@ -152,8 +165,8 @@ public class NPCController : MonoBehaviour
         CalcFriction();
 
         //Set left/right turn particleSystems
-        leftTurnFX.UpdateParticleSystem(Mathf.Abs(Mathf.Min(currDriftSpeed, 0))/maxDriftSpeed);
-        rightTurnFX.UpdateParticleSystem(Mathf.Max(0, currDriftSpeed)/maxDriftSpeed);
+        leftTurnFX.UpdateParticleSystem(Mathf.Abs(Mathf.Min(currDriftSpeed, 0)) / maxDriftSpeed);
+        rightTurnFX.UpdateParticleSystem(Mathf.Max(0, currDriftSpeed) / maxDriftSpeed);
 
         //Set drift anim
         driftAnim.SetFloat("Drift", currDriftSpeed / maxDriftSpeed);
@@ -175,12 +188,12 @@ public class NPCController : MonoBehaviour
                 numRaysHit++;
 
                 //(Debug) show up normal
-                Debug.DrawRay(hit.point, hit.normal, Color.red, 1f);
+                //Debug.DrawRay(hit.point, hit.normal, Color.red, 1f);
                 //Debug.Log("normal dir: "+hit.normal);
             }
         }
 
-        if(numRaysHit > 0)
+        if (numRaysHit > 0)
         {
             //Average all raycasts that hit the ground
             upDirection /= numRaysHit;
@@ -210,7 +223,7 @@ public class NPCController : MonoBehaviour
     {
         //TEMP: Set gravity to face ground
         Vector3 trueGravDir = gravityDirection;
-        float trueGravStr =  gravityStrength;
+        float trueGravStr = gravityStrength;
         if (isGrounded)
         {
             gravityDirection = -transform.up;
@@ -281,7 +294,7 @@ public class NPCController : MonoBehaviour
             }
         }
 
-        if(currSpeed > currMaxSpeed)
+        if (currSpeed > currMaxSpeed)
         {
             currSpeed = Mathf.Max(maxSpeedWhileMaxTurning, currSpeed - turnFriction * Time.deltaTime);
         }
@@ -324,7 +337,7 @@ public class NPCController : MonoBehaviour
 
     AfterTurnCalculation:
 
-        float driftInputAxis = DriftAxis();
+        float driftInputAxis = driftAxis;
         float targetDriftSpeed = driftInputAxis * maxDriftSpeed;
 
         float driftMultiplier = 1;
