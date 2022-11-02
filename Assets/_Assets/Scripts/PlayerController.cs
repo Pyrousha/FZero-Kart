@@ -5,7 +5,10 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
+    public bool canMove { get; set; }
+
     private float currSpeed;
+    public float CurrSpeed => currSpeed;
 
     private Vector3 gravityDirection;
     [SerializeField] private float gravityStrength;
@@ -45,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
     //Turning
     private float currTurnSpeed; //current turning speed in degrees/second
+    public float CurrTurnSpeed => currTurnSpeed;
     [Space(25)]
     [SerializeField] private float maxTurnSpeed; //angles/sec to turn when holding max left/right
     [SerializeField] private float turnSpeedAccel; //units/sec to move currTurnSpeed towards target turn speed
@@ -52,6 +56,7 @@ public class PlayerController : MonoBehaviour
 
     //Drifting
     private float currDriftSpeed;
+    public float CurrDriftSpeed => currDriftSpeed;
     [Space(25)]
     [SerializeField] private float maxDriftSpeed; //angles/sec to turn when holding drift left/right
     [SerializeField] private float driftSpeedAccel; //angles/sec to turn when holding drift left/right
@@ -70,7 +75,7 @@ public class PlayerController : MonoBehaviour
     {
         UpdateAndApplyTurning();
 
-        float turnPercent = Mathf.Max(0, (Mathf.Abs(currTurnSpeed + currDriftSpeed) - maxTurnSpeed)/(maxDriftSpeed));
+        float turnPercent = Mathf.Max(0, (Mathf.Abs(currTurnSpeed + currDriftSpeed) - maxTurnSpeed) / (maxDriftSpeed));
         //float turnPercent = Mathf.Abs(currDriftSpeed)/(maxDriftSpeed) - ;
         currMaxSpeed = Utils.RemapPercent(1 - turnPercent, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
 
@@ -84,8 +89,8 @@ public class PlayerController : MonoBehaviour
         speedLines.UpdateParticleSystem(speedPercent);
 
         //Set left/right turn particleSystems
-        leftTurnFX.UpdateParticleSystem(Mathf.Abs(Mathf.Min(currDriftSpeed, 0))/maxDriftSpeed);
-        rightTurnFX.UpdateParticleSystem(Mathf.Max(0, currDriftSpeed)/maxDriftSpeed);
+        leftTurnFX.UpdateParticleSystem(Mathf.Abs(Mathf.Min(currDriftSpeed, 0)) / maxDriftSpeed);
+        rightTurnFX.UpdateParticleSystem(Mathf.Max(0, currDriftSpeed) / maxDriftSpeed);
 
         //Set Fov based on speed
         MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
@@ -119,7 +124,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if(numRaysHit > 0)
+        if (numRaysHit > 0)
         {
             //Average all raycasts that hit the ground
             upDirection /= numRaysHit;
@@ -149,7 +154,7 @@ public class PlayerController : MonoBehaviour
     {
         //TEMP: Set gravity to face ground
         Vector3 trueGravDir = gravityDirection;
-        float trueGravStr =  gravityStrength;
+        float trueGravStr = gravityStrength;
         if (isGrounded)
         {
             gravityDirection = -transform.up;
@@ -178,13 +183,13 @@ public class PlayerController : MonoBehaviour
     private void CalcAcceleration()
     {
         //TODO: Do boost
-        if (InputHandler.Instance.AccelerateBoost.down)
+        if ((InputHandler.Instance.AccelerateBoost.down) && (canMove))
         {
 
         }
 
         //Accelerate forward
-        if (InputHandler.Instance.AccelerateBoost.held)
+        if ((InputHandler.Instance.AccelerateBoost.held) && (canMove))
         {
             if (currSpeed < currMaxSpeed)
             {
@@ -194,7 +199,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //slow down/reverse
-        if (InputHandler.Instance.Brake.held)
+        if ((InputHandler.Instance.Brake.held) && (canMove))
         {
             currSpeed = Mathf.Max(currSpeed - brakeSpeed * Time.deltaTime, -maxSpeedReverse);
         }
@@ -220,7 +225,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if(currSpeed > currMaxSpeed)
+        if (currSpeed > currMaxSpeed)
         {
             currSpeed = Mathf.Max(maxSpeedWhileMaxTurning, currSpeed - turnFriction * Time.deltaTime);
         }
@@ -235,6 +240,7 @@ public class PlayerController : MonoBehaviour
     private void UpdateAndApplyTurning()
     {
         float inputAxis = InputHandler.Instance.Steering;
+
         float targetTurnSpeed = inputAxis * maxTurnSpeed;
 
         if (targetTurnSpeed < 0)
@@ -264,6 +270,7 @@ public class PlayerController : MonoBehaviour
     AfterTurnCalculation:
 
         float driftInputAxis = InputHandler.Instance.DriftAxis();
+
         float targetDriftSpeed = driftInputAxis * maxDriftSpeed;
 
         float driftMultiplier = 1;

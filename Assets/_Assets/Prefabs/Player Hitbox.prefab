@@ -55,7 +55,7 @@ MeshRenderer:
   m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
@@ -1287,6 +1287,7 @@ GameObject:
   - component: {fileID: 8307567329534496167}
   - component: {fileID: 8307567329534496166}
   - component: {fileID: 6054639271780748374}
+  - component: {fileID: 1709958077}
   m_Layer: 7
   m_Name: Player Hitbox
   m_TagString: Untagged
@@ -1339,7 +1340,7 @@ MonoBehaviour:
   speedLines: {fileID: 0}
   leftTurnFX: {fileID: 1580522006222163459}
   rightTurnFX: {fileID: 1242962311}
-  maxSpeedWhileStraight: 169.99
+  maxSpeedWhileStraight: 169.999
   maxSpeedWhileMaxTurning: 99.999
   maxSpeedReverse: 48
   accelSpeed: 50
@@ -1393,6 +1394,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795ba470b82f7c248b48407ca172326a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1709958077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8647395980506502936}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f463de37b384154284745909b0983d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravityStrength: 3
+  groundedGravityMultiplier: 30
+  lerpSpeed: 0.1
+  mechRacer: {fileID: 6054639271780748374}
+  turnThreshold: 0
+  driftThreshold: 4.244339
+  noAccelerateThreshold: 999
+  brakeThreshold: 180
+  rb: {fileID: 8307567329534496167}
+  playerModelParent: {fileID: 604613087020212618}
+  playerModel: {fileID: 604613086867738512}
+  driftAnim: {fileID: 604613087784502664}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  groundRaycastParent: {fileID: 604613087280804958}
+  raycastLength: 6
+  leftTurnFX: {fileID: 1580522006222163459}
+  rightTurnFX: {fileID: 1242962311}
+  maxSpeedWhileStraight: 169.99
+  maxSpeedWhileMaxTurning: 99.999
+  maxSpeedReverse: 48
+  accelSpeed: 50
+  frictionSpeed: 40
+  brakeSpeed: 120
+  turnFriction: 60
+  maxTurnSpeed: 45
+  turnSpeedAccel: 120
+  turnSpeedFriction: 60
+  maxDriftSpeed: 60
+  driftSpeedAccel: 300
+  driftSpeedFriction: 300
 --- !u!1 &8939990778961022497
 GameObject:
   m_ObjectHideFlags: 0

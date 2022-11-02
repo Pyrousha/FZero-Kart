@@ -5,6 +5,8 @@ using TMPro;
 
 public class NPCController : MonoBehaviour
 {
+    public bool canMove { get; set; }
+
     private float currSpeed;
 
     private Vector3 gravityDirection;
@@ -60,6 +62,14 @@ public class NPCController : MonoBehaviour
     [Space(25)]
     [SerializeField] private float maxDriftSpeed; //angles/sec to turn when holding drift left/right
     [SerializeField] private float driftSpeedAccel; //angles/sec to turn when holding drift left/right
+
+    public void LoadStateFromPlayer(PlayerController playerController)
+    {
+        currSpeed = playerController.CurrSpeed;
+        currTurnSpeed = playerController.CurrTurnSpeed;
+        currDriftSpeed = playerController.CurrDriftSpeed;
+    }
+
     [SerializeField] private float driftSpeedFriction; //angles/sec to turn when holding drift left/right
 
 
@@ -106,6 +116,19 @@ public class NPCController : MonoBehaviour
     private NPCButtonState attack;
     #endregion
 
+    public void SetAIParams(AIEvolutionStats.ParamStruct param)
+    {
+        driftThreshold = param.driftThresh;
+        noAccelerateThreshold = param.noAccelThresh;
+
+        //Slightly randomize "AI"
+        driftThreshold += driftThreshold * Random.Range(-0.15f, 0.15f);
+        noAccelerateThreshold += noAccelerateThreshold * Random.Range(-0.15f, 0.15f);
+    }
+    public AIEvolutionStats.ParamStruct GetAIParams()
+    {
+        return new AIEvolutionStats.ParamStruct(driftThreshold, noAccelerateThreshold);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -252,13 +275,13 @@ public class NPCController : MonoBehaviour
     private void CalcAcceleration()
     {
         //TODO: Do boost
-        if (accelerateBoost.down)
+        if (accelerateBoost.down && canMove)
         {
 
         }
 
         //Accelerate forward
-        if (accelerateBoost.held)
+        if (accelerateBoost.held && canMove)
         {
             if (currSpeed < currMaxSpeed)
             {
@@ -268,7 +291,7 @@ public class NPCController : MonoBehaviour
         }
 
         //slow down/reverse
-        if (brake.held)
+        if (brake.held && canMove)
         {
             currSpeed = Mathf.Max(currSpeed - brakeSpeed * Time.deltaTime, -maxSpeedReverse);
         }
@@ -309,6 +332,7 @@ public class NPCController : MonoBehaviour
     private void UpdateAndApplyTurning()
     {
         float inputAxis = steering;
+
         float targetTurnSpeed = inputAxis * maxTurnSpeed;
 
         if (targetTurnSpeed < 0)
@@ -338,6 +362,7 @@ public class NPCController : MonoBehaviour
     AfterTurnCalculation:
 
         float driftInputAxis = driftAxis;
+
         float targetDriftSpeed = driftInputAxis * maxDriftSpeed;
 
         float driftMultiplier = 1;

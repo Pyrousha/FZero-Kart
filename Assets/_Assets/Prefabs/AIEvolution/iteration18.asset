@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44a232a8f571aee4da27c01f729f2244, type: 3}
+  m_Name: iteration18
+  m_EditorClassIdentifier: 
+  iterationNum: 18
+  averageDriftThresh: 0
+  averageNoAccelThresh: 0
+  stats:
+  - driftThresh: 3.3226223
+    noAccelThresh: 131.09293
+  - driftThresh: 6.9355917
+    noAccelThresh: 102.834946
+  - driftThresh: 0.39816123
+    noAccelThresh: 126.80495
+  - driftThresh: 0.72081965
+    noAccelThresh: 184.71347
+  - driftThresh: 7.412882
+    noAccelThresh: 146.50887
+  - driftThresh: 5.7649136
+    noAccelThresh: 127.59968
+  - driftThresh: 0.46233264
+    noAccelThresh: 120.30818
+  - driftThresh: 0.46805224
+    noAccelThresh: 73.406456
+  - driftThresh: 5.892899
+    noAccelThresh: 69.14685
+  - driftThresh: 0.40878665
+    noAccelThresh: 165.54301
+  - driftThresh: 0.49593392
+    noAccelThresh: 110.773346
+  - driftThresh: 0.3033609
+    noAccelThresh: 112.689804
+  - driftThresh: 5.339953
+    noAccelThresh: 113.66569
+  - driftThresh: 0.381182
+    noAccelThresh: 153.08603
+  - driftThresh: 0.32909405
+    noAccelThresh: 141.37149

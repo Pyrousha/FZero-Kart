@@ -26,16 +26,22 @@ public class MechRacer : MonoBehaviour
     private float trackPos;
     public float TrackPos => trackPos;
 
+    public PlayerController playerController {get; private set;}
+    public NPCController npcController {get; private set;}
+
     void Start()
     {
-        RaceController.Instance.AddRacer(this);
+        playerController = GetComponent<PlayerController>();
+        npcController = GetComponent<NPCController>();
 
-        isLocalPlayer = GetComponent<PlayerController>() != null;
+        isLocalPlayer = playerController != null;
+
+        RaceController.Instance.AddRacer(this);
     }
 
     void Update()
     {
-        if(raceFinished)
+        if (raceFinished)
             return;
 
         //Ratio of how far the player has traveled from the previous checkpoint to the next one
@@ -55,7 +61,7 @@ public class MechRacer : MonoBehaviour
         }
 
         checkpointsHit++;
-        Debug.Log("Racer " + name + " has hit checkpoint " + checkpointsHit);
+        //Debug.Log("Racer " + name + " has hit checkpoint " + checkpointsHit);
 
         if (isLocalPlayer)
         {
@@ -64,7 +70,7 @@ public class MechRacer : MonoBehaviour
             checkpoint.NextCheckpoint.gameObject.GetComponent<MeshRenderer>().material = RaceController.Instance.activeCheckpointMaterial;
         }
 
-        if (checkpoint == RaceController.Instance.endCheckpoint)
+        if ((checkpoint == RaceController.Instance.endCheckpoint) && (raceFinished == false))
         {
             //lap finished
             lapsFinished++;
@@ -74,7 +80,20 @@ public class MechRacer : MonoBehaviour
                 //Race Finished
                 raceFinished = true;
                 RaceController.Instance.FinishedRace(this);
+
+                if(isLocalPlayer)
+                {
+                    //swap player input for npc input
+                    PlayerController playerController = GetComponent<PlayerController>();
+                    playerController.enabled = false;
+                    NPCController npcController = GetComponent<NPCController>();
+                    npcController.enabled = true;
+
+                    npcController.LoadStateFromPlayer(playerController);
+                }
             }
+            if (isLocalPlayer)
+                RaceController.Instance.UpdateLapUI(lapsFinished);
         }
 
         nextCheckpoint = checkpoint.NextCheckpoint;
