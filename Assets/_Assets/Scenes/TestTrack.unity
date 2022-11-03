@@ -348,7 +348,7 @@ PrefabInstance:
     - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
@@ -1190,7 +1190,7 @@ PrefabInstance:
     - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
@@ -7253,7 +7253,7 @@ PrefabInstance:
     - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -13402,7 +13402,7 @@ PrefabInstance:
     - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
@@ -14524,7 +14524,7 @@ PrefabInstance:
     - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
@@ -22109,7 +22109,7 @@ PrefabInstance:
     - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
@@ -24404,8 +24404,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf001d237ca1db842b862b7fb7227b45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cutPowerToLastHumanPlayer: 0
-  scoreMode_125Max: 1
+  cutPowerToLastHumanPlayer: 1
+  scoreMode_125Max: 0
   activeCheckpointMaterial: {fileID: 2100000, guid: c43a30384bc2b7f4e87153a3dc2ffd0f,
     type: 2}
   inactiveCheckpointMaterial: {fileID: 2100000, guid: 3f76496d4c3a3ad4c8348cc9a4e95822,

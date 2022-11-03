@@ -256,6 +256,16 @@ public class RaceController : Singleton<RaceController>
         }
 
         SortRacerScores();
+
+        //Print curring ranking to console
+        string rankings = "Current Rankings: \n";
+        for(int i = 0; i < scoreSortedRacers.Count; i++)
+        {
+            MechRacer currRacer = scoreSortedRacers[i];
+            rankings += ("-"+(i+1)+RacePosSuffix(i+1)+": "+currRacer.Score+"pts: "+currRacer.name+"\n");
+        }
+
+        Debug.Log(rankings);
     }
 
     private void SaveAIRacerParams(List<MechRacer> racersToSave)
