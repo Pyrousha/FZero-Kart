@@ -19208,6 +19208,26 @@ PrefabInstance:
       propertyPath: m_Cameras.Array.data[0]
       value: 
       objectReference: {fileID: 2074279983}
+    - target: {fileID: 1868606718914987835, guid: 26f2371bac9e9fe4da7860f8363b1203,
+        type: 3}
+      propertyPath: m_Cameras.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2642188041682963934, guid: 26f2371bac9e9fe4da7860f8363b1203,
+        type: 3}
+      propertyPath: m_Cameras.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6054639271780748374, guid: 26f2371bac9e9fe4da7860f8363b1203,
+        type: 3}
+      propertyPath: speedLines
+      value: 
+      objectReference: {fileID: 813852856}
+    - target: {fileID: 6054639271780748374, guid: 26f2371bac9e9fe4da7860f8363b1203,
+        type: 3}
+      propertyPath: speedNumberText
+      value: 
+      objectReference: {fileID: 7993728429903365262}
     - target: {fileID: 8307567329534496162, guid: 26f2371bac9e9fe4da7860f8363b1203,
         type: 3}
       propertyPath: m_RootOrder
@@ -19263,16 +19283,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8307567329534496165, guid: 26f2371bac9e9fe4da7860f8363b1203,
-        type: 3}
-      propertyPath: speedLines
-      value: 
-      objectReference: {fileID: 813852856}
-    - target: {fileID: 8307567329534496165, guid: 26f2371bac9e9fe4da7860f8363b1203,
-        type: 3}
-      propertyPath: speedNumberText
-      value: 
-      objectReference: {fileID: 342335469}
     - target: {fileID: 8647395980506502936, guid: 26f2371bac9e9fe4da7860f8363b1203,
         type: 3}
       propertyPath: m_Name
@@ -24324,7 +24334,9 @@ MonoBehaviour:
   posNumberText: {fileID: 683652663}
   posSuffixText: {fileID: 812290176}
   lapCountText: {fileID: 1327129310}
-  totalLaps: 3
+  speedNumberText: {fileID: 342335469}
+  speedLines: {fileID: 813852856}
+  totalLaps: 1
   checkpointParent: {fileID: 939774812}
   racerPair:
     NPCParent: {fileID: 452853308}
@@ -25939,6 +25951,18 @@ PrefabInstance:
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: a8d056c1cb1553240b1e0280aa1c69b6, type: 3}
+--- !u!114 &7993728429903365262 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7993728431212476305, guid: a8d056c1cb1553240b1e0280aa1c69b6,
+    type: 3}
+  m_PrefabInstance: {fileID: 7993728429903365261}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7996718926839713318
 PrefabInstance:
   m_ObjectHideFlags: 0

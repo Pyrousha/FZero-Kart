@@ -3,7 +3,17 @@ guid: 795ba470b82f7c248b48407ca172326a
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - rb: {instanceID: 0}
+  - playerModelParent: {instanceID: 0}
+  - playerModel: {instanceID: 0}
+  - driftAnim: {instanceID: 0}
+  - groundRaycastParent: {instanceID: 0}
+  - speedNumberText: {instanceID: 0}
+  - speedLines: {instanceID: 0}
+  - leftTurnFX: {instanceID: 0}
+  - rightTurnFX: {instanceID: 0}
+  - mechStats: {fileID: 11400000, guid: bf94d8b3eb6ed194f8b4756e6d6cb1b9, type: 2}
   executionOrder: 200
   icon: {instanceID: 0}
   userData: 

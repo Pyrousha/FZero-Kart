@@ -30,6 +30,10 @@ public class RaceController : Singleton<RaceController>
     [SerializeField] private TextMeshProUGUI posNumberText;
     [SerializeField] private TextMeshProUGUI posSuffixText;
     [SerializeField] private TextMeshProUGUI lapCountText;
+    [SerializeField] private TextMeshProUGUI speedNumberText;
+    public TextMeshProUGUI SpeedNumberText => speedNumberText;
+    [SerializeField] private ParticleSystemModifier speedLines;
+    public ParticleSystemModifier SpeedLines => speedLines;
 
     public Checkpoint endCheckpoint { get; private set; }
     private List<MechRacer> finishedRacers = new List<MechRacer>();
@@ -42,7 +46,8 @@ public class RaceController : Singleton<RaceController>
     public int TotalLaps => totalLaps;
 
     [Header("AI Evolution Funsies")]
-    [SerializeField] private EvolutionRacerPair racerPair;
+    [SerializeField] private bool saveAIRacers;
+    [SerializeField] private EvolutionRacerPair racerPair; //NPC racers that will be in the actual game, referenced to set values from evolution stats
     [SerializeField] private List<EvolutionRacerPair> evolutionRacerPairs;
 
     public void Start()
@@ -93,11 +98,7 @@ public class RaceController : Singleton<RaceController>
     {
         foreach (MechRacer racer in currentRacers)
         {
-            if (racer.playerController != null)
-                racer.playerController.canMove = true;
-
-            if (racer.npcController != null)
-                racer.npcController.canMove = true;
+            racer.canMove = true;
         }
     }
 
@@ -144,14 +145,15 @@ public class RaceController : Singleton<RaceController>
             Debug.Log("FINISH!!");
         }
 
-#if UNITY_EDITOR
-        //AI param saving
-        if ((finishedRacers.Count >= 15) && (savedParams == false))
+        if (saveAIRacers)
         {
-            SaveAIRacerParams(finishedRacers);
+            //AI param saving
+            if ((finishedRacers.Count >= 15) && (savedParams == false))
+            {
+                SaveAIRacerParams(finishedRacers);
 
-            savedParams = true;
-#endif
+                savedParams = true;
+            }
         }
     }
 
@@ -170,8 +172,10 @@ public class RaceController : Singleton<RaceController>
         }
         newEvoStats.iterationNum = newIterationNum;
 
+#if UNITY_EDITOR
         string filepath = AssetDatabase.GenerateUniqueAssetPath("Assets/_Assets/Prefabs/AIEvolution/iteration" + newEvoStats.iterationNum + ".asset");
         AssetDatabase.CreateAsset(newEvoStats, filepath);
+#endif
         Debug.Log("Saved Top 15 AI racer params to iteration" + newEvoStats.iterationNum);
 
         //SceneManager.LoadScene(0);

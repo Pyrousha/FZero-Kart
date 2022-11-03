@@ -1023,9 +1023,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5805340193360686626}
   - component: {fileID: 8787373491747764430}
+  - component: {fileID: 8636980546743562198}
   - component: {fileID: 5805340193360686631}
   - component: {fileID: 5805340193360686630}
-  - component: {fileID: 8636980546743562198}
   m_Layer: 7
   m_Name: NPC Racer
   m_TagString: Untagged
@@ -1062,17 +1062,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f463de37b384154284745909b0983d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityStrength: 3
-  groundedGravityMultiplier: 30
-  lerpSpeed: 0.1
-  mechRacer: {fileID: 8636980546743562198}
   turnThreshold: 0
   driftThreshold: 5
   noAccelerateThreshold: 15
   brakeThreshold: 180
+  mechRacer: {fileID: 8636980546743562198}
+--- !u!114 &8636980546743562198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6618996817075893400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 795ba470b82f7c248b48407ca172326a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravityStrength: 3
+  groundedGravityMultiplier: 30
+  lerpSpeed: 0.1
   rb: {fileID: 5805340193360686631}
   playerModelParent: {fileID: 3152196737878229514}
-  playerModel: {fileID: 3152196738229021712}
+  playerModel: {fileID: 3152196736998860297}
   driftAnim: {fileID: 3152196736998860296}
   groundLayer:
     serializedVersion: 2
@@ -1081,19 +1093,7 @@ MonoBehaviour:
   raycastLength: 6
   leftTurnFX: {fileID: 6971401908887926571}
   rightTurnFX: {fileID: 3623416115003197172}
-  maxSpeedWhileStraight: 169.99
-  maxSpeedWhileMaxTurning: 99.999
-  maxSpeedReverse: 48
-  accelSpeed: 50
-  frictionSpeed: 40
-  brakeSpeed: 120
-  turnFriction: 60
-  maxTurnSpeed: 45
-  turnSpeedAccel: 120
-  turnSpeedFriction: 60
-  maxDriftSpeed: 60
-  driftSpeedAccel: 300
-  driftSpeedFriction: 300
+  mechStats: {fileID: 11400000, guid: bf94d8b3eb6ed194f8b4756e6d6cb1b9, type: 2}
 --- !u!54 &5805340193360686631
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1123,18 +1123,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8636980546743562198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6618996817075893400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 795ba470b82f7c248b48407ca172326a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6902861963470679457
 GameObject:
   m_ObjectHideFlags: 0
