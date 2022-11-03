@@ -345,6 +345,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: brakeThreshold
@@ -1018,6 +1023,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (29)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -1095,6 +1105,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -1171,6 +1186,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
@@ -1263,6 +1283,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (24)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -2324,6 +2349,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (19)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -2601,6 +2631,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (17)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -5086,6 +5121,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (21)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -5506,6 +5546,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: brakeThreshold
@@ -5901,6 +5946,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (20)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -7200,6 +7250,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -7561,8 +7616,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 452853308}
   - {fileID: 1021688644}
+  - {fileID: 452853308}
   - {fileID: 1555631455}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -7670,6 +7725,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -13339,6 +13399,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: brakeThreshold
@@ -14110,6 +14175,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (22)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -14278,6 +14348,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (30)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -14445,6 +14520,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
@@ -14928,6 +15008,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (14)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -16413,6 +16498,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (26)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -16908,6 +16998,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
@@ -17542,6 +17637,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -19923,6 +20023,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (23)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -19993,6 +20098,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (31)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -21594,6 +21704,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: brakeThreshold
@@ -21990,6 +22105,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8787373491747764430, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
@@ -23597,6 +23717,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (18)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -23919,6 +24044,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (16)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -24275,6 +24405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cutPowerToLastHumanPlayer: 0
+  scoreMode_125Max: 1
   activeCheckpointMaterial: {fileID: 2100000, guid: c43a30384bc2b7f4e87153a3dc2ffd0f,
     type: 2}
   inactiveCheckpointMaterial: {fileID: 2100000, guid: 3f76496d4c3a3ad4c8348cc9a4e95822,
@@ -24288,7 +24419,7 @@ MonoBehaviour:
   speedLines: {fileID: 813852856}
   totalLaps: 1
   checkpointParent: {fileID: 939774812}
-  saveAIRacers: 1
+  saveAIRacers: 0
   racerPair:
     NPCParent: {fileID: 452853308}
     evoStats: {fileID: 11400000, guid: b45a39b074ea1ec42a210e63492abea4, type: 2}
@@ -24465,6 +24596,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Racer (27)
       objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1059a7700110b4340acb63429da78724, type: 3}
@@ -24535,6 +24671,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (28)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -24825,6 +24966,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NPC Racer (25)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

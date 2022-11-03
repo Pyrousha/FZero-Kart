@@ -90,6 +90,14 @@ public class MechRacer : MonoBehaviour
     #endregion
 
     #endregion
+
+    private int score;
+    public int Score => score;
+    public void AddPoints(int pointsToAdd)
+    {
+        score += pointsToAdd;
+    }
+
     void Start()
     {
         LoadStatsFromFile(mechStats);
@@ -469,7 +477,7 @@ public class MechRacer : MonoBehaviour
             {
                 //Race Finished
                 raceFinished = true;
-                RaceController.Instance.FinishedRace(this);
+                RaceController.Instance.OnRacerFinishedFinalLap(this);
 
                 if (isLocalPlayer)
                 {
