@@ -1094,6 +1094,7 @@ MonoBehaviour:
   leftTurnFX: {fileID: 6971401908887926571}
   rightTurnFX: {fileID: 3623416115003197172}
   mechStats: {fileID: 11400000, guid: bf94d8b3eb6ed194f8b4756e6d6cb1b9, type: 2}
+  timeToHitCheckpoint: 10
 --- !u!54 &5805340193360686631
 Rigidbody:
   m_ObjectHideFlags: 0

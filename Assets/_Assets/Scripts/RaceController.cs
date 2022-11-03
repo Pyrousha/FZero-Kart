@@ -24,14 +24,21 @@ public class RaceController : Singleton<RaceController>
         public AIEvolutionStats evoStats;
     }
 
+    [SerializeField] private bool cutPowerToLastHumanPlayer; //If the last player is a human, should the race end prematurely or let them finish?
+
     [Header("References")]
     public Material activeCheckpointMaterial;
     public Material inactiveCheckpointMaterial;
+    [Space(5)]
     [SerializeField] private TextMeshProUGUI posNumberText;
     [SerializeField] private TextMeshProUGUI posSuffixText;
+    [SerializeField] private TextMeshProUGUI numAlivePlayersText;
     [SerializeField] private TextMeshProUGUI lapCountText;
     [SerializeField] private TextMeshProUGUI speedNumberText;
     public TextMeshProUGUI SpeedNumberText => speedNumberText;
+    [Space(5)]
+    [SerializeField] private GameObject raceOverCanvas;
+    [Space(5)]
     [SerializeField] private ParticleSystemModifier speedLines;
     public ParticleSystemModifier SpeedLines => speedLines;
 
@@ -49,6 +56,9 @@ public class RaceController : Singleton<RaceController>
     [SerializeField] private bool saveAIRacers;
     [SerializeField] private EvolutionRacerPair racerPair; //NPC racers that will be in the actual game, referenced to set values from evolution stats
     [SerializeField] private List<EvolutionRacerPair> evolutionRacerPairs;
+
+    private float raceStartTime;
+    private bool savedParams = false;
 
     public void Start()
     {
@@ -98,8 +108,10 @@ public class RaceController : Singleton<RaceController>
     {
         foreach (MechRacer racer in currentRacers)
         {
-            racer.canMove = true;
+            racer.OnRaceStarted();
         }
+
+        raceStartTime = Time.time;
     }
 
     public void AddRacer(MechRacer racer)
@@ -124,7 +136,29 @@ public class RaceController : Singleton<RaceController>
         }
     }
 
-    private bool savedParams = false;
+    public void DestroyRacer(MechRacer racer)
+    {
+        if (finishedRacers.Contains(racer))
+        {
+            Debug.LogError("Cannot destroy finished racer: " + racer.name);
+            return;
+        }
+
+        if (currentRacers.Remove(racer))
+        {
+            Debug.Log("Racer " + racer.name + " has been disqualified!");
+
+            //if this was the last remaining racer, end the race
+            CheckShouldEndRace();
+
+            //Update UI showing #alive racers
+            numAlivePlayersText.text = (currentRacers.Count + finishedRacers.Count).ToString();
+        }
+        else
+        {
+            Debug.LogError("Cannot destroy nonactive racer: " + racer.name);
+        }
+    }
 
     /// <summary>
     /// called when a racer finishes the race (passes last checkpoint on final lap)
@@ -139,16 +173,13 @@ public class RaceController : Singleton<RaceController>
         if (mechRacer.IsLocalPlayer)
             UpdateRacePosUI(finishedRacers.Count);
 
-        if (currentRacers.Count == 0)
-        {
-            //all racers have finished!
-            Debug.Log("FINISH!!");
-        }
+        //End the race if all racers have finished/died
+        CheckShouldEndRace();
 
         if (saveAIRacers)
         {
             //AI param saving
-            if ((finishedRacers.Count >= 15) && (savedParams == false))
+            if ((savedParams == false) && (finishedRacers.Count >= 15))
             {
                 SaveAIRacerParams(finishedRacers);
 
@@ -157,14 +188,46 @@ public class RaceController : Singleton<RaceController>
         }
     }
 
+    private void CheckShouldEndRace()
+    {
+        //Outcome still uncertain
+        if(currentRacers.Count >= 2)
+            return;
+
+        //Cut power and end race
+        if(currentRacers.Count == 1)
+        {   if(currentRacers[0].IsHuman)
+            {
+                //Last racer is human, check to see if power should be cut
+                if(cutPowerToLastHumanPlayer)
+                    currentRacers[0].LastRacerLeft();
+                else
+                    return; //stop race from ending
+            }
+            else
+            {
+                //last racer left is an AI, no need to check to cut power
+                currentRacers[0].LastRacerLeft();
+            }
+        }
+
+        //all racers have finished!
+        Debug.Log("FINISH!!");
+
+        raceOverCanvas.SetActive(true);
+    }
+
     private void SaveAIRacerParams(List<MechRacer> racersToSave)
     {
         AIEvolutionStats newEvoStats = ScriptableObject.CreateInstance<AIEvolutionStats>();
+        newEvoStats.numLaps = totalLaps;
         foreach (MechRacer racer in racersToSave)
         {
-            newEvoStats.AddParam(racer);
+            if (!racer.IsHuman)
+                newEvoStats.AddParam(racer, Time.time - raceStartTime);
         }
 
+        //Set the iteration number from the evolutionStats currently being used
         int newIterationNum = -1;
         foreach (EvolutionRacerPair pair in evolutionRacerPairs)
         {
@@ -173,10 +236,11 @@ public class RaceController : Singleton<RaceController>
         newEvoStats.iterationNum = newIterationNum;
 
 #if UNITY_EDITOR
-        string filepath = AssetDatabase.GenerateUniqueAssetPath("Assets/_Assets/Prefabs/AIEvolution/iteration" + newEvoStats.iterationNum + ".asset");
+        string filepath = "Assets/_Assets/ScriptableObjects/AIEvolution/iteration" + newIterationNum + ".asset";
+        filepath = AssetDatabase.GenerateUniqueAssetPath(filepath);
         AssetDatabase.CreateAsset(newEvoStats, filepath);
+        Debug.Log("Saved AI racers in Top 15's params to " + filepath);
 #endif
-        Debug.Log("Saved Top 15 AI racer params to iteration" + newEvoStats.iterationNum);
 
         //SceneManager.LoadScene(0);
     }
@@ -191,6 +255,7 @@ public class RaceController : Singleton<RaceController>
 
         posNumberText.text = currPos.ToString();
         posSuffixText.text = "\n" + posSuffix;
+        numAlivePlayersText.text = (currentRacers.Count + finishedRacers.Count).ToString();
     }
 
     /// <summary>

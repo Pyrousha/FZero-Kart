@@ -64,9 +64,9 @@ public class NPCController : MonoBehaviour
         driftThreshold += driftThreshold * Random.Range(-0.15f, 0.15f);
         noAccelerateThreshold += noAccelerateThreshold * Random.Range(-0.15f, 0.15f);
     }
-    public AIEvolutionStats.ParamStruct GetAIParams()
+    public AIEvolutionStats.ParamStruct GetAIParams(float raceTime)
     {
-        return new AIEvolutionStats.ParamStruct(driftThreshold, noAccelerateThreshold);
+        return new AIEvolutionStats.ParamStruct(driftThreshold, noAccelerateThreshold, raceTime);
     }
 
     [Header("Parameters")]

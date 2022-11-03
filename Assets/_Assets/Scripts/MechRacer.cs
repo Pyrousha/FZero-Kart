@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,11 +11,14 @@ public class MechRacer : MonoBehaviour
 {
     private bool isLocalPlayer;
     public bool IsLocalPlayer => isLocalPlayer;
+    private bool isHuman;
+    public bool IsHuman => isHuman;
 
+    //States
     private bool raceFinished = false;
-
     private int lapsFinished = 0;
     private int checkpointsHit = 0;
+    private bool isDead;
 
     private Checkpoint nextCheckpoint;
     public Checkpoint NextCheckpoint => nextCheckpoint;
@@ -31,7 +35,7 @@ public class MechRacer : MonoBehaviour
     public NPCController npcController { get; private set; }
 
     #region physics and controls
-    public bool canMove { get; set; }
+    private bool canMove;
 
     private float currSpeed;
 
@@ -57,6 +61,11 @@ public class MechRacer : MonoBehaviour
 
     [Header("Parameters")]
     [SerializeField] private MechStats mechStats;
+    [SerializeField] private float timeToHitCheckpoint; //how much time the AI has to hit the next checkpoint or else they go boom
+    private float checkpointTimer;
+
+
+    #region local driving parameters
     //Forward/back driving
     private float currMaxSpeed;
     private float maxSpeedWhileStraight;
@@ -79,6 +88,8 @@ public class MechRacer : MonoBehaviour
     private float driftSpeedAccel; //amount to move currDriftSpeed towards held direction (angles/sec)
     private float driftSpeedFriction; //amount to move currDriftSpeed towards 0 when nothing held (angles/sec)
     #endregion
+
+    #endregion
     void Start()
     {
         LoadStatsFromFile(mechStats);
@@ -89,7 +100,8 @@ public class MechRacer : MonoBehaviour
         playerController = GetComponent<PlayerController>();
         npcController = GetComponent<NPCController>();
 
-        isLocalPlayer = playerController != null;
+        isHuman = playerController != null;
+        isLocalPlayer = isHuman; //TEMP: This is assuming only 1 player is in the scene
 
         RaceController.Instance.AddRacer(this);
     }
@@ -114,6 +126,13 @@ public class MechRacer : MonoBehaviour
         driftSpeedFriction = stats.DriftSpeedFriction;
     }
 
+    public void OnRaceStarted()
+    {
+        canMove = true;
+        if(!isHuman)
+            checkpointTimer = timeToHitCheckpoint;
+    }
+
     private float currSteerAxis;
     private float currDriftAxis;
     private bool acceleratePressed;
@@ -122,11 +141,22 @@ public class MechRacer : MonoBehaviour
 
     public void SetInput(float _turning, float _drifting, bool _acceleratePressed, bool _accelerateHeld, bool _brakeHeld)
     {
-        currSteerAxis = _turning;
-        currDriftAxis = _drifting;
-        acceleratePressed = _acceleratePressed;
-        accelerateHeld = _accelerateHeld;
-        brakeHeld = _brakeHeld;
+        if (isDead == false)
+        {
+            currSteerAxis = _turning;
+            currDriftAxis = _drifting;
+            acceleratePressed = _acceleratePressed;
+            accelerateHeld = _accelerateHeld;
+            brakeHeld = _brakeHeld;
+        }
+        else
+        {
+            currSteerAxis = 0;
+            currDriftAxis = 0;
+            acceleratePressed = false;
+            accelerateHeld = false;
+            brakeHeld = false;
+        }
     }
 
     void Update()
@@ -153,6 +183,19 @@ public class MechRacer : MonoBehaviour
 
             //set speedometer
             RaceController.Instance.SpeedNumberText.text = (currSpeed * 100).ToString("F1") + " fasts/h";
+        }
+        else
+        {
+            //Update checkpoint timer to destroy stuck AIs
+            if ((canMove) && (raceFinished == false) && (isDead == false))
+            {
+                checkpointTimer -= Time.deltaTime;
+                if (checkpointTimer <= 0)
+                {
+                    RaceController.Instance.DestroyRacer(this);
+                    isDead = true;
+                }
+            }
         }
 
 
@@ -221,6 +264,12 @@ public class MechRacer : MonoBehaviour
         trackPos = checkpointsHit + ratioToNextCheck;
     }
 
+    //Called when there is only 1 racer left, stops input
+    internal void LastRacerLeft()
+    {
+        canMove = false;
+    }
+
     private void FixedUpdate()
     {
         //TEMP: Set gravity to face ground
@@ -282,7 +331,7 @@ public class MechRacer : MonoBehaviour
     private void CalcFriction()
     {
         //not pressing accelerate or brake, apply friction
-        if ((brakeHeld == false) && (accelerateHeld == false))
+        if (((brakeHeld == false) && (accelerateHeld == false)) || (canMove == false))
         {
             if (currSpeed > 0)
             {
@@ -401,6 +450,7 @@ public class MechRacer : MonoBehaviour
         }
 
         checkpointsHit++;
+        checkpointTimer = timeToHitCheckpoint;
         //Debug.Log("Racer " + name + " has hit checkpoint " + checkpointsHit);
 
         if (isLocalPlayer)
@@ -414,7 +464,7 @@ public class MechRacer : MonoBehaviour
         {
             //lap finished
             lapsFinished++;
-            Debug.Log("Racer " + name + " has completed lap " + lapsFinished);
+            //Debug.Log("Racer " + name + " has completed lap " + lapsFinished);
             if (lapsFinished >= RaceController.Instance.TotalLaps)
             {
                 //Race Finished
