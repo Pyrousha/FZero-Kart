@@ -38,6 +38,7 @@ public class RaceController : Singleton<RaceController>
     [SerializeField] private Color lastPlaceColor;
 
     [Header("References")]
+    [SerializeField] private Animator countdownAnim;
     [SerializeField] private RacerScoreDisplay playerScoreDisplay;
     [SerializeField] private Transform scoreDisplayParent;
     [SerializeField] private GameObject scoreDisplayPrefab;
@@ -120,7 +121,14 @@ public class RaceController : Singleton<RaceController>
 
         UpdateLapUI(0);
 
-        Invoke("StartRace", 1f);
+        //TEMP: Check all players have connected before calling for realsies
+        Invoke("StartCountdown", 1f);
+    }
+
+    private void StartCountdown()
+    {
+        countdownAnim.enabled = true;
+        Invoke("StartRace", 3.5f);
     }
 
     public void StartRace()
@@ -315,7 +323,7 @@ public class RaceController : Singleton<RaceController>
             MechRacer racer = endingPositions[i];
             scoreDisplay.SetData(i + 1, racer, pointsToAddPerSec);
 
-            yield return new WaitForSeconds(1.0f / numRacersToDisplay);
+            yield return new WaitForSeconds(0.25f / (numRacersToDisplay+1));
         }
 
         //Set local player score
@@ -323,7 +331,7 @@ public class RaceController : Singleton<RaceController>
         playerScoreDisplay.SetData(endingPositions.IndexOf(localPlayerMech) + 1, localPlayerMech, pointsToAddPerSec);
         racerScoreDisplays.Add(playerScoreDisplay);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         foreach (RacerScoreDisplay scoreDisplay in racerScoreDisplays)
         {
