@@ -17,6 +17,8 @@ using UnityEditor;
 /// </summary>
 public class RaceController : Singleton<RaceController>
 {
+    private bool isRaceOver;
+
     [System.Serializable]
     public struct EvolutionRacerPair
     {
@@ -25,9 +27,21 @@ public class RaceController : Singleton<RaceController>
     }
 
     [SerializeField] private bool cutPowerToLastHumanPlayer; //If the last player is a human, should the race end prematurely or let them finish?
+    [Space(5)]
     [SerializeField] private bool scoreMode_125Max;
+    [SerializeField] private float maxScoreFillDuration; //How many seconds does it take to add points from 0 -> (points earned by 1st place)
+
+    [SerializeField] private Color firstPlaceColor;
+    [SerializeField] private Color secondPlaceColor;
+    [SerializeField] private Color thirdPlaceColor;
+    [SerializeField] private Color fourthPlaceColor;
+    [SerializeField] private Color lastPlaceColor;
 
     [Header("References")]
+    [SerializeField] private RacerScoreDisplay playerScoreDisplay;
+    [SerializeField] private Transform scoreDisplayParent;
+    [SerializeField] private GameObject scoreDisplayPrefab;
+    [Space(5)]
     public Material activeCheckpointMaterial;
     public Material inactiveCheckpointMaterial;
     [Space(5)]
@@ -44,6 +58,7 @@ public class RaceController : Singleton<RaceController>
     public ParticleSystemModifier SpeedLines => speedLines;
 
     public Checkpoint endCheckpoint { get; private set; }
+    private MechRacer localPlayerMech;
     private List<MechRacer> finishedRacers = new List<MechRacer>();
     private List<MechRacer> currentRacers = new List<MechRacer>();
     private List<MechRacer> deadRacers = new List<MechRacer>();
@@ -129,9 +144,13 @@ public class RaceController : Singleton<RaceController>
         else
         {
             currentRacers.Add(racer);
+            if (racer.IsLocalPlayer)
+                localPlayerMech = racer;
         }
         CheckAddRacerToScoreList(racer);
         racer.SetNextCheckpoint(checkpoints[0]);
+
+        numTotalRacers = currentRacers.Count;
     }
 
     public void DestroyRacer(MechRacer racer)
@@ -205,6 +224,9 @@ public class RaceController : Singleton<RaceController>
 
     private void CheckShouldEndRace()
     {
+        if (isRaceOver)
+            return;
+
         //Outcome still uncertain
         if (currentRacers.Count >= 2)
             return;
@@ -237,6 +259,7 @@ public class RaceController : Singleton<RaceController>
     private void OnRaceEnd()
     {
         Debug.Log("FINISH!!");
+        isRaceOver = true;
 
         raceOverCanvas.SetActive(true);
 
@@ -259,13 +282,56 @@ public class RaceController : Singleton<RaceController>
 
         //Print curring ranking to console
         string rankings = "Current Rankings: \n";
-        for(int i = 0; i < scoreSortedRacers.Count; i++)
+        for (int i = 0; i < scoreSortedRacers.Count; i++)
         {
             MechRacer currRacer = scoreSortedRacers[i];
-            rankings += ("-"+(i+1)+RacePosSuffix(i+1)+": "+currRacer.Score+"pts: "+currRacer.name+"\n");
+            rankings += ("-" + (i + 1) + RacePosSuffix(i + 1) + ": " + currRacer.Score + "pts: " + currRacer.name + "\n");
         }
 
+        StartCoroutine(SpawnRacerScorecards(endingPositions));
+
         Debug.Log(rankings);
+    }
+
+    private IEnumerator SpawnRacerScorecards(List<MechRacer> endingPositions)
+    {
+        int pointsEarnedByFirstPlace;
+        if (scoreMode_125Max)
+            pointsEarnedByFirstPlace = RacePosToScoredPoints_125Max(1);
+        else
+            pointsEarnedByFirstPlace = RacePosToScoredPoints_1Min(1);
+        float pointsToAddPerSec = pointsEarnedByFirstPlace / maxScoreFillDuration;
+
+        List<RacerScoreDisplay> racerScoreDisplays = new List<RacerScoreDisplay>();
+
+        int numRacersToDisplay = Mathf.Min(endingPositions.Count, 15);
+        for (int i = 0; i < numRacersToDisplay; i++)
+        {
+            //Create Score prefab instance
+            RacerScoreDisplay scoreDisplay = Instantiate(scoreDisplayPrefab, Vector3.zero, Quaternion.identity, scoreDisplayParent).GetComponent<RacerScoreDisplay>();
+            racerScoreDisplays.Add(scoreDisplay);
+
+            //Fill data from mech
+            MechRacer racer = endingPositions[i];
+            scoreDisplay.SetData(i + 1, racer, pointsToAddPerSec);
+
+            yield return new WaitForSeconds(1.0f / numRacersToDisplay);
+        }
+
+        //Set local player score
+        playerScoreDisplay.gameObject.SetActive(true);
+        playerScoreDisplay.SetData(endingPositions.IndexOf(localPlayerMech) + 1, localPlayerMech, pointsToAddPerSec);
+        racerScoreDisplays.Add(playerScoreDisplay);
+
+        yield return new WaitForSeconds(1f);
+
+        foreach (RacerScoreDisplay scoreDisplay in racerScoreDisplays)
+        {
+            StartCoroutine(scoreDisplay.FillUpScore());
+        }
+
+        yield return new WaitForSeconds(5f + maxScoreFillDuration);
+        Debug.Log("Time for the next race!");
     }
 
     private void SaveAIRacerParams(List<MechRacer> racersToSave)
@@ -307,6 +373,33 @@ public class RaceController : Singleton<RaceController>
         posNumberText.text = currPos.ToString();
         posSuffixText.text = "\n" + posSuffix;
         numAlivePlayersText.text = (currentRacers.Count + finishedRacers.Count).ToString();
+
+
+        Color posColor = GetColorForPos(currPos);
+        //Debug.Log("position: " + currPos + ", color:" + posColor);
+        posNumberText.color = posColor;
+        posSuffixText.color = posColor;
+    }
+
+    /// <summary>
+    /// Gets color to use for position UI based on current placement
+    /// </summary>
+    /// <param name="currPos"> position/rank in the race. </param>
+    /// <returns> Color based on race position. </returns>
+    public Color GetColorForPos(int currPos)
+    {
+        if (currPos == 1)
+            return firstPlaceColor;
+
+        if (currPos == 2)
+            return secondPlaceColor;
+
+        if (currPos == 3)
+            return thirdPlaceColor;
+
+        //4th or below
+        float posRatio = (currPos - 4.0f) / (numTotalRacers - 4.0f);
+        return Color.Lerp(fourthPlaceColor, lastPlaceColor, posRatio);
     }
 
     /// <summary>

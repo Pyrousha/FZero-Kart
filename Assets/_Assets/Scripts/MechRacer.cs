@@ -9,6 +9,8 @@ using UnityEngine;
 /// </summary>
 public class MechRacer : MonoBehaviour
 {
+    [SerializeField] private Color playerNameColor;
+    public Color PlayerNameColor => playerNameColor;
     private bool isLocalPlayer;
     public bool IsLocalPlayer => isLocalPlayer;
     private bool isHuman;
@@ -61,6 +63,7 @@ public class MechRacer : MonoBehaviour
 
     [Header("Parameters")]
     [SerializeField] private MechStats mechStats;
+    public MechStats MechStats => mechStats;
     [SerializeField] private float timeToHitCheckpoint; //how much time the AI has to hit the next checkpoint or else they go boom
     private float checkpointTimer;
 
@@ -93,8 +96,11 @@ public class MechRacer : MonoBehaviour
 
     private int score;
     public int Score => score;
+    private int lastScore;
+    public int LastScore;
     public void AddPoints(int pointsToAdd)
     {
+        lastScore = score;
         score += pointsToAdd;
     }
 

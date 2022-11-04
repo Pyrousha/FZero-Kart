@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f7802bd9a1a663443a05761ca1b5a3b3, type: 3}
-  m_Name: Default
+  m_Name: Default-NPC
   m_EditorClassIdentifier: 
+  mechIcon: {fileID: 21300000, guid: e903e44b04c11e9449288ad06ed765bc, type: 3}
   maxSpeedWhileStraight: 169.99
   maxSpeedWhileMaxTurning: 99.999
   maxSpeedReverse: 48

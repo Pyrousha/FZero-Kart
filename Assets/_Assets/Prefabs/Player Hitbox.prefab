@@ -1434,6 +1434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795ba470b82f7c248b48407ca172326a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerNameColor: {r: 0.735849, g: 0, b: 0, a: 1}
   gravityStrength: 3
   groundedGravityMultiplier: 30
   lerpSpeed: 0.2
@@ -1449,6 +1450,8 @@ MonoBehaviour:
   leftTurnFX: {fileID: 1580522006222163459}
   rightTurnFX: {fileID: 1242962311}
   mechStats: {fileID: 11400000, guid: bf94d8b3eb6ed194f8b4756e6d6cb1b9, type: 2}
+  timeToHitCheckpoint: 0
+  LastScore: 0
 --- !u!54 &8307567329534496167
 Rigidbody:
   m_ObjectHideFlags: 0

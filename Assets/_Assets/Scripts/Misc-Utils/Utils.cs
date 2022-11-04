@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -80,5 +81,45 @@ public class Utils
         }
 
         return children;
+    }
+
+    /// <summary>
+    /// Adds enough leading zeroes to an int to have a string of specified size
+    /// </summary>
+    /// <param name="number"></param> number to add zeroes in front of
+    /// <param name="numCharactersTotal"></param> number of characters to have total in returned string
+    /// <returns> given number as a string, with enough leading zeroes to make string size equal to numCharactersTotal. </returns>
+    public static string AddLeadingZeroes(int number, int numCharactersTotal)
+    {
+        string toReturn = number.ToString();
+        
+        while(toReturn.Length < numCharactersTotal)
+        {
+            toReturn = "0"+toReturn;
+        }
+
+        return toReturn;
+    }
+
+    public static Color MultiplySaturation(Color col, float saturationMultiplier)
+    {
+        float H, S, V;
+
+        Color.RGBToHSV(col, out H, out S, out V);
+
+        S *= saturationMultiplier;
+
+        return Color.HSVToRGB(H,S,V);
+    }
+
+    public static Color MultiplyValue(Color col, float valueMultiplierBG, float valueMax)
+    {
+        float H, S, V;
+
+        Color.RGBToHSV(col, out H, out S, out V);
+
+        V = Mathf.Min(V * valueMultiplierBG, valueMax);
+
+        return Color.HSVToRGB(H,S,V);
     }
 }

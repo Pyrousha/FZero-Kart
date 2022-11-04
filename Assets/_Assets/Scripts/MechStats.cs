@@ -5,6 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MechStats")]
 public class MechStats : ScriptableObject
 {
+    [SerializeField] private Sprite mechIcon;
+    public Sprite MechIcon => mechIcon;
+
     [Header("Parameters")]
     //Forward/back driving
     [SerializeField] private float maxSpeedWhileStraight; public float MaxSpeedWhileStraight => maxSpeedWhileStraight;
