@@ -55,6 +55,7 @@ public class MechRacer : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundRaycastParent;
     private List<Transform> raycastPoints;
+    [SerializeField] private Transform shadowTransform;
     [SerializeField] private float raycastLength;
     private bool isGrounded;
     [Space(5)] //UI + Effects stuff
@@ -97,7 +98,7 @@ public class MechRacer : MonoBehaviour
     private int score;
     public int Score => score;
     private int lastScore;
-    public int LastScore;
+    public int LastScore => lastScore;
     public void AddPoints(int pointsToAdd)
     {
         lastScore = score;
@@ -267,6 +268,17 @@ public class MechRacer : MonoBehaviour
         Quaternion newRotateTransform = Quaternion.FromToRotation(transform.up, upDirection);
         transform.rotation = newRotateTransform * transform.rotation;
 
+
+        //Set position and scale of "shadow" object
+        RaycastHit _hit;
+        float newScale = 0;
+        if (Physics.Raycast(raycastPoints[4].position, -transform.up, out _hit, 50, groundLayer))
+        {
+            shadowTransform.position = _hit.point;
+            float distToGround = _hit.distance;
+            newScale = Mathf.Max(1.5f - 0.1f*distToGround, 0);
+        }
+        shadowTransform.localScale = new Vector3(newScale, shadowTransform.localScale.y, newScale);
 
 
         //Calculate and set race position rank

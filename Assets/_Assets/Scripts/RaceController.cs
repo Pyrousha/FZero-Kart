@@ -299,6 +299,8 @@ public class RaceController : Singleton<RaceController>
         StartCoroutine(SpawnRacerScorecards(endingPositions));
 
         Debug.Log(rankings);
+
+        RaceStartPositioner.existingRacerPositions = scoreSortedRacers;
     }
 
     private IEnumerator SpawnRacerScorecards(List<MechRacer> endingPositions)
@@ -312,7 +314,8 @@ public class RaceController : Singleton<RaceController>
 
         List<RacerScoreDisplay> racerScoreDisplays = new List<RacerScoreDisplay>();
 
-        int numRacersToDisplay = Mathf.Min(endingPositions.Count, 15);
+        //int numRacersToDisplay = Mathf.Min(endingPositions.Count, 15);
+        int numRacersToDisplay = endingPositions.Count;
         for (int i = 0; i < numRacersToDisplay; i++)
         {
             //Create Score prefab instance
