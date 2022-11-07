@@ -6,6 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_Assets/Scenes/PreRaceLobby.unity
+    guid: 9a2a71c0f8f94fe49821929efd32a98e
+  - enabled: 1
     path: Assets/_Assets/Scenes/TestTrack.unity
-    guid: e5a324702237b194582e5cea078a8984
+    guid: 8051901cbe64df549a6f553994e6a52a
+  - enabled: 1
+    path: Assets/_Assets/Scenes/TestTrack 1.unity
+    guid: 982a2661dc449c34fa7a7b8d75a7a202
+  - enabled: 1
+    path: Assets/_Assets/Scenes/BabyPark.unity
+    guid: 89a189062acd6d0449cf50582cd66c2b
+  - enabled: 1
+    path: Assets/_Assets/Scenes/PostRaceLobby.unity
+    guid: fc378d8ce48159842a24be956a3e5722
   m_configObjects: {}

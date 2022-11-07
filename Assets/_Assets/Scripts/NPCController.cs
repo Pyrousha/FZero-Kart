@@ -75,6 +75,9 @@ public class NPCController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(mechRacer.InLobby)
+            return;
+
         //determine angle between forward and next checkpoint
         Vector3 toNextCheckpoint = mechRacer.NextCheckpoint.transform.position - transform.position;
         Vector3 downProj = Vector3.Project(toNextCheckpoint, -transform.up);

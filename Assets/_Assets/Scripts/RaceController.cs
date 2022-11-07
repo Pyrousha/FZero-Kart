@@ -67,13 +67,35 @@ public class RaceController : Singleton<RaceController>
     [Header("Track Specific References/Settings")]
     [SerializeField] private int totalLaps;
     [SerializeField] private Transform checkpointParent;
+    [Space(5)]
+    [SerializeField] private GameObject SpawnIndicator;
+    //[SerializeField] private List<SpawnLine> spawnLines;
+
+    [SerializeField] private Transform spawnLineParent;
+    [SerializeField] private int numRacersPerLine;
     private List<Checkpoint> checkpoints;
     public int TotalLaps => totalLaps;
+    [SerializeField] private LayerMask groundLayerForSpawning;
 
     [Header("AI Evolution Funsies")]
     [SerializeField] private bool saveAIRacers;
-    [SerializeField] private EvolutionRacerPair racerPair; //NPC racers that will be in the actual game, referenced to set values from evolution stats
-    [SerializeField] private List<EvolutionRacerPair> evolutionRacerPairs;
+    [SerializeField] private string nameToSaveAIParametersTo;
+    //[SerializeField] private EvolutionRacerPair racerPair; //NPC racers that will be in the actual game, referenced to set values from evolution stats
+    //[SerializeField] private List<EvolutionRacerPair> evolutionRacerPairs;
+
+    //[SerializeField] private AIEvolutionStats
+
+    #region Spawnpoint positioning
+    // [System.Serializable]
+    // private struct SpawnLine
+    // {
+    //     public Transform startPosition;
+    //     //public Transform endPosition;
+    //     public int numberOfRacersOnLine;
+    // }
+
+    private List<Vector3> racerSpacePositions = new List<Vector3>();
+    #endregion
 
     private float raceStartTime;
     private bool savedParams = false;
@@ -82,20 +104,7 @@ public class RaceController : Singleton<RaceController>
 
     public void Start()
     {
-        evolutionRacerPairs.Add(racerPair);
-        foreach (EvolutionRacerPair pair in evolutionRacerPairs)
-        {
-            Transform NPCParent = pair.NPCParent;
-            AIEvolutionStats evoStats = pair.evoStats;
-
-            //Set AI race stats from evolution iteration
-            for (int i = 0; i < NPCParent.childCount; i++)
-            {
-                int racerIndex = (i % evoStats.stats.Count);
-                NPCParent.GetChild(i).GetComponent<NPCController>().SetAIParams(evoStats.stats[racerIndex]);
-            }
-        }
-
+        #region Initialize checkpoints
         checkpoints = new List<Checkpoint>(checkpointParent.GetComponentsInChildren<Checkpoint>());
 
         //Link checkpoints to each other
@@ -118,13 +127,60 @@ public class RaceController : Singleton<RaceController>
 
         //Set end checkpoint var
         endCheckpoint = lastCheckpoint;
+        #endregion
+
+        //Get list of current racers
+        currentRacers = PreRaceInitializer.ExistingRacerStandings;
+        numTotalRacers = currentRacers.Count;
+
+        scoreSortedRacers = new List<MechRacer>(currentRacers);
+
+        //Find current racer, as well as set map-specific parameters to racers (ex: first checkpoint to hit)
+        foreach (MechRacer racer in currentRacers)
+        {
+            if (racer.IsLocalPlayer)
+                localPlayerMech = racer;
+
+            racer.SetNextCheckpoint(checkpoints[0]);
+        }
+
+
+        #region Place racers on track based on standings
+        List<Transform> spawnLines = Utils.GetChildrenOfTransform(spawnLineParent);
+        //Convert spawnlines into list of vector3s
+        foreach (Transform spawnLine in spawnLines)
+        {
+            Vector3 lineStart = spawnLine.position;
+            Vector3 lineEnd = spawnLine.GetChild(0).position;
+            for (int i = 0; i < numRacersPerLine; i++)
+            {
+                //Take the line from startPos to endPos, and evenly break it up into enough chunks to place n racers
+                Vector3 pos = Vector3.Lerp(lineStart, lineEnd, ((float)i) / (numRacersPerLine - 1));
+                racerSpacePositions.Add(pos);
+
+                RaycastHit _hit;
+                if (Physics.Raycast(pos, -transform.up, out _hit, 50, groundLayerForSpawning))
+                {
+                    Instantiate(SpawnIndicator, _hit.point, Quaternion.LookRotation(transform.forward, _hit.normal));
+                }
+            }
+        }
+
+        for (int i = 0; i < currentRacers.Count; i++)
+        {
+            currentRacers[i].transform.position = racerSpacePositions[numTotalRacers - 1 - i];
+            currentRacers[i].transform.forward = spawnLineParent.forward;
+            currentRacers[i].SetInLobby(false);
+        }
+        #endregion
 
         UpdateLapUI(0);
 
-        //TEMP: Check all players have connected before calling for realsies
+        //TEMP: Check all players have connected before calling
         Invoke("StartCountdown", 1f);
     }
 
+    //Assume currentRacers have all connected and are initialized
     private void StartCountdown()
     {
         countdownAnim.enabled = true;
@@ -133,8 +189,6 @@ public class RaceController : Singleton<RaceController>
 
     public void StartRace()
     {
-        numTotalRacers = currentRacers.Count;
-
         foreach (MechRacer racer in currentRacers)
         {
             racer.OnRaceStarted();
@@ -143,23 +197,23 @@ public class RaceController : Singleton<RaceController>
         raceStartTime = Time.time;
     }
 
-    public void AddRacer(MechRacer racer)
-    {
-        if (currentRacers.Contains(racer))
-        {
-            Debug.LogError("Cannot add duplicate racer to currentRacers: " + racer.name);
-        }
-        else
-        {
-            currentRacers.Add(racer);
-            if (racer.IsLocalPlayer)
-                localPlayerMech = racer;
-        }
-        CheckAddRacerToScoreList(racer);
-        racer.SetNextCheckpoint(checkpoints[0]);
+    // public void AddRacer(MechRacer racer)
+    // {
+    //     if (currentRacers.Contains(racer))
+    //     {
+    //         Debug.LogError("Cannot add duplicate racer to currentRacers: " + racer.name);
+    //     }
+    //     else
+    //     {
+    //         currentRacers.Add(racer);
+    //         if (racer.IsLocalPlayer)
+    //             localPlayerMech = racer;
+    //     }
+    //     CheckAddRacerToScoreList(racer);
+    //     racer.SetNextCheckpoint(checkpoints[0]);
 
-        numTotalRacers = currentRacers.Count;
-    }
+    //     numTotalRacers = currentRacers.Count;
+    // }
 
     public void DestroyRacer(MechRacer racer)
     {
@@ -296,11 +350,12 @@ public class RaceController : Singleton<RaceController>
             rankings += ("-" + (i + 1) + RacePosSuffix(i + 1) + ": " + currRacer.Score + "pts: " + currRacer.name + "\n");
         }
 
-        StartCoroutine(SpawnRacerScorecards(endingPositions));
+        StartCoroutine(SpawnRacerScorecards(scoreSortedRacers));
 
         Debug.Log(rankings);
 
-        RaceStartPositioner.existingRacerPositions = scoreSortedRacers;
+
+        PreRaceInitializer.UpdateRacerStandings(scoreSortedRacers);
     }
 
     private IEnumerator SpawnRacerScorecards(List<MechRacer> endingPositions)
@@ -326,7 +381,7 @@ public class RaceController : Singleton<RaceController>
             MechRacer racer = endingPositions[i];
             scoreDisplay.SetData(i + 1, racer, pointsToAddPerSec);
 
-            yield return new WaitForSeconds(0.25f / (numRacersToDisplay+1));
+            yield return new WaitForSeconds(0.25f / (numRacersToDisplay + 1));
         }
 
         //Set local player score
@@ -342,7 +397,13 @@ public class RaceController : Singleton<RaceController>
         }
 
         yield return new WaitForSeconds(5f + maxScoreFillDuration);
+
         Debug.Log("Time for the next race!");
+        foreach(MechRacer racer in endingPositions)
+        {
+            racer.OnNewRaceLoading();
+        }
+        SceneTransitioner.Instance.ToNextRace();
     }
 
     private void SaveAIRacerParams(List<MechRacer> racersToSave)
@@ -355,16 +416,8 @@ public class RaceController : Singleton<RaceController>
                 newEvoStats.AddParam(racer, Time.time - raceStartTime);
         }
 
-        //Set the iteration number from the evolutionStats currently being used
-        int newIterationNum = -1;
-        foreach (EvolutionRacerPair pair in evolutionRacerPairs)
-        {
-            newIterationNum = Mathf.Max(pair.evoStats.iterationNum + 1, newIterationNum);
-        }
-        newEvoStats.iterationNum = newIterationNum;
-
 #if UNITY_EDITOR
-        string filepath = "Assets/_Assets/ScriptableObjects/AIEvolution/iteration" + newIterationNum + ".asset";
+        string filepath = "Assets/_Assets/ScriptableObjects/AIEvolution/" + nameToSaveAIParametersTo + ".asset";
         filepath = AssetDatabase.GenerateUniqueAssetPath(filepath);
         AssetDatabase.CreateAsset(newEvoStats, filepath);
         Debug.Log("Saved AI racers in Top 15's params to " + filepath);
@@ -461,18 +514,18 @@ public class RaceController : Singleton<RaceController>
     }
 
     #region Score Tracking
-    private List<MechRacer> scoreSortedRacers = new List<MechRacer>();
+    private List<MechRacer> scoreSortedRacers;
 
-    public void CheckAddRacerToScoreList(MechRacer racer)
-    {
-        if (scoreSortedRacers.Contains(racer))
-        {
-            Debug.LogError("scoreSortedRacers already contains racer " + racer.name);
-            return;
-        }
+    // public void CheckAddRacerToScoreList(MechRacer racer)
+    // {
+    //     if (scoreSortedRacers.Contains(racer))
+    //     {
+    //         Debug.LogError("scoreSortedRacers already contains racer " + racer.name);
+    //         return;
+    //     }
 
-        scoreSortedRacers.Add(racer);
-    }
+    //     scoreSortedRacers.Add(racer);
+    // }
 
     public void SortRacerScores()
     {

@@ -17,6 +17,12 @@ public class MechRacer : MonoBehaviour
     public bool IsHuman => isHuman;
 
     //States
+    private bool inLobby = true;
+    public bool InLobby => inLobby;
+    public void SetInLobby(bool b)
+    {
+        inLobby = b;
+    }
     private bool raceFinished = false;
     private int lapsFinished = 0;
     private int checkpointsHit = 0;
@@ -118,7 +124,36 @@ public class MechRacer : MonoBehaviour
         isHuman = playerController != null;
         isLocalPlayer = isHuman; //TEMP: This is assuming only 1 player is in the scene
 
-        RaceController.Instance.AddRacer(this);
+        //RaceController.Instance.AddRacer(this);
+    }
+
+    /// <summary>
+    /// called when the race has ended for all players, and the next race scene is about to be loaded. Disable input, reset speed, etc.
+    /// <summary>
+    public void OnNewRaceLoading()
+    {
+        canMove = false;
+        isDead = false;
+        inLobby = true;
+
+        raceFinished = false;
+        checkpointsHit = 0;
+        lapsFinished = 0;
+
+        currTurnSpeed = 0;
+        currDriftAxis = 0;
+        Vector3 newModelRotation = playerModel.localEulerAngles;
+        newModelRotation.y = currTurnSpeed * 0.5f + currDriftSpeed * 0.7f;
+        playerModel.localEulerAngles = newModelRotation;
+
+        currSpeed = 0;
+        if(isHuman)
+        {
+            playerController.enabled = true;
+            npcController.enabled = false;
+
+            StartCoroutine(playerController.CameraRotate.UndoRotate());
+        }
     }
 
     private void LoadStatsFromFile(MechStats stats)
@@ -144,7 +179,7 @@ public class MechRacer : MonoBehaviour
     public void OnRaceStarted()
     {
         canMove = true;
-        if(!isHuman)
+        if (!isHuman)
             checkpointTimer = timeToHitCheckpoint;
     }
 
@@ -186,29 +221,32 @@ public class MechRacer : MonoBehaviour
         CalcFriction();
 
 
-        if (isLocalPlayer)
+        if (inLobby == false)
         {
-            //Set speedlines based on speed
-            float maxSpeedForVisuals = Utils.RemapPercent(0.35f, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
-            float speedPercent = Mathf.Max(Mathf.Abs(currSpeed) - (maxSpeedForVisuals / 4.0f), 0) / (maxSpeedForVisuals - (maxSpeedForVisuals / 4.0f));
-            RaceController.Instance.SpeedLines.UpdateParticleSystem(speedPercent);
-
-            //Set Fov based on speed
-            MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
-
-            //set speedometer
-            RaceController.Instance.SpeedNumberText.text = (currSpeed * 100).ToString("F1") + " fasts/h";
-        }
-        else
-        {
-            //Update checkpoint timer to destroy stuck AIs
-            if ((canMove) && (raceFinished == false) && (isDead == false))
+            if (isLocalPlayer)
             {
-                checkpointTimer -= Time.deltaTime;
-                if (checkpointTimer <= 0)
+                //Set speedlines based on speed
+                float maxSpeedForVisuals = Utils.RemapPercent(0.35f, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
+                float speedPercent = Mathf.Max(Mathf.Abs(currSpeed) - (maxSpeedForVisuals / 4.0f), 0) / (maxSpeedForVisuals - (maxSpeedForVisuals / 4.0f));
+                RaceController.Instance.SpeedLines.UpdateParticleSystem(speedPercent);
+
+                //Set Fov based on speed
+                MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
+
+                //set speedometer
+                RaceController.Instance.SpeedNumberText.text = (currSpeed * 100).ToString("F1") + " fasts/h";
+            }
+            else
+            {
+                //Update checkpoint timer to destroy stuck AIs
+                if ((canMove) && (raceFinished == false) && (isDead == false))
                 {
-                    RaceController.Instance.DestroyRacer(this);
-                    isDead = true;
+                    checkpointTimer -= Time.deltaTime;
+                    if (checkpointTimer <= 0)
+                    {
+                        RaceController.Instance.DestroyRacer(this);
+                        isDead = true;
+                    }
                 }
             }
         }
@@ -276,13 +314,13 @@ public class MechRacer : MonoBehaviour
         {
             shadowTransform.position = _hit.point;
             float distToGround = _hit.distance;
-            newScale = Mathf.Max(1.5f - 0.1f*distToGround, 0);
+            newScale = Mathf.Max(1.5f - 0.1f * distToGround, 0);
         }
         shadowTransform.localScale = new Vector3(newScale, shadowTransform.localScale.y, newScale);
 
 
         //Calculate and set race position rank
-        if (raceFinished)
+        if (raceFinished || inLobby)
             return;
 
         //Ratio of how far the player has traveled from the previous checkpoint to the next one
@@ -500,9 +538,7 @@ public class MechRacer : MonoBehaviour
                 if (isLocalPlayer)
                 {
                     //swap player input for npc input
-                    PlayerController playerController = GetComponent<PlayerController>();
                     playerController.enabled = false;
-                    NPCController npcController = GetComponent<NPCController>();
                     npcController.enabled = true;
 
                     StartCoroutine(playerController.CameraRotate.DoRotate());
