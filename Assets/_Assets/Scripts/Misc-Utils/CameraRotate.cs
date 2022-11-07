@@ -17,7 +17,7 @@ public class CameraRotate : MonoBehaviour
     {
         while (Quaternion.Angle(transform.rotation, targRotation.rotation) > 2f)
         {
-            Debug.Log("DoRotate");
+            //Debug.Log("DoRotate");
 
             transform.rotation = Quaternion.Lerp(transform.rotation, targRotation.rotation, lerpSpeed);
             yield return null;
@@ -30,7 +30,7 @@ public class CameraRotate : MonoBehaviour
     {
         while (Quaternion.Angle(transform.rotation, initialRotation) > 2f)
         {
-            Debug.Log("UndoRotate");
+            //Debug.Log("UndoRotate");
 
             transform.localRotation = Quaternion.Lerp(transform.localRotation, initialRotation, lerpSpeed);
             yield return null;

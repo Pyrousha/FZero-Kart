@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneTransitioner : Singleton<SceneTransitioner>
 {
+    [SerializeField] private int lobbySceneIndex;
     [SerializeField] private int scoreSceneIndex;
 
     [System.Serializable]
@@ -18,6 +19,11 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     private RaceCupStruct currCup;
     private int currentRaceIndex; //Index of current race in currCup (so from 0 to length-1)
 
+    void Start()
+    {
+        //Load lobby scene
+        SceneManager.LoadScene(lobbySceneIndex);
+    }
 
     public void StartCup(int cupIndex)
     {
@@ -35,7 +41,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         currentRaceIndex++;
 
         int sceneIndexToLoad;
-        if(currentRaceIndex < currCup.raceBuildIndices.Count)
+        if (currentRaceIndex < currCup.raceBuildIndices.Count)
         {
             //load next race scene
             sceneIndexToLoad = currCup.raceBuildIndices[currentRaceIndex];
@@ -47,5 +53,30 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         }
 
         SceneManager.LoadScene(sceneIndexToLoad);
+    }
+
+    /// <summary>
+    /// Destroys all AI racer gameobjects and then loads back into the pre-race lobby scene
+    /// <summary>
+    public void BackToLobby()
+    {
+        //Destroy all AI racers
+        for(int i = 0; i< PreRaceInitializer.ExistingRacerStandings.Count; i++)
+        {
+            MechRacer currRacer = PreRaceInitializer.ExistingRacerStandings[i];
+            if(currRacer.IsHuman)
+            {
+                currRacer.OnEnterLobby();
+            }
+            else
+            {
+                PreRaceInitializer.ExistingRacerStandings.RemoveAt(i);
+                Destroy(currRacer.gameObject);
+                i--;
+            }
+        }
+
+        //Load lobby scene
+        SceneManager.LoadScene(lobbySceneIndex);
     }
 }

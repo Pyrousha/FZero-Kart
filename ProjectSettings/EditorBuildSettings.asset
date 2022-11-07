@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_Assets/Scenes/Initalization.unity
+    guid: 241997fd57def7244b57e3c1924dfbb7
+  - enabled: 1
     path: Assets/_Assets/Scenes/PreRaceLobby.unity
     guid: 9a2a71c0f8f94fe49821929efd32a98e
   - enabled: 1

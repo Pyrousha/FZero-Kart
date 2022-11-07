@@ -19,14 +19,11 @@ public class MechRacer : MonoBehaviour
     //States
     private bool inLobby = true;
     public bool InLobby => inLobby;
-    public void SetInLobby(bool b)
-    {
-        inLobby = b;
-    }
     private bool raceFinished = false;
     private int lapsFinished = 0;
     private int checkpointsHit = 0;
     private bool isDead;
+    private bool canMove = true;
 
     private Checkpoint nextCheckpoint;
     public Checkpoint NextCheckpoint => nextCheckpoint;
@@ -43,8 +40,6 @@ public class MechRacer : MonoBehaviour
     public NPCController npcController { get; private set; }
 
     #region physics and controls
-    private bool canMove;
-
     private float currSpeed;
 
     private Vector3 gravityDirection;
@@ -154,6 +149,28 @@ public class MechRacer : MonoBehaviour
 
             StartCoroutine(playerController.CameraRotate.UndoRotate());
         }
+    }
+
+    /// <summary>
+    /// called when the new race scene has finished loading
+    /// <summary>
+    public void OnRaceFinishedLoading()
+    {
+        inLobby = false;
+        canMove = false;
+    }
+
+    /// <summary>
+    /// called when the lobby scene is loaded, should only be called on player racers, AIs will be destroyed isntead.
+    /// resets varaibles to allow movement, and resets score to 0.
+    /// <summary>
+    public void OnEnterLobby()
+    {
+        inLobby = true;
+        canMove = true;
+
+        score = 0;
+        lastScore = 0;
     }
 
     private void LoadStatsFromFile(MechStats stats)

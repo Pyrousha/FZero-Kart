@@ -170,7 +170,7 @@ public class RaceController : Singleton<RaceController>
         {
             currentRacers[i].transform.position = racerSpacePositions[numTotalRacers - 1 - i];
             currentRacers[i].transform.forward = spawnLineParent.forward;
-            currentRacers[i].SetInLobby(false);
+            currentRacers[i].OnRaceFinishedLoading();
         }
         #endregion
 
@@ -225,7 +225,7 @@ public class RaceController : Singleton<RaceController>
 
         if (currentRacers.Remove(racer))
         {
-            Debug.Log("Racer " + racer.name + " has been disqualified!");
+            //Debug.Log("Racer " + racer.name + " has been disqualified!");
             deadRacers.Insert(0, racer);
 
             //if this was the last remaining racer, end the race
