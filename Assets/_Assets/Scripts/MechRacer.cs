@@ -62,6 +62,9 @@ public class MechRacer : MonoBehaviour
     [Space(5)] //UI + Effects stuff
     [SerializeField] private ParticleSystemModifier leftTurnFX;
     [SerializeField] private ParticleSystemModifier rightTurnFX;
+    [Space(5)]
+    [SerializeField] private ParticleSystemModifier speedLines;
+    [SerializeField] private TextMeshProUGUI speedNumberText;
 
     [Header("Parameters")]
     [SerializeField] private MechStats mechStats;
@@ -142,7 +145,7 @@ public class MechRacer : MonoBehaviour
         playerModel.localEulerAngles = newModelRotation;
 
         currSpeed = 0;
-        if(isHuman)
+        if (isHuman)
         {
             playerController.enabled = true;
             npcController.enabled = false;
@@ -237,23 +240,22 @@ public class MechRacer : MonoBehaviour
         CalcAcceleration();
         CalcFriction();
 
-
-        if (inLobby == false)
+        if (isLocalPlayer)
         {
-            if (isLocalPlayer)
-            {
-                //Set speedlines based on speed
-                float maxSpeedForVisuals = Utils.RemapPercent(0.35f, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
-                float speedPercent = Mathf.Max(Mathf.Abs(currSpeed) - (maxSpeedForVisuals / 4.0f), 0) / (maxSpeedForVisuals - (maxSpeedForVisuals / 4.0f));
-                RaceController.Instance.SpeedLines.UpdateParticleSystem(speedPercent);
+            //Set speedlines based on speed
+            float maxSpeedForVisuals = Utils.RemapPercent(0.35f, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
+            float speedPercent = Mathf.Max(Mathf.Abs(currSpeed) - (maxSpeedForVisuals / 4.0f), 0) / (maxSpeedForVisuals - (maxSpeedForVisuals / 4.0f));
+            speedLines.UpdateParticleSystem(speedPercent);
 
-                //Set Fov based on speed
-                MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
+            //Set Fov based on speed
+            MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
 
-                //set speedometer
-                RaceController.Instance.SpeedNumberText.text = (currSpeed * 100).ToString("F1") + " fasts/h";
-            }
-            else
+            //set speedometer
+            speedNumberText.text = (currSpeed * 100).ToString("F1") + " fasts/h";
+        }
+        else
+        {
+            if (inLobby == false)
             {
                 //Update checkpoint timer to destroy stuck AIs
                 if ((canMove) && (raceFinished == false) && (isDead == false))

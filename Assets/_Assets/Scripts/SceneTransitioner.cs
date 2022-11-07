@@ -52,6 +52,11 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
             sceneIndexToLoad = scoreSceneIndex;
         }
 
+        foreach(MechRacer racer in PreRaceInitializer.ExistingRacerStandings)
+        {
+            racer.OnNewRaceLoading();
+        }
+
         SceneManager.LoadScene(sceneIndexToLoad);
     }
 

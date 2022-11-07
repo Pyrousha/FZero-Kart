@@ -50,13 +50,8 @@ public class RaceController : Singleton<RaceController>
     [SerializeField] private TextMeshProUGUI posSuffixText;
     [SerializeField] private TextMeshProUGUI numAlivePlayersText;
     [SerializeField] private TextMeshProUGUI lapCountText;
-    [SerializeField] private TextMeshProUGUI speedNumberText;
-    public TextMeshProUGUI SpeedNumberText => speedNumberText;
     [Space(5)]
     [SerializeField] private GameObject raceOverCanvas;
-    [Space(5)]
-    [SerializeField] private ParticleSystemModifier speedLines;
-    public ParticleSystemModifier SpeedLines => speedLines;
 
     public Checkpoint endCheckpoint { get; private set; }
     private MechRacer localPlayerMech;
