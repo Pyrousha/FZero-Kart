@@ -36,6 +36,12 @@ public class RaceController : Singleton<RaceController>
     [SerializeField] private Color thirdPlaceColor;
     [SerializeField] private Color fourthPlaceColor;
     [SerializeField] private Color lastPlaceColor;
+    
+    private static Color static_firstPlaceColor;
+    private static Color static_secondPlaceColor;
+    private static Color static_thirdPlaceColor;
+    private static Color static_fourthPlaceColor;
+    private static Color static_lastPlaceColor;
 
     [Header("References")]
     [SerializeField] private Animator countdownAnim;
@@ -99,6 +105,17 @@ public class RaceController : Singleton<RaceController>
 
     public void Start()
     {
+        #region Set static parameters
+        static_firstPlaceColor = firstPlaceColor;
+        static_secondPlaceColor = secondPlaceColor;
+        static_thirdPlaceColor = thirdPlaceColor;
+        static_fourthPlaceColor = fourthPlaceColor;
+        static_lastPlaceColor = lastPlaceColor;
+        #endregion
+
+
+
+
         #region Initialize checkpoints
         checkpoints = new List<Checkpoint>(checkpointParent.GetComponentsInChildren<Checkpoint>());
 
@@ -376,7 +393,7 @@ public class RaceController : Singleton<RaceController>
             MechRacer racer = endingPositions[i];
             scoreDisplay.SetData(i + 1, racer, pointsToAddPerSec);
 
-            yield return new WaitForSeconds(0.25f / (numRacersToDisplay + 1));
+            yield return new WaitForSeconds(0.15f / (numRacersToDisplay + 1));
         }
 
         //Set local player score
@@ -394,7 +411,7 @@ public class RaceController : Singleton<RaceController>
         yield return new WaitForSeconds(5f + maxScoreFillDuration);
 
         Debug.Log("Time for the next race!");
-        foreach(MechRacer racer in endingPositions)
+        foreach (MechRacer racer in endingPositions)
         {
             racer.OnNewRaceLoading();
         }
@@ -459,6 +476,22 @@ public class RaceController : Singleton<RaceController>
         //4th or below
         float posRatio = (currPos - 4.0f) / (numTotalRacers - 4.0f);
         return Color.Lerp(fourthPlaceColor, lastPlaceColor, posRatio);
+    }
+
+    public static Color Static_GetColorForPos(int currPos, int numRacers)
+    {
+        if (currPos == 1)
+            return static_firstPlaceColor;
+
+        if (currPos == 2)
+            return static_secondPlaceColor;
+
+        if (currPos == 3)
+            return static_thirdPlaceColor;
+
+        //4th or below
+        float posRatio = (currPos - 4.0f) / (numRacers - 4.0f);
+        return Color.Lerp(static_fourthPlaceColor, static_lastPlaceColor, posRatio);
     }
 
     /// <summary>

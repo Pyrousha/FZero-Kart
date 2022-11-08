@@ -48,6 +48,8 @@ public class MechRacer : MonoBehaviour
     [SerializeField] private float lerpSpeed;
 
     [Header("References")]
+    [SerializeField] private TextMeshProUGUI namePlateText;
+    private Transform namePlateTransform;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Transform playerModelParent;
     [SerializeField] private Transform playerModel;
@@ -122,7 +124,33 @@ public class MechRacer : MonoBehaviour
         isHuman = playerController != null;
         isLocalPlayer = isHuman; //TEMP: This is assuming only 1 player is in the scene
 
-        //RaceController.Instance.AddRacer(this);
+        //Set nameplate vars
+        namePlateTransform = namePlateText.transform;
+
+        namePlateText.text = gameObject.name;
+        namePlateText.color = playerNameColor;
+
+        DisableNameplate();
+    }
+
+    /// <summary>
+    /// Called when the post-race lobby is loaded, enables local player's nameplate
+    /// <summary>
+    public void EnableNameplate()
+    {
+        if (isLocalPlayer)
+            namePlateText.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Called when the player is created, or when they enters into the pre-race lobby
+    /// <summary>
+    public void DisableNameplate()
+    {
+        if (isLocalPlayer)
+        {
+            namePlateText.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -164,7 +192,7 @@ public class MechRacer : MonoBehaviour
     }
 
     /// <summary>
-    /// called when the lobby scene is loaded, should only be called on player racers, AIs will be destroyed isntead.
+    /// called when the lobby scene is loaded, (should only be called on player racers), AIs will be destroyed isntead.
     /// resets varaibles to allow movement, and resets score to 0.
     /// <summary>
     public void OnEnterLobby()
@@ -174,6 +202,8 @@ public class MechRacer : MonoBehaviour
 
         score = 0;
         lastScore = 0;
+
+        DisableNameplate();
     }
 
     private void LoadStatsFromFile(MechStats stats)
@@ -231,6 +261,14 @@ public class MechRacer : MonoBehaviour
 
     void Update()
     {
+        //if (!isLocalPlayer)
+        {
+            //Make nameplate face camera
+            Transform cameraTransform = MainCameraTracker.MainCamTransform;
+            if (cameraTransform != null)
+                namePlateTransform.LookAt(namePlateTransform.position + cameraTransform.rotation * Vector3.forward, cameraTransform.rotation * Vector3.up);
+        }
+
         UpdateAndApplyTurning();
 
         float turnPercent = Mathf.Max(0, (Mathf.Abs(currTurnSpeed + currDriftSpeed) - maxTurnSpeed) / (maxDriftSpeed));

@@ -13,7 +13,7 @@ public class PostLobbyPositionStands : MonoBehaviour
     {
         for(int i = 0; i< transform.childCount; i++)
         {
-            racers[i].gameObject.transform.position = transform.GetChild(i).position + new Vector3(0,5,0);
+            transform.GetChild(i).GetComponent<PostRaceStand>().SetRacerAndRank(racers[i], i+1, racers.Count);
         }
     }
 
