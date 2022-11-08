@@ -1277,7 +1277,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1474,7 +1474,7 @@ GameObject:
   - component: {fileID: 2093524960184089692}
   - component: {fileID: 5876865790197014632}
   - component: {fileID: 7612589634226869700}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Speedlines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
