@@ -169,7 +169,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7405a3b4cce06fd48a03ebedd60ca1bf, type: 2}
   m_sharedMaterial: {fileID: -3378486025860826378, guid: 7405a3b4cce06fd48a03ebedd60ca1bf,
@@ -306,9 +306,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '
-
-    st'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7405a3b4cce06fd48a03ebedd60ca1bf, type: 2}
   m_sharedMaterial: {fileID: -3378486025860826378, guid: 7405a3b4cce06fd48a03ebedd60ca1bf,
@@ -695,7 +693,7 @@ Transform:
   - {fileID: 113073976}
   - {fileID: 5376947827207614804}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3714366625235364031
 MeshFilter:

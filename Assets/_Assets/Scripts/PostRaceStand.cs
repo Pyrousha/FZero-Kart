@@ -12,8 +12,9 @@ public class PostRaceStand : MonoBehaviour
     {
         //Set racer position
         racer.transform.position = transform.position + new Vector3(0,10,0);
+        racer.transform.forward = -transform.forward;
 
-        //Enable racer nameplate if player
+        //Enable racer abovehead nameplate if player
         racer.EnableNameplate();
 
         //Update number and color on pedastol

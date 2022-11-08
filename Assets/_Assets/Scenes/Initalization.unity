@@ -156,7 +156,7 @@ MonoBehaviour:
   lobbySceneIndex: 1
   scoreSceneIndex: 5
   cups:
-  - raceBuildIndices: 04000000
+  - raceBuildIndices: 0400000004000000
 --- !u!114 &647843534
 MonoBehaviour:
   m_ObjectHideFlags: 0

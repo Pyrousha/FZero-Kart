@@ -29,7 +29,7 @@ public class RacerScoreDisplay : MonoBehaviour
     static float valueMultiplierBG = 1.25f;
     static float valueMultiplierIconBG = 1f;
 
-    public void SetData(int _posNum, MechRacer racer, float _pointsToAddPerSec)
+    public void SetData(int _posNum, MechRacer racer, float _pointsToAddPerSec, bool skipCounting = false)
     {
         startingScore = racer.LastScore;
         currScore = racer.LastScore;
@@ -54,6 +54,12 @@ public class RacerScoreDisplay : MonoBehaviour
         totalPointsText.text = Utils.AddLeadingZeroes(currScore, 0);
 
         pointsAddedPerSec = _pointsToAddPerSec;
+
+        if(skipCounting)
+        {
+            pointsToAddText.text = Utils.AddLeadingZeroes(racer.LastScore, 0);
+            totalPointsText.text = Utils.AddLeadingZeroes(racer.Score, 0);
+        }
     }
 
     public IEnumerator FillUpScore()
@@ -70,8 +76,8 @@ public class RacerScoreDisplay : MonoBehaviour
             yield return new WaitForSeconds(1 / pointsAddedPerSec);
         }
 
-        yield return new WaitForSeconds(0.5f);
+        // yield return new WaitForSeconds(0.5f);
 
-        pointsToAddText.text = Utils.AddLeadingZeroes(startingScore, 0);
+        // pointsToAddText.text = Utils.AddLeadingZeroes(startingScore, 0);
     }
 }

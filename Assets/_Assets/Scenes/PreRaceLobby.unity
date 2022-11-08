@@ -188,7 +188,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &17110332
 GameObject:
@@ -607,7 +607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NPCPrefab: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
     type: 3}
-  numTotalRacers: 64
+  numTotalRacers: 5
   evoStats: {fileID: 11400000, guid: 939368beb3b935b4da0ce2bdaee4df9d, type: 2}
 --- !u!4 &641147044
 Transform:
@@ -884,7 +884,7 @@ PrefabInstance:
     - target: {fileID: 2618163016691989910, guid: d74f6ae9203f2f24d8f149d0dfac3062,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2618163016691989910, guid: d74f6ae9203f2f24d8f149d0dfac3062,
         type: 3}

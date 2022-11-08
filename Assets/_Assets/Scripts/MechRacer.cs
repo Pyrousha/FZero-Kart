@@ -153,6 +153,18 @@ public class MechRacer : MonoBehaviour
         }
     }
 
+    private void DisableSpeedometer()
+    {
+        if (isLocalPlayer)
+            speedNumberText.gameObject.SetActive(false);
+    }
+
+    private void EnableSpeedometer()
+    {
+        if (isLocalPlayer)
+            speedNumberText.gameObject.SetActive(true);
+    }
+
     /// <summary>
     /// called when the race has ended for all players, and the next race scene is about to be loaded. Disable input, reset speed, etc.
     /// <summary>
@@ -189,6 +201,8 @@ public class MechRacer : MonoBehaviour
     {
         inLobby = false;
         canMove = false;
+
+        EnableSpeedometer();
     }
 
     /// <summary>
@@ -204,6 +218,8 @@ public class MechRacer : MonoBehaviour
         lastScore = 0;
 
         DisableNameplate();
+
+        EnableSpeedometer();
     }
 
     private void LoadStatsFromFile(MechStats stats)
@@ -389,6 +405,8 @@ public class MechRacer : MonoBehaviour
     internal void LastRacerLeft()
     {
         canMove = false;
+
+        DisableSpeedometer();
     }
 
     private void FixedUpdate()
@@ -600,6 +618,7 @@ public class MechRacer : MonoBehaviour
 
                     StartCoroutine(playerController.CameraRotate.DoRotate());
                 }
+                DisableSpeedometer();
             }
             if (isLocalPlayer)
                 RaceController.Instance.UpdateLapUI(lapsFinished);
