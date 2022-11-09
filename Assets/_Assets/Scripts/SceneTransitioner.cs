@@ -36,6 +36,11 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     }
 
 
+    // void Update()
+    // {
+    //     Debug.Log("count: "+PreRaceInitializer.ExistingRacerStandings.Count);
+    // }
+
     public void ToNextRace()
     {
         currentRaceIndex++;

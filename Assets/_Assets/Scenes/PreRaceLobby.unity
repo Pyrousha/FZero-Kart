@@ -607,7 +607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NPCPrefab: {fileID: 6618996817075893400, guid: 1059a7700110b4340acb63429da78724,
     type: 3}
-  numTotalRacers: 5
+  numTotalRacers: 15
   evoStats: {fileID: 11400000, guid: 939368beb3b935b4da0ce2bdaee4df9d, type: 2}
 --- !u!4 &641147044
 Transform:

@@ -20,7 +20,7 @@ public class PostLobbyPositionStands : MonoBehaviour
             else
             {
                 //There is a racer for this stand, set values
-                int racerPos = RaceController.GetSharedPosition(i, racers[i], racers);
+                int racerPos = RaceController.GetCurrentSharedPosition(i, racers[i], racers);
                 transform.GetChild(i).GetComponent<PostRaceStand>().SetRacerAndRank(racers[i], racerPos, racers.Count);
             }
         }
