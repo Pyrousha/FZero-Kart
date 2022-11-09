@@ -19,6 +19,8 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     private RaceCupStruct currCup;
     private int currentRaceIndex; //Index of current race in currCup (so from 0 to length-1)
 
+    public bool isFirstRace => (currentRaceIndex == 0);
+
     void Start()
     {
         //Load lobby scene

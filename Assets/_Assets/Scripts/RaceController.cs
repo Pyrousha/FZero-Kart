@@ -279,7 +279,10 @@ public class RaceController : Singleton<RaceController>
 
         //Set position UI based on how many finished before
         if (mechRacer.IsLocalPlayer)
+        {
             UpdateRacePosUI(finishedRacers.Count);
+            raceOverCanvas.SetActive(true);
+        }
 
         //End the race if all racers have finished/died
         CheckShouldEndRace();
@@ -335,8 +338,6 @@ public class RaceController : Singleton<RaceController>
         Debug.Log("FINISH!!");
         isRaceOver = true;
 
-        raceOverCanvas.SetActive(true);
-
         List<MechRacer> endingPositions = new List<MechRacer>();
         endingPositions.AddRange(finishedRacers);
         endingPositions.AddRange(deadRacers);
@@ -377,6 +378,10 @@ public class RaceController : Singleton<RaceController>
     private IEnumerator SpawnRacerScorecards(List<MechRacer> thisRacePlacements, List<MechRacer> newOverallPlacements)
     {
         List<MechRacer> previousOverallPlacements = new List<MechRacer>(PreRaceInitializer.ExistingRacerStandings);
+        if (SceneTransitioner.Instance.isFirstRace)
+            previousOverallPlacements.Reverse();
+
+        raceOverCanvas.GetComponent<Animator>().SetTrigger("ShowCurr");
 
         #region Current race scorecards
         int pointsEarnedByFirstPlace;
@@ -399,28 +404,29 @@ public class RaceController : Singleton<RaceController>
             //Fill data from racers based on position
             MechRacer racer = thisRacePlacements[i];
             int posNum = i + 1;
-            scoreDisplay.SetData(posNum, -1, -1, racer, pointsToAddPerSec);
+            scoreDisplay.SetData(true, posNum, -1, -1, racer, pointsToAddPerSec);
 
-            yield return new WaitForSeconds(0.05f / (numRacersToDisplay + 1));
+            yield return new WaitForSeconds(0.1f / (numRacersToDisplay + 1));
         }
 
         //Set local player score
         playerScoreDisplay.gameObject.SetActive(true);
-        playerScoreDisplay.SetData(thisRacePlacements.IndexOf(localPlayerMech) + 1, -1, -1, localPlayerMech, pointsToAddPerSec);
+        playerScoreDisplay.SetData(true, thisRacePlacements.IndexOf(localPlayerMech) + 1, -1, -1, localPlayerMech, pointsToAddPerSec);
         //racerScoreDisplays.Add(playerScoreDisplay);
         #endregion
 
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
 
-
+        raceOverCanvas.GetComponent<Animator>().SetTrigger("ShowOverall");
         #region Change scorecards to be based on previous overall score
         //Disable all scoredisplays
         foreach (RacerScoreDisplay scoreDisplay in racerScoreDisplays)
         {
-            scoreDisplay.gameObject.SetActive(false);
+            scoreDisplay.FlipShut();
+            yield return new WaitForSeconds(0.05f / (numRacersToDisplay + 1));
         }
-        playerScoreDisplay.gameObject.SetActive(false);
+        playerScoreDisplay.FlipShut();
 
         yield return new WaitForSeconds(0.5f);
 
@@ -429,7 +435,6 @@ public class RaceController : Singleton<RaceController>
         {
             //Get Score prefab instance
             RacerScoreDisplay scoreDisplay = racerScoreDisplays[i];
-            scoreDisplay.gameObject.SetActive(true);
 
             //Fill data from racers based on position
             MechRacer racer = previousOverallPlacements[i];
@@ -438,30 +443,32 @@ public class RaceController : Singleton<RaceController>
             int newPosNum = GetCurrentSharedPosition(newPosIndex, racer, newOverallPlacements);
 
             int firstRacePlace = 0;
-            if (racer.LastScore == 0)
+            if (SceneTransitioner.Instance.isFirstRace)
             {
                 firstRacePlace = numTotalRacers;
                 prevPosNum = numTotalRacers;
             }
-            scoreDisplay.SetData(prevPosNum, newPosNum, newPosIndex, racer, pointsToAddPerSec, firstRacePlace);
+            scoreDisplay.SetData(false, prevPosNum, newPosNum, newPosIndex, racer, pointsToAddPerSec, firstRacePlace);
 
-            yield return new WaitForSeconds(0.05f / (numRacersToDisplay + 1));
+            scoreDisplay.FlipOpen();
+
+            yield return new WaitForSeconds(0.1f / (numRacersToDisplay + 1));
         }
 
         //Set player scoreCard
-        playerScoreDisplay.gameObject.SetActive(true);
-        //int playerPos = GetPreviousSharedPosition(overallPlacements.IndexOf(localPlayerMech), localPlayerMech, overallPlacements);
         int playerPrevPosNum = GetPreviousSharedPosition(previousOverallPlacements.IndexOf(localPlayerMech), localPlayerMech, previousOverallPlacements);
         int playerNewPosNum = GetCurrentSharedPosition(newOverallPlacements.IndexOf(localPlayerMech), localPlayerMech, newOverallPlacements);
 
         int playerFirstRacePlace = 0;
-        if (localPlayerMech.LastScore == 0)
+        if (SceneTransitioner.Instance.isFirstRace)
         {
             playerFirstRacePlace = numTotalRacers;
             playerPrevPosNum = numTotalRacers;
         }
 
-        playerScoreDisplay.SetData(playerPrevPosNum, playerNewPosNum, -1, localPlayerMech, pointsToAddPerSec, playerFirstRacePlace);
+        playerScoreDisplay.SetData(false, playerPrevPosNum, playerNewPosNum, -1, localPlayerMech, pointsToAddPerSec, playerFirstRacePlace);
+
+        playerScoreDisplay.FlipOpen();
         #endregion
 
 

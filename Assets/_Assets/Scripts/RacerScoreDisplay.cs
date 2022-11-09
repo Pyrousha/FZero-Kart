@@ -7,6 +7,8 @@ using System;
 
 public class RacerScoreDisplay : MonoBehaviour
 {
+    [SerializeField] private Animation anim;
+    [Space(5)]
     [SerializeField] private TextMeshProUGUI posNumText;
     [SerializeField] private TextMeshProUGUI posNumSuffixText;
     [Space(5)]
@@ -14,6 +16,7 @@ public class RacerScoreDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerNameText;
     [Space(5)]
     [SerializeField] private TextMeshProUGUI pointsToAddText;
+    [SerializeField] private GameObject arrowObj;
     [SerializeField] private TextMeshProUGUI totalPointsText;
     [Space(5)]
     [SerializeField] private Image bgImage;
@@ -37,7 +40,7 @@ public class RacerScoreDisplay : MonoBehaviour
 
     public static List<RacerScoreDisplay> scoreDisplays;
 
-    public void SetData(int _prevPosNum, int _newPosNum, int _newPosIndex, MechRacer racer, float _pointsToAddPerSec, int numTotalPlayers = 0)
+    public void SetData(bool showOnlyThisRacePoints, int _prevPosNum, int _newPosNum, int _newPosIndex, MechRacer racer, float _pointsToAddPerSec, int numTotalPlayers = 0)
     {
         startingScore = racer.LastScore;
         lastScore = racer.LastScore;
@@ -48,22 +51,37 @@ public class RacerScoreDisplay : MonoBehaviour
         newPosIndex = _newPosIndex;
         newPosNumber = _newPosNum;
 
+        pointsAddedPerSec = _pointsToAddPerSec;
+
+
+        //Stupid way of setting if this is the first race or not
         if (numTotalPlayers > 0)
         {
+            //This is the first race, start all players in last
             SetVisualsForPosition(numTotalPlayers);
             _prevPosNum = numTotalPlayers;
         }
         else
             SetVisualsForPosition(_prevPosNum);
 
+
         playerImage.sprite = racer.MechStats.MechIcon;
         playerNameText.text = racer.name;
         playerNameText.color = racer.PlayerNameColor;
 
-        pointsToAddText.text = Utils.AddLeadingZeroes(pointsToAdd, 0);
-        totalPointsText.text = Utils.AddLeadingZeroes(lastScore, 0);
 
-        pointsAddedPerSec = _pointsToAddPerSec;
+        if (showOnlyThisRacePoints)
+        {
+            pointsToAddText.text = "+"+Utils.AddLeadingZeroes(pointsToAdd, 0);
+            arrowObj.SetActive(false);
+            totalPointsText.text = "";
+        }
+        else
+        {
+            pointsToAddText.text = "+"+Utils.AddLeadingZeroes(pointsToAdd, 0);
+            arrowObj.SetActive(true);
+            totalPointsText.text = Utils.AddLeadingZeroes(lastScore, 0);
+        }
     }
 
 
@@ -91,6 +109,16 @@ public class RacerScoreDisplay : MonoBehaviour
         lerpPosNum = prevPosNumber;
 
         startTime = Time.time;
+    }
+
+    public void FlipShut()
+    {
+        anim.Play("RacerScoreFlipShut");
+    }
+
+    public void FlipOpen()
+    {
+        anim.Play("RacerScoreFlipOpen");
     }
 
     void Update()
@@ -123,7 +151,7 @@ public class RacerScoreDisplay : MonoBehaviour
             lerpPosNum = currPosNum;
         }
 
-        pointsToAddText.text = Utils.AddLeadingZeroes(Mathf.RoundToInt(Utils.RemapPercent(lerpPercent, pointsToAdd, 0)), 0);
+        pointsToAddText.text = "+"+Utils.AddLeadingZeroes(Mathf.RoundToInt(Utils.RemapPercent(lerpPercent, pointsToAdd, 0)), 0);
         totalPointsText.text = Utils.AddLeadingZeroes(Mathf.RoundToInt(Utils.RemapPercent(lerpPercent, lastScore, newScore)), 0);
 
         transform.position = Vector3.Lerp(startPos3D, endPos3D, lerpPercent);
