@@ -27,6 +27,7 @@ public class RaceController : Singleton<RaceController>
     }
 
     [SerializeField] private bool cutPowerToLastHumanPlayer; //If the last player is a human, should the race end prematurely or let them finish?
+    [SerializeField] private bool endRaceOnceAllHumansFinish = true;
     [Space(5)]
     [SerializeField] private bool scoreMode_125Max;
     private float maxScoreFillDuration = 1.5f; //How many seconds does it take to add points from 0 -> (points earned by 1st place)
@@ -303,6 +304,30 @@ public class RaceController : Singleton<RaceController>
     {
         if (isRaceOver)
             return;
+
+        if (endRaceOnceAllHumansFinish)
+        {
+            bool allAIRacers = true;
+            for (int i = 0; i < currentRacers.Count; i++)
+            {
+                if (currentRacers[i].IsHuman)
+                {
+                    allAIRacers = false;
+                    break;
+                }
+            }
+
+            if (allAIRacers) //end race now
+            {
+                while (currentRacers.Count > 0)
+                {
+                    MechRacer mechRacer = currentRacers[0];
+                    currentRacers.RemoveAt(0);
+                    finishedRacers.Add(mechRacer);
+                    mechRacer.AIFinishRaceEarly();
+                }
+            }
+        }
 
         //Outcome still uncertain
         if (currentRacers.Count >= 2)

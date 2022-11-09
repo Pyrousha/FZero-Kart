@@ -402,11 +402,21 @@ public class MechRacer : MonoBehaviour
     }
 
     //Called when there is only 1 racer left, stops input
-    internal void LastRacerLeft()
+    public void LastRacerLeft()
     {
         canMove = false;
+        raceFinished = true;
 
         DisableSpeedometer();
+    }
+
+    /// <summary>
+    /// Called on all AIs that have not finished the race once the last human finishes.
+    /// 
+    /// </summary>
+    public void AIFinishRaceEarly()
+    {
+        raceFinished = true;
     }
 
     private void FixedUpdate()
