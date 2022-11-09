@@ -45,6 +45,7 @@ public class RaceController : Singleton<RaceController>
     private static Color static_lastPlaceColor;
 
     [Header("References")]
+    private Animator racePosCanvasAnim;
     [SerializeField] private Animator countdownAnim;
     [SerializeField] private RacerScoreDisplay playerScoreDisplay;
     [SerializeField] private Transform scoreDisplayParent;
@@ -115,6 +116,7 @@ public class RaceController : Singleton<RaceController>
         #endregion
 
 
+        racePosCanvasAnim = posNumberText.transform.parent.GetComponent<Animator>();
 
 
         #region Initialize checkpoints
@@ -263,7 +265,7 @@ public class RaceController : Singleton<RaceController>
             MechRacer mechRacer = currentRacers[i];
             if (mechRacer.IsLocalPlayer)
             {
-                UpdateRacePosUI(i + 1 + finishedRacers.Count);
+                StartCoroutine(UpdateRacePosUI(i + 1 + finishedRacers.Count));
                 return;
             }
         }
@@ -281,7 +283,7 @@ public class RaceController : Singleton<RaceController>
         //Set position UI based on how many finished before
         if (mechRacer.IsLocalPlayer)
         {
-            UpdateRacePosUI(finishedRacers.Count);
+            StartCoroutine(UpdateRacePosUI(finishedRacers.Count));
             raceOverCanvas.SetActive(true);
         }
 
@@ -591,12 +593,22 @@ public class RaceController : Singleton<RaceController>
         //SceneManager.LoadScene(0);
     }
 
+    private int lastRacePos = -1;
+
     /// <summary>
     /// Sets the UI displaying the local player's position in the race (stuff like 1st, 2nd, etc.)
     /// </summary>
     /// <param name="currPos"> local player's position/rank in the race. </param>
-    private void UpdateRacePosUI(int currPos)
+    private IEnumerator UpdateRacePosUI(int currPos)
     {
+        if(currPos == lastRacePos)
+            yield break;
+
+        lastRacePos = currPos;
+
+        racePosCanvasAnim.SetTrigger("PosChange");
+        yield return new WaitForSecondsRealtime(1f/12f);
+
         string posSuffix = RacePosSuffix(currPos);
 
         posNumberText.text = currPos.ToString();

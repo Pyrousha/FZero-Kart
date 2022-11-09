@@ -1085,7 +1085,6 @@ MonoBehaviour:
   posNumSuffixText: {fileID: 4278306307116854379}
   playerImage: {fileID: 7713167003601480959}
   playerNameText: {fileID: 8568395247004055851}
-  plusObj: {fileID: 0}
   pointsToAddText: {fileID: 7141372918749167776}
   arrowObj: {fileID: 5578203810775510135}
   totalPointsText: {fileID: 3177281281306835548}
@@ -1100,11 +1099,11 @@ Animation:
   m_GameObject: {fileID: 6447172966342186432}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 3f76f6fd3b7047f4f8c00d2e0f5b59aa, type: 2}
+  m_Animation: {fileID: 7400000, guid: 5ccbaae3929152c4b936067645d8edcf, type: 2}
   m_Animations:
-  - {fileID: 7400000, guid: 3f76f6fd3b7047f4f8c00d2e0f5b59aa, type: 2}
-  - {fileID: 7400000, guid: f9b168c081a37c1489c0007381c35f66, type: 2}
-  - {fileID: 7400000, guid: 62e8887750564054dae6f032357d5b1e, type: 2}
+  - {fileID: 7400000, guid: 8c44841181f31b243811f6597cc140c6, type: 2}
+  - {fileID: 7400000, guid: 97a72d1277f7abe4dbc3d333a6033431, type: 2}
+  - {fileID: 7400000, guid: 5ccbaae3929152c4b936067645d8edcf, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
