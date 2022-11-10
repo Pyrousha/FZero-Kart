@@ -86,7 +86,7 @@ public class Utils
     /// <summary>
     /// Adds enough leading zeroes to an int to have a string of specified size
     /// </summary>
-    /// <param name="number"></param> number to add zeroes in front of
+    /// <param name="number">number to add zeroes in front of</param>
     /// <param name="numCharactersTotal"></param> number of characters to have total in returned string
     /// <returns> given number as a string, with enough leading zeroes to make string size equal to numCharactersTotal. </returns>
     public static string AddLeadingZeroes(int number, int numCharactersTotal)

@@ -135,7 +135,7 @@ public class MechRacer : MonoBehaviour
 
     /// <summary>
     /// Called when the post-race lobby is loaded, enables local player's nameplate
-    /// <summary>
+    /// </summary>
     public void EnableNameplate()
     {
         if (isLocalPlayer)
@@ -144,7 +144,7 @@ public class MechRacer : MonoBehaviour
 
     /// <summary>
     /// Called when the player is created, or when they enters into the pre-race lobby
-    /// <summary>
+    /// </summary>
     public void DisableNameplate()
     {
         if (isLocalPlayer)
@@ -167,7 +167,7 @@ public class MechRacer : MonoBehaviour
 
     /// <summary>
     /// called when the race has ended for all players, and the next race scene is about to be loaded. Disable input, reset speed, etc.
-    /// <summary>
+    /// </summary>
     public void OnNewRaceLoading()
     {
         canMove = false;
@@ -196,7 +196,7 @@ public class MechRacer : MonoBehaviour
 
     /// <summary>
     /// called when the new race scene has finished loading
-    /// <summary>
+    /// </summary>
     public void OnRaceFinishedLoading()
     {
         inLobby = false;
@@ -208,7 +208,7 @@ public class MechRacer : MonoBehaviour
     /// <summary>
     /// called when the lobby scene is loaded, (should only be called on player racers), AIs will be destroyed isntead.
     /// resets varaibles to allow movement, and resets score to 0.
-    /// <summary>
+    /// </summary>
     public void OnEnterLobby()
     {
         inLobby = true;
@@ -255,12 +255,24 @@ public class MechRacer : MonoBehaviour
     private bool accelerateHeld;
     private bool brakeHeld;
 
+    /// <summary>
+    /// Called by the player that owns this racer, then processed on the server.
+    /// Sets the server-side input information for this racer.
+    /// </summary>
+    /// <param name="_turning"> Turning axis from -1 to 1 </param>
+    /// <param name="_drifting"> Drifting axis from -1 to 1 </param>
+    /// <param name="_acceleratePressed"> Did the player start pressing accelerate this frame </param>
+    /// <param name="_accelerateHeld"> Is the player holding accelerate </param>
+    /// <param name="_brakeHeld"> Is the player holding brake </param>
     public void SetInput(float _turning, float _drifting, bool _acceleratePressed, bool _accelerateHeld, bool _brakeHeld)
     {
+        if (isHuman && !isLocalPlayer)
+            return; //Anticheat to prevent players from controlling each other
+
         if (isDead == false)
         {
-            currSteerAxis = _turning;
-            currDriftAxis = _drifting;
+            currSteerAxis = Mathf.Clamp(_turning, -1.0f, 1.0f); //clamp to prevent cheatin
+            currDriftAxis = Mathf.Clamp(_drifting, -1.0f, 1.0f);
             acceleratePressed = _acceleratePressed;
             accelerateHeld = _accelerateHeld;
             brakeHeld = _brakeHeld;
