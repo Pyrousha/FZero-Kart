@@ -526,7 +526,7 @@ public class RaceController : Singleton<RaceController>
             racer.OnNewRaceLoading();
         }
 
-        SceneTransitioner.Instance.ToNextRace();
+        SceneTransitioner.Instance.OnRaceEnded();
     }
 
     /// <summary>
@@ -601,13 +601,13 @@ public class RaceController : Singleton<RaceController>
     /// <param name="currPos"> local player's position/rank in the race. </param>
     private IEnumerator UpdateRacePosUI(int currPos)
     {
-        if(currPos == lastRacePos)
+        if (currPos == lastRacePos)
             yield break;
 
         lastRacePos = currPos;
 
         racePosCanvasAnim.SetTrigger("PosChange");
-        yield return new WaitForSecondsRealtime(1f/12f);
+        yield return new WaitForSecondsRealtime(1f / 12f);
 
         string posSuffix = RacePosSuffix(currPos);
 

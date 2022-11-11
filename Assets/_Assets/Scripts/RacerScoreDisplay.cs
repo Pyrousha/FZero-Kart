@@ -29,10 +29,10 @@ public class RacerScoreDisplay : MonoBehaviour
     private int newScore;
     private int pointsToAdd;
 
-    static float saturationMultiplierBG = 0.5f;
-    static float saturationMultiplierIconBG = 0.75f;
-    static float valueMultiplierBG = 1.25f;
-    static float valueMultiplierIconBG = 1f;
+    public static float saturationMultiplierBG = 0.5f;
+    public static float saturationMultiplierIconBG = 0.75f;
+    public static float valueMultiplierBG = 1.25f;
+    public static float valueMultiplierIconBG = 1f;
 
     private int prevPosNumber; //Overall placement player had before this race started, may not be unique
     private int newPosNumber; //Overall placement player had after this race ended, may not be unique
@@ -72,13 +72,13 @@ public class RacerScoreDisplay : MonoBehaviour
 
         if (showOnlyThisRacePoints)
         {
-            pointsToAddText.text = "+"+Utils.AddLeadingZeroes(pointsToAdd, 0);
+            pointsToAddText.text = "+" + Utils.AddLeadingZeroes(pointsToAdd, 0);
             arrowObj.SetActive(false);
             totalPointsText.text = "";
         }
         else
         {
-            pointsToAddText.text = "+"+Utils.AddLeadingZeroes(pointsToAdd, 0);
+            pointsToAddText.text = "+" + Utils.AddLeadingZeroes(pointsToAdd, 0);
             arrowObj.SetActive(true);
             totalPointsText.text = Utils.AddLeadingZeroes(lastScore, 0);
         }
@@ -151,7 +151,7 @@ public class RacerScoreDisplay : MonoBehaviour
             lerpPosNum = currPosNum;
         }
 
-        pointsToAddText.text = "+"+Utils.AddLeadingZeroes(Mathf.RoundToInt(Utils.RemapPercent(lerpPercent, pointsToAdd, 0)), 0);
+        pointsToAddText.text = "+" + Utils.AddLeadingZeroes(Mathf.RoundToInt(Utils.RemapPercent(lerpPercent, pointsToAdd, 0)), 0);
         totalPointsText.text = Utils.AddLeadingZeroes(Mathf.RoundToInt(Utils.RemapPercent(lerpPercent, lastScore, newScore)), 0);
 
         transform.position = Vector3.Lerp(startPos3D, endPos3D, lerpPercent);

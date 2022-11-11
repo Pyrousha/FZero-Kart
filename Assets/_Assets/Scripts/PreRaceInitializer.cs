@@ -17,7 +17,8 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
     public static List<MechRacer> ExistingRacerStandings => existingRacerStandings;
 
     /// <summary>
-    /// Spawns as many NPC racers as needed, and initializes their parameters
+    /// Spawns as many NPC racers as needed, and initializes their parameters.
+    /// Called when everyone is ready and the cup starts.
     /// </summary>
     public void InitalizeRacers()
     {

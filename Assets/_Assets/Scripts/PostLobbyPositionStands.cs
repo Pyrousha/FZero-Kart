@@ -26,8 +26,11 @@ public class PostLobbyPositionStands : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// [TEMP] Called when the "back to lobby" button is clicked, heads back to the preRace lobby
+    /// </summary>
     public void BackToLobby()
     {
-        SceneTransitioner.Instance.BackToLobby();
+        SceneTransitioner.Instance.BackToLobbyAfterScoreScene();
     }
 }

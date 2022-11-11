@@ -143,7 +143,7 @@ public class MechRacer : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when the player is created, or when they enters into the pre-race lobby
+    /// Called when the player is created, or when they load into the pre-race lobby
     /// </summary>
     public void DisableNameplate()
     {
@@ -166,7 +166,8 @@ public class MechRacer : MonoBehaviour
     }
 
     /// <summary>
-    /// called when the race has ended for all players, and the next race scene is about to be loaded. Disable input, reset speed, etc.
+    /// called when the race has ended for all players, and the next race scene is about to be loaded. 
+    /// Disable input, reset speed, etc.
     /// </summary>
     public void OnNewRaceLoading()
     {
@@ -195,27 +196,42 @@ public class MechRacer : MonoBehaviour
     }
 
     /// <summary>
-    /// called when the new race scene has finished loading
+    /// called by the RaceController when the new race scene has finished loading and racers have been placed
     /// </summary>
     public void OnRaceFinishedLoading()
     {
         inLobby = false;
         canMove = false;
 
+        raceFinished = false;
+        checkpointsHit = 0;
+        lapsFinished = 0;
+
+        currTurnSpeed = 0;
+        currDriftAxis = 0;
+        currSpeed = 0;
+
         EnableSpeedometer();
     }
 
     /// <summary>
-    /// called when the lobby scene is loaded, (should only be called on player racers), AIs will be destroyed isntead.
-    /// resets varaibles to allow movement, and resets score to 0.
+    /// Called when the lobby scene is about to be loaded, resets varaibles to allow movement.
+    /// If this is called after the score scene, resets all player scores back to 0. (AIs should be destroyed instead)
     /// </summary>
-    public void OnEnterLobby()
+    /// <param name="resetScore"> Should human scores be reset to 0 (if called in score scene) </param>
+    public void OnEnterLobby(bool resetScore)
     {
+        if (resetScore)
+        {
+            score = 0;
+            lastScore = 0;
+
+            if (!isHuman)
+                Debug.LogError("Tried to send nonplayer racer " + name + " to the preRaceLobby scene");
+        }
+
         inLobby = true;
         canMove = true;
-
-        score = 0;
-        lastScore = 0;
 
         DisableNameplate();
 
