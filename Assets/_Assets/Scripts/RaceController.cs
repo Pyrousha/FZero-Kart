@@ -380,7 +380,7 @@ public class RaceController : Singleton<RaceController>
                 currRacer.AddPoints(RacePosToScoredPoints_1Min(placement));
         }
 
-        SortRacerScores();
+        SortRacerScores(scoreSortedRacers);
 
         //Print curring ranking to console
         string rankings = "New Rankings: \n";
@@ -526,12 +526,17 @@ public class RaceController : Singleton<RaceController>
             racer.OnNewRaceLoading();
         }
 
-        SceneTransitioner.Instance.OnRaceEnded();
+        SceneTransitioner.Instance.OnRaceFinished();
     }
+
 
     /// <summary>
     /// Gets the overall position of a racer, by getting the best (lowest number) position of the racer with the same score
-    /// <summary>
+    /// </summary>
+    /// <param name="currRacerIndex"> index of the given racer in sortedRacers array </param>
+    /// <param name="racer"> racer to give a placement to </param>
+    /// <param name="sortedRacers"> list of sorted racers, where racer at 0 is in first </param>
+    /// <returns> position ranking for the racer (1 for first, 2 for second, etc.) </returns>
     public static int GetCurrentSharedPosition(int currRacerIndex, MechRacer racer, List<MechRacer> sortedRacers)
     {
         int currIndex = currRacerIndex;
@@ -720,9 +725,14 @@ public class RaceController : Singleton<RaceController>
     //     scoreSortedRacers.Add(racer);
     // }
 
-    public void SortRacerScores()
+
+    /// <summary>
+    /// Take a list of mechRacers and sorts it based on current racer scores, with highest score being element 0.
+    /// </summary>
+    /// <param name="racersToSort"> List of mechRacers to sort based on current scores. </param>
+    public static void SortRacerScores(List<MechRacer> racersToSort)
     {
-        scoreSortedRacers.Sort(CompareRacerScores);
+        racersToSort.Sort(CompareRacerScores);
 
         /// <summary>
         /// Comparison function used for sorting racers based on total score

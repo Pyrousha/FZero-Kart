@@ -36,6 +36,7 @@ public class PlayerLobbyCard : MonoBehaviour
 
     /// <summary>
     /// Called when the player this card is linked to readies up.
+    /// Plays the check turnign green animation and sets ready to true.
     /// </summary>
     public void ReadyUp()
     {

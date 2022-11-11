@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneTransitioner : Singleton<SceneTransitioner>
 {
-    private enum RaceTypeEnum
+    public enum RaceTypeEnum
     {
         GrandPrix, //structed set of bundled races (predetermined order) (4 races per cup)
         VsRace, //Series of races, # set by the player, option to vote for each track or random
@@ -27,10 +27,13 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     [SerializeField] private List<RaceCupStruct> cups;
     private RaceCupStruct currCup;
 
-    private int totalVSRaces; //how many races to play for this VS race series
-    private int racesCompleted; //Index of current race in currCup (so from 0 to length-1)
+    //private int totalVSRaces; //how many races to play for this VS race series
+    private int numRacesCompleted; //Index of current race in currCup (so from 0 to length-1)
+    private int numRacesToPlay;
 
-    public bool isFirstRace => (racesCompleted == 0);
+    private bool headBackToLobbyBetweenRaces;
+
+    public bool isFirstRace => (numRacesCompleted == 0);
 
     void Start()
     {
@@ -38,93 +41,101 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         SceneManager.LoadScene(lobbySceneIndex);
     }
 
+    public void SetRaceType(RaceTypeEnum _raceType, int _racesToPlay = 1, bool vsRaceBackToLobby = true)
+    {
+        raceType = _raceType;
+        numRacesCompleted = 0;
+
+        switch (_raceType)
+        {
+            case (RaceTypeEnum.GrandPrix):
+                {
+                    headBackToLobbyBetweenRaces = false;
+
+                    numRacesToPlay = _racesToPlay;
+                    break;
+                }
+            case (RaceTypeEnum.VsRace):
+                {
+                    headBackToLobbyBetweenRaces = vsRaceBackToLobby;
+
+                    numRacesToPlay = _racesToPlay;
+                    break;
+                }
+            case (RaceTypeEnum.Endless):
+                {
+                    headBackToLobbyBetweenRaces = false;
+
+                    numRacesToPlay = 1;
+                    break;
+                }
+            case (RaceTypeEnum.BattleRoyale):
+                {
+                    headBackToLobbyBetweenRaces = false;
+
+                    numRacesToPlay = 1;
+                    break;
+                }
+        }
+    }
+
     public void StartCup(int cupIndex)
     {
         PreRaceInitializer.Instance.InitalizeRacers();
 
         currCup = cups[cupIndex];
-        racesCompleted = 0;
-        ToNextRaceInCup();
+        SetRaceType(RaceTypeEnum.GrandPrix, currCup.raceBuildIndices.Count);
+
+        LoadRace(currCup.raceBuildIndices[0]);
         //Spawn racers and load first race
+    }
+
+    /// <summary>
+    /// Called when the race has finished forr all players, determines what scene to load next (either to lobby, next race, or end screen)
+    /// </summary>
+    public void OnRaceFinished()
+    {
+        numRacesCompleted++;
+
+        if (numRacesCompleted >= numRacesToPlay)
+        {
+            //Played all races, load the score scene
+            SceneManager.LoadScene(scoreSceneIndex);
+        }
+        else
+        {
+            if (headBackToLobbyBetweenRaces)
+            {
+                //Head back to the lobby for voting
+                for (int i = 0; i < PreRaceInitializer.ExistingRacerStandings.Count; i++)
+                {
+                    MechRacer currRacer = PreRaceInitializer.ExistingRacerStandings[i];
+                    currRacer.OnEnterLobby(false);
+                }
+
+                SceneManager.LoadScene(lobbySceneIndex);
+            }
+            else
+            {
+                //Load right into the next race (Grand Prix only so far)
+                LoadRace(currCup.raceBuildIndices[numRacesCompleted]);
+            }
+        }
     }
 
 
     /// <summary>
-    /// Called when a race has finished, determines what scene to load next (either to lobby, next race, or end screen)
+    /// Loads the given race scene index 
     /// </summary>
-    public void OnRaceEnded()
+    /// <param name="raceIndex"> build index of race to load </param>
+    public void LoadRace(int raceIndex)
     {
         foreach (MechRacer racer in PreRaceInitializer.ExistingRacerStandings)
         {
             racer.OnNewRaceLoading();
         }
 
-        switch (raceType)
-        {
-            case RaceTypeEnum.GrandPrix:
-                {
-                    racesCompleted++;
-
-                    ToNextRaceInCup();
-                    break;
-                }
-            case RaceTypeEnum.VsRace:
-                {
-                    racesCompleted++;
-
-                    ToNextRaceInVS();
-                    break;
-                }
-            case RaceTypeEnum.Endless:
-                {
-                    break;
-                }
-            case RaceTypeEnum.BattleRoyale:
-                {
-                    break;
-                }
-        }
-    }
-
-    /// <summary>
-    /// Called when a race in a cup has finished, loads the next race or goes to score screen.
-    /// </summary>
-    private void ToNextRaceInCup()
-    {
-        if (racesCompleted < currCup.raceBuildIndices.Count)
-        {
-            //load next race scene
-            SceneManager.LoadScene(currCup.raceBuildIndices[racesCompleted]);
-        }
-        else
-        {
-            //all races played, go to score screen
-            SceneManager.LoadScene(scoreSceneIndex);
-        }
-    }
-
-    /// <summary>
-    /// Called when a race in a cup has finished, loads the next race or goes to score screen.
-    /// </summary>
-    private void ToNextRaceInVS()
-    {
-        if (racesCompleted < totalVSRaces)
-        {
-            //Head back to the lobby and vote for the next race
-            for (int i = 0; i < PreRaceInitializer.ExistingRacerStandings.Count; i++)
-            {
-                MechRacer currRacer = PreRaceInitializer.ExistingRacerStandings[i];
-                currRacer.OnEnterLobby(false);
-            }
-
-
-            SceneManager.LoadScene(lobbySceneIndex);
-        }
-        else
-        {
-            //all races played, go to score screen
-            SceneManager.LoadScene(scoreSceneIndex);
-        }
+        SceneManager.LoadScene(raceIndex);
     }
 
     /// <summary>

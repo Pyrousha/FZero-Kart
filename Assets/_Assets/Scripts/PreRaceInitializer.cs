@@ -17,8 +17,43 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
     public static List<MechRacer> ExistingRacerStandings => existingRacerStandings;
 
     /// <summary>
-    /// Spawns as many NPC racers as needed, and initializes their parameters.
+    /// Get all racers that are in the lobby, check if they are in the existingRacer list, then spawn cards for all racers.
+    /// </summary>
+    public void Start()
+    {
+        List<MechRacer> racersInLobby = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
+        foreach (MechRacer racer in racersInLobby)
+        {
+            if (!existingRacerStandings.Contains(racer))
+            {
+                //Add this racer to the array
+                existingRacerStandings.Add(racer);
+            }
+        }
+
+        RaceController.SortRacerScores(existingRacerStandings);
+
+        //If the first place player has score > 0, then at least 1 race has been played, so rankings should be shown in card
+        bool showPositionInCard = existingRacerStandings[0].Score > 0;
+
+
+        for (int i = 0; i < existingRacerStandings.Count; i++)
+        {
+            MechRacer racer = existingRacerStandings[i];
+
+            int posNum;
+            if (showPositionInCard)
+                posNum = RaceController.GetCurrentSharedPosition(i, racer, existingRacerStandings);
+            else
+                posNum = 0;
+
+            LobbyController.Instance.CreateCard(racer, posNum);
+        }
+    }
+
+    /// <summary>
     /// Called when everyone is ready and the cup starts.
+    /// Spawns as many NPC racers as needed, and initializes their parameters.
     /// </summary>
     public void InitalizeRacers()
     {
