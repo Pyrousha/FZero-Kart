@@ -7,16 +7,23 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 {
     public enum RaceTypeEnum
     {
+        Story,
+        TimeTrial,
         GrandPrix, //structed set of bundled races (predetermined order) (4 races per cup)
-        VsRace, //Series of races, # set by the player, option to vote for each track or random
-        Endless, //Online multiplayer, only 1 race at a time and then voting between, also points earned is persistent
-        BattleRoyale //Only 1 race at a time
+        CustomVsRace, //Series of races, # set by the player, option to vote for each track or random
+        BattleRoyale, //Only 1 race at a time, defeat other players and survive
+        QuickPlay, //Online multiplayer, only 1 race at a time and then voting between, also points earned is persistent
     }
 
+    public bool SingleplayerMode { get; private set; }
     private RaceTypeEnum raceType;
 
+    [SerializeField] private GameObject player;
+
+    [SerializeField] private int StorySceneIndex;
     [SerializeField] private int lobbySceneIndex;
     [SerializeField] private int scoreSceneIndex;
+    [SerializeField] private int mainMenuSceneIndex;
 
     [System.Serializable]
     public struct RaceCupStruct
@@ -33,12 +40,12 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
     private bool headBackToLobbyBetweenRaces;
 
-    public bool isFirstRace => (numRacesCompleted == 0);
+    public bool IsFirstRace => (numRacesCompleted == 0);
 
     void Start()
     {
         //Load lobby scene
-        SceneManager.LoadScene(lobbySceneIndex);
+        //SceneManager.LoadScene(mainMenuSceneIndex);
     }
 
     public void SetRaceType(RaceTypeEnum _raceType, int _racesToPlay = 1, bool vsRaceBackToLobby = true)
@@ -55,21 +62,19 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                     numRacesToPlay = _racesToPlay;
                     break;
                 }
-            case (RaceTypeEnum.VsRace):
+            case (RaceTypeEnum.CustomVsRace):
                 {
                     headBackToLobbyBetweenRaces = vsRaceBackToLobby;
 
                     numRacesToPlay = _racesToPlay;
                     break;
                 }
-            case (RaceTypeEnum.Endless):
+            case (RaceTypeEnum.Story):
                 {
-                    headBackToLobbyBetweenRaces = false;
-
-                    numRacesToPlay = 1;
+                    Debug.LogError("Should not set sceneTransitioner racetype to \"Story\"");
                     break;
                 }
-            case (RaceTypeEnum.BattleRoyale):
+            default: //time trial, battleRoyale, or quickPlay
                 {
                     headBackToLobbyBetweenRaces = false;
 
@@ -123,7 +128,6 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         }
     }
 
-
     /// <summary>
     /// Loads the given race scene index 
     /// </summary>
@@ -162,5 +166,98 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
         //Load lobby scene
         SceneManager.LoadScene(lobbySceneIndex);
+    }
+
+    public enum VoteTypeEnum
+    {
+        HostChoice,
+        HighestVote,
+        InOrder,
+        Roulette,
+        TakeTurns,
+        Random
+    }
+
+    private VoteTypeEnum voteType;
+
+    public void ButtonPressed(GamemodeButton _gameModeButton)
+    {
+        raceType = _gameModeButton.RaceType;
+        SingleplayerMode = _gameModeButton.Singleplayer;
+
+        if (SingleplayerMode)
+        {
+            switch (raceType)
+            {
+                case RaceTypeEnum.Story:
+                    {
+                        //Load story mode scene
+                        player.SetActive(true);
+
+                        SceneManager.LoadScene(StorySceneIndex);
+                        break;
+                    }
+                case RaceTypeEnum.TimeTrial:
+                    {
+                        //Load into lobby for track selection
+                        player.SetActive(true);
+
+                        SceneManager.LoadScene(lobbySceneIndex);
+                        break;
+                    }
+                case RaceTypeEnum.GrandPrix:
+                    {
+                        //Load into lobby for cup selection
+                        player.SetActive(true);
+
+                        SceneManager.LoadScene(lobbySceneIndex);
+                        break;
+                    }
+                case RaceTypeEnum.CustomVsRace:
+                    {
+                        //Show singleplayer vs settings menu
+                        break;
+                    }
+                case RaceTypeEnum.BattleRoyale:
+                    {
+                        //Load into lobby for track selection
+                        player.SetActive(true);
+
+                        SceneManager.LoadScene(lobbySceneIndex);
+                        break;
+                    }
+            }
+        }
+        else
+        {
+            switch (raceType)
+            {
+                case RaceTypeEnum.TimeTrial:
+                    {
+                        //Load into lobby for track selection
+                        break;
+                    }
+                case RaceTypeEnum.GrandPrix:
+                    {
+                        //Load into lobby for cup selection
+                        break;
+                    }
+                case RaceTypeEnum.CustomVsRace:
+                    {
+                        //Show singleplayer vs settings menu
+                        break;
+                    }
+                case RaceTypeEnum.BattleRoyale:
+                    {
+                        //Load into lobby for track selection
+                        break;
+                    }
+                case RaceTypeEnum.QuickPlay:
+                    {
+                        //Find or create quick play lobby
+                        break;
+                    }
+            }
+        }
     }
 }

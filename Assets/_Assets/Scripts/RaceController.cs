@@ -405,7 +405,7 @@ public class RaceController : Singleton<RaceController>
     private IEnumerator SpawnRacerScorecards(List<MechRacer> thisRacePlacements, List<MechRacer> newOverallPlacements)
     {
         List<MechRacer> previousOverallPlacements = new List<MechRacer>(PreRaceInitializer.ExistingRacerStandings);
-        if (SceneTransitioner.Instance.isFirstRace)
+        if (SceneTransitioner.Instance.IsFirstRace)
             previousOverallPlacements.Reverse();
 
         raceOverCanvas.GetComponent<Animator>().SetTrigger("ShowCurr");
@@ -470,7 +470,7 @@ public class RaceController : Singleton<RaceController>
             int newPosNum = GetCurrentSharedPosition(newPosIndex, racer, newOverallPlacements);
 
             int firstRacePlace = 0;
-            if (SceneTransitioner.Instance.isFirstRace)
+            if (SceneTransitioner.Instance.IsFirstRace)
             {
                 firstRacePlace = numTotalRacers;
                 prevPosNum = numTotalRacers;
@@ -487,7 +487,7 @@ public class RaceController : Singleton<RaceController>
         int playerNewPosNum = GetCurrentSharedPosition(newOverallPlacements.IndexOf(localPlayerMech), localPlayerMech, newOverallPlacements);
 
         int playerFirstRacePlace = 0;
-        if (SceneTransitioner.Instance.isFirstRace)
+        if (SceneTransitioner.Instance.IsFirstRace)
         {
             playerFirstRacePlace = numTotalRacers;
             playerPrevPosNum = numTotalRacers;

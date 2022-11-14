@@ -17,8 +17,8 @@ TagManager:
   - Checkpoint
   - 
   - 
-  - 
-  - 
+  - Interactable
+  - PlayerInteractHitbox
   - 
   - 
   - 

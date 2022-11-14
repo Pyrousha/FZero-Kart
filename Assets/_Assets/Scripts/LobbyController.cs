@@ -22,7 +22,8 @@ public class LobbyController : Singleton<LobbyController>
     // Start is called before the first frame update
     void Start()
     {
-
+        if (SceneTransitioner.Instance.SingleplayerMode)
+            gameObject.SetActive(false);
     }
 
     // Update is called once per frame
