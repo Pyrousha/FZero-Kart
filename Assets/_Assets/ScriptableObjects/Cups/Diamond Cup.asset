@@ -17,7 +17,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1008eb1db54a4de439189fe69d6168f0, type: 2}
   <CupSprite>k__BackingField: {fileID: 21300000, guid: 42e0f0d1468707a42a2340cc99fcb348,
     type: 3}
-  <BgColor>k__BackingField: {r: 0.50494117, g: 0.74674, b: 0.87058824, a: 1}
+  <BgColor>k__BackingField: {r: 0.6877647, g: 0.80768126, b: 0.87058824, a: 1}
+  <SelectedColor>k__BackingField: {r: 0.13929415, g: 0.6189602, b: 0.87058824, a: 1}
   goldTrophy: {fileID: 21300000, guid: 3121dae06532dce43be7ba1de05585c1, type: 3}
   silverTrophy: {fileID: 21300000, guid: 1cf478ca07e08554287b4365c0570692, type: 3}
   bronzeTrophy: {fileID: 21300000, guid: 74eb24193d20b5d4ca8b16fa247fbd60, type: 3}

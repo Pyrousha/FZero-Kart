@@ -24,7 +24,11 @@ public class SelectableCup : MonoBehaviour
     {
         trophyImage.sprite = RaceCup.GetTrophySprite();
         cupName.text = RaceCup.name;
-        cupBG.color = RaceCup.BgColor;
+
+        ColorBlock cb = cupBG.GetComponent<Button>().colors;
+        cb.selectedColor = RaceCup.SelectedColor;
+        cb.normalColor = RaceCup.BgColor;
+        cupBG.GetComponent<Button>().colors = cb;
 
         cupImage.sprite = RaceCup.CupSprite;
     }

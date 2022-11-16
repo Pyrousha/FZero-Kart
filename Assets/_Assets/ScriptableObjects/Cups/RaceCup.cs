@@ -10,13 +10,14 @@ public class RaceCup : ScriptableObject
     [field: SerializeField] public Sprite CupSprite { get; private set; }
 
     [field: SerializeField] public Color BgColor { get; private set; }
+    [field: SerializeField] public Color SelectedColor { get; private set; }
     [Space(5)]
     [SerializeField] private Sprite goldTrophy;
     [SerializeField] private Sprite silverTrophy;
     [SerializeField] private Sprite bronzeTrophy;
     [SerializeField] private Sprite emptyTrophy;
 
-    [field: SerializeField] public int BestPlacement { get; private set; } = 999;
+    [field: SerializeField] public int BestPlacement { get; private set; }
 
     public void OnCupFinished(int localPlayerPos)
     {
