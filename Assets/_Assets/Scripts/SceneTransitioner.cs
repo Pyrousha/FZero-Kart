@@ -17,7 +17,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     }
 
     public bool SingleplayerMode { get; private set; }
-    private RaceTypeEnum raceType;
+    public RaceTypeEnum RaceType { get; private set; }
 
     [SerializeField] private GameObject player;
 
@@ -42,7 +42,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
     public void SetRaceType(RaceTypeEnum _raceType, int _racesToPlay = 1, bool vsRaceBackToLobby = true)
     {
-        raceType = _raceType;
+        RaceType = _raceType;
         numRacesCompleted = 0;
 
         switch (_raceType)
@@ -96,7 +96,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         //Spawn racers and load first race
         PreRaceInitializer.Instance.InitalizeRacers();
 
-        switch (raceType)
+        switch (RaceType)
         {
             case RaceTypeEnum.GrandPrix:
                 {
@@ -134,7 +134,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         if (numRacesCompleted >= numRacesToPlay)
         {
             //Save data
-            switch (raceType)
+            switch (RaceType)
             {
                 case RaceTypeEnum.GrandPrix:
                     {
@@ -221,14 +221,14 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
     private VoteTypeEnum voteType;
 
-    public void ButtonPressed(GamemodeButton _gameModeButton)
+    public void ButtonPressed(GamemodeButton _gameModeButton, bool hostNewLobby = false)
     {
-        raceType = _gameModeButton.RaceType;
+        RaceType = _gameModeButton.RaceType;
         SingleplayerMode = _gameModeButton.Singleplayer;
 
         if (SingleplayerMode)
         {
-            switch (raceType)
+            switch (RaceType)
             {
                 case RaceTypeEnum.Story:
                     {
@@ -271,7 +271,10 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         }
         else
         {
-            switch (raceType)
+            if (hostNewLobby)
+                LobbyController.HostRacer = player.GetComponent<MechRacer>();
+
+            switch (RaceType)
             {
                 case RaceTypeEnum.TimeTrial:
                     {
@@ -281,6 +284,9 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                 case RaceTypeEnum.GrandPrix:
                     {
                         //Load into lobby for cup selection
+                        player.SetActive(true);
+
+                        SceneManager.LoadScene(lobbySceneIndex);
                         break;
                     }
                 case RaceTypeEnum.CustomVsRace:

@@ -57,6 +57,7 @@ public class MainMenuController : MonoBehaviour
     /// <param name="_gameModeButton"></param>
     public void OnGamemodeButtonPressed(GamemodeButton _gameModeButton)
     {
-        SceneTransitioner.Instance.ButtonPressed(_gameModeButton);
+        //TEMP: assume player is hosting a new lobby
+        SceneTransitioner.Instance.ButtonPressed(_gameModeButton, true);
     }
 }

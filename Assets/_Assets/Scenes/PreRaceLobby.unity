@@ -264,6 +264,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currActiveMenu: 1
+  deactiveAfterPress: 0
+  onCancelledEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2111632198}
+        m_TargetAssemblyTypeName: LobbyController, Assembly-CSharp
+        m_MethodName: BackToMainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &79253770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -375,7 +391,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 249815520}
+      objectReference: {fileID: 1150709435}
     - target: {fileID: 1748768987893488727, guid: b3ba868d5683d454584baad62a545c59,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -616,7 +632,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 249815520}
+      objectReference: {fileID: 628016476}
     - target: {fileID: 1748768987893488727, guid: b3ba868d5683d454584baad62a545c59,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -850,7 +866,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.5660378, g: 0.045389827, b: 0.045389827, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -874,6 +890,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: LobbyController, Assembly-CSharp
         m_MethodName: OnClickedReady
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1793332141}
+        m_TargetAssemblyTypeName: NestedMenuCategory, Assembly-CSharp
+        m_MethodName: OnDeactivate
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -933,9 +961,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NextMenu>k__BackingField: {fileID: 0}
-  onCancelledEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1001 &252713994
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1187,9 +1212,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NextMenu>k__BackingField: {fileID: 307278421}
-  onCancelledEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &307278419
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,6 +1263,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currActiveMenu: 0
+  deactiveAfterPress: 0
+  onCancelledEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &326344045
 GameObject:
   m_ObjectHideFlags: 0
@@ -1410,9 +1436,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NextMenu>k__BackingField: {fileID: 0}
-  onCancelledEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &433632512
 GameObject:
   m_ObjectHideFlags: 0
@@ -1732,9 +1755,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NextMenu>k__BackingField: {fileID: 307278421}
-  onCancelledEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &623850668
 GameObject:
   m_ObjectHideFlags: 0
@@ -1792,9 +1812,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NextMenu>k__BackingField: {fileID: 720541983}
-  onCancelledEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &641147042
 GameObject:
   m_ObjectHideFlags: 0
@@ -2009,6 +2026,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currActiveMenu: 0
+  deactiveAfterPress: 1
+  onCancelledEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &777542231
 GameObject:
   m_ObjectHideFlags: 0
@@ -2038,7 +2059,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 720541982}
-  m_Father: {fileID: 2111632194}
+  m_Father: {fileID: 1947967820}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2118,7 +2139,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 249815520}
+      objectReference: {fileID: 1834431112}
     - target: {fileID: 1748768987893488727, guid: b3ba868d5683d454584baad62a545c59,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -2297,9 +2318,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NextMenu>k__BackingField: {fileID: 720541983}
-  onCancelledEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1200160322
 GameObject:
   m_ObjectHideFlags: 0
@@ -2603,9 +2621,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NextMenu>k__BackingField: {fileID: 307278421}
-  onCancelledEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1327516272
 GameObject:
   m_ObjectHideFlags: 0
@@ -3343,7 +3358,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 150, y: 538}
+  m_AnchoredPosition: {x: 0, y: 130}
   m_SizeDelta: {x: 1200, y: 1080}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1793332140
@@ -3383,6 +3398,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currActiveMenu: 1
+  deactiveAfterPress: 0
+  onCancelledEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1834431111 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1748768987893488727, guid: b3ba868d5683d454584baad62a545c59,
@@ -3408,9 +3427,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NextMenu>k__BackingField: {fileID: 720541983}
-  onCancelledEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1839290637
 GameObject:
   m_ObjectHideFlags: 0
@@ -3544,7 +3560,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1947967820
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3559,6 +3575,7 @@ RectTransform:
   m_Children:
   - {fileID: 1782262979}
   - {fileID: 1839290638}
+  - {fileID: 777542232}
   m_Father: {fileID: 2111632194}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3734,7 +3751,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 777542232}
   - {fileID: 1947967820}
   - {fileID: 433632513}
   - {fileID: 1200160323}
@@ -3824,7 +3840,13 @@ MonoBehaviour:
     type: 3}
   cardParent: {fileID: 1839290638}
   numPlayersReadyText: {fileID: 1782262981}
-  readyButton: {fileID: 249815514}
+  readyButton: {fileID: 720541983}
+  lobbyList: {fileID: 1947967819}
+  startRaceButton: {fileID: 307278421}
+  solo_cupSelection: {fileID: 79253767}
+  multi_cupSelection: {fileID: 1793332138}
+  solo_raceSelection: {fileID: 0}
+  multi_raceSelection: {fileID: 0}
 --- !u!1 &2115950642
 GameObject:
   m_ObjectHideFlags: 0

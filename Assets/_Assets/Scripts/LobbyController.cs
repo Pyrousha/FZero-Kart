@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static SceneTransitioner;
 
 /// <summary>
 /// Controls spawning in new lobby cards, and also starts the race once all players have readied up.
 /// </summary>
 public class LobbyController : Singleton<LobbyController>
 {
+    public static MechRacer HostRacer { get; set; }
+
     [SerializeField] private GameObject lobbyCardPrefab;
     [SerializeField] private Transform cardParent;
 
@@ -17,11 +20,95 @@ public class LobbyController : Singleton<LobbyController>
     private List<PlayerLobbyCard> allLobbyCards = new List<PlayerLobbyCard>();
     private List<PlayerLobbyCard> notReadyCards = new List<PlayerLobbyCard>();
 
-    [SerializeField] private GameObject readyButton;
+    [SerializeField] private NestedMenuCategory readyButton;
+
+    [Header("Gamemode-Specific References")]
+    [SerializeField] private GameObject lobbyList;
+    [SerializeField] private NestedMenuCategory startRaceButton;
+    [Space(5)]
+    [SerializeField] private GameObject solo_cupSelection;
+    [SerializeField] private GameObject multi_cupSelection;
+    [Space(5)]
+    [SerializeField] private GameObject solo_raceSelection;
+    [SerializeField] private GameObject multi_raceSelection;
 
     // Start is called before the first frame update
     void Start()
     {
+        if (SceneTransitioner.Instance.SingleplayerMode)
+        {
+            switch (SceneTransitioner.Instance.RaceType)
+            {
+                case RaceTypeEnum.Story:
+                    {
+                        Debug.LogError("Lobby scene should not be loaded for story mode");
+                        break;
+                    }
+                case RaceTypeEnum.TimeTrial:
+                    {
+                        //Show solo track selection menu
+                        solo_raceSelection.SetActive(true);
+                        break;
+                    }
+                case RaceTypeEnum.GrandPrix:
+                    {
+                        //Show solo cup selection menu
+                        solo_cupSelection.SetActive(true);
+                        break;
+                    }
+                case RaceTypeEnum.CustomVsRace:
+                    {
+                        //Show solo track selection menu
+                        solo_raceSelection.SetActive(true);
+                        break;
+                    }
+                case RaceTypeEnum.BattleRoyale:
+                    {
+                        //Show solo track selection menu
+                        solo_raceSelection.SetActive(true);
+                        break;
+                    }
+            }
+        }
+        else
+        {
+            lobbyList.SetActive(true);
+
+            switch (SceneTransitioner.Instance.RaceType)
+            {
+                case RaceTypeEnum.TimeTrial:
+                    {
+                        //Show multi track selection menu
+                        multi_raceSelection.SetActive(true);
+                        break;
+                    }
+                case RaceTypeEnum.GrandPrix:
+                    {
+                        //Show multi cup selection menu
+                        multi_cupSelection.SetActive(true);
+                        break;
+                    }
+                case RaceTypeEnum.CustomVsRace:
+                    {
+                        //Show multi track selection menu
+                        multi_raceSelection.SetActive(true);
+                        break;
+                    }
+                case RaceTypeEnum.BattleRoyale:
+                    {
+                        //Show multi track selection menu
+                        multi_raceSelection.SetActive(true);
+                        break;
+                    }
+                case RaceTypeEnum.QuickPlay:
+                    {
+                        //Show multi track selection menu
+                        multi_raceSelection.SetActive(true);
+                        break;
+                    }
+            }
+        }
+
         //if (SceneTransitioner.Instance.SingleplayerMode)
         //    gameObject.SetActive(false);
     }
@@ -64,12 +151,12 @@ public class LobbyController : Singleton<LobbyController>
 
             UpdateReadyText();
 
-            readyButton.SetActive(false);
-
             if (notReadyCards.Count == 0)
             {
-                //All players are ready, start the race
-                StartCoroutine(StartRace());
+                //All players are ready, show start race button to host
+
+                if (HostRacer.IsLocalPlayer)
+                    startRaceButton.OnActivate();
             }
         }
     }
@@ -79,6 +166,7 @@ public class LobbyController : Singleton<LobbyController>
     /// </summary>
     public void BackToMainMenu()
     {
+        Debug.Log("back to main menu?");
         SceneTransitioner.Instance.ToMainMenu();
     }
 
@@ -119,5 +207,7 @@ public class LobbyController : Singleton<LobbyController>
     public void OnClickedReady()
     {
         OnPlayerReadiedUp(localPlayerLobbyCard);
+
+        readyButton.OnDeactivate(false);
     }
 }

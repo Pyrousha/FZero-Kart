@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class NestedMenuCategory : MonoBehaviour
 {
     [SerializeField] private bool currActiveMenu = false;
+    [SerializeField] private bool deactiveAfterPress = false;
 
     private Vector3 activeLocation;
     private Vector3 inactiveLocation;
@@ -21,6 +23,8 @@ public class NestedMenuCategory : MonoBehaviour
     private Vector3 lerpDestination = new Vector3(500, 500, 500);
 
     public Button LastSelectedButton { get; private set; }
+
+    [SerializeField] private UnityEvent onCancelledEvent;
 
     void Awake()
     {
@@ -50,9 +54,10 @@ public class NestedMenuCategory : MonoBehaviour
         {
             SetLastSelectedButton();
 
-            LastSelectedButton.GetComponent<NestedMenuButton>()?.OnCancelled();
+            if (onCancelledEvent != null)
+                onCancelledEvent.Invoke();
 
-            OnDeactive();
+            OnDeactivate();
         }
     }
 
@@ -63,6 +68,14 @@ public class NestedMenuCategory : MonoBehaviour
     /// </summary>
     public void OnActivate(NestedMenuCategory _prevMenu = null)
     {
+        StartCoroutine(Activate(_prevMenu));
+    }
+
+    private IEnumerator Activate(NestedMenuCategory _prevMenu = null)
+    {
+        yield return null;
+        yield return null;
+
         currActiveMenu = true;
 
         if (_prevMenu != null)
@@ -79,17 +92,18 @@ public class NestedMenuCategory : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when "menu_back" is pressed while this is the current active menu
+    /// Called when "menu_back" is pressed while this is the current active menu, or if the menu is set to deactivate after pressed.
     /// lerps to "inactive" location and selects the previous menu's first button
     /// </summary>
-    public void OnDeactive()
+    public void OnDeactivate(bool activatePreviousMenu = true)
     {
-        if (previousMenu == null)
+        if (previousMenu == null && activatePreviousMenu)
             return;
 
         currActiveMenu = false;
 
-        previousMenu.LastSelectedButton.Select();
+        if (activatePreviousMenu)
+            previousMenu.OnActivate();
 
         if (currCoroutine != null)
         {
@@ -121,6 +135,10 @@ public class NestedMenuCategory : MonoBehaviour
         currActiveMenu = false;
 
         LastSelectedButton = _buttonPressed.Button;
+
+        if (deactiveAfterPress)
+            OnDeactivate(false);
+
         _buttonPressed.NextMenu.OnActivate(this);
     }
 
