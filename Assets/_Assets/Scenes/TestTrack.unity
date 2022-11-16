@@ -15539,8 +15539,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cutPowerToLastHumanPlayer: 1
+  endRaceOnceAllHumansFinish: 1
   scoreMode_125Max: 1
-  maxScoreFillDuration: 1
   firstPlaceColor: {r: 0.9, g: 0.6969027, b: 0, a: 1}
   secondPlaceColor: {r: 0.8679245, g: 0.6005721, b: 0.5444998, a: 1}
   thirdPlaceColor: {r: 0.9, g: 0.47532463, b: 0.21038957, a: 1}

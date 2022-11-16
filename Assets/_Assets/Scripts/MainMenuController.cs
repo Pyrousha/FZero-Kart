@@ -38,16 +38,6 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    public void ChoseSingleplayer()
-    {
-
-    }
-
-    public void ChoseMultiplayer()
-    {
-
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -58,5 +48,15 @@ public class MainMenuController : MonoBehaviour
     void Update()
     {
 
+    }
+
+    /// <summary>
+    /// Called when the player pressed a gamemode button (such as vsRace, Grand Prix, etc.),
+    /// and passes that info to SceneTransitioner.
+    /// </summary>
+    /// <param name="_gameModeButton"></param>
+    public void OnGamemodeButtonPressed(GamemodeButton _gameModeButton)
+    {
+        SceneTransitioner.Instance.ButtonPressed(_gameModeButton);
     }
 }

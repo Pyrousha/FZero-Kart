@@ -22,8 +22,8 @@ public class LobbyController : Singleton<LobbyController>
     // Start is called before the first frame update
     void Start()
     {
-        if (SceneTransitioner.Instance.SingleplayerMode)
-            gameObject.SetActive(false);
+        //if (SceneTransitioner.Instance.SingleplayerMode)
+        //    gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -74,11 +74,31 @@ public class LobbyController : Singleton<LobbyController>
         }
     }
 
+    /// <summary>
+    /// Called when player presses back button, loads back to main menu
+    /// </summary>
+    public void BackToMainMenu()
+    {
+        SceneTransitioner.Instance.ToMainMenu();
+    }
+
+    /// <summary>
+    /// Called when the host clicks "start race" (means all players are ready)
+    /// </summary>
+    public void OnClickedStartRace()
+    {
+        StartCoroutine(StartRace());
+    }
+
+    /// <summary>
+    /// Called when all players are ready and host presses start
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator StartRace()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.01f);
         PreRaceInitializer.Instance.InitalizeRacers();
-        SceneTransitioner.Instance.LoadRace(4);
+        SceneTransitioner.Instance.StartFirstRace();
         //SceneTransitioner.Instance.StartCup(0);
     }
 

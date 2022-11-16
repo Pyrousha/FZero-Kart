@@ -8,7 +8,6 @@ using UnityEngine.EventSystems;
 public class NestedMenuCategory : MonoBehaviour
 {
     [SerializeField] private bool currActiveMenu = false;
-    private bool startMenu = false;
 
     private Vector3 activeLocation;
     private Vector3 inactiveLocation;
@@ -40,7 +39,6 @@ public class NestedMenuCategory : MonoBehaviour
     {
         if (currActiveMenu)
         {
-            startMenu = true;
             OnActivate();
         }
     }
@@ -51,6 +49,9 @@ public class NestedMenuCategory : MonoBehaviour
         if ((InputHandler.Instance.Menu_Back.down) && (currActiveMenu))
         {
             SetLastSelectedButton();
+
+            LastSelectedButton.GetComponent<NestedMenuButton>()?.OnCancelled();
+
             OnDeactive();
         }
     }

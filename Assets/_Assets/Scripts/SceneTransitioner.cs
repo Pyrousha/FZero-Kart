@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,15 +26,6 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     [SerializeField] private int scoreSceneIndex;
     [SerializeField] private int mainMenuSceneIndex;
 
-    [System.Serializable]
-    public struct RaceCupStruct
-    {
-        public List<int> raceBuildIndices;
-    }
-
-    [SerializeField] private List<RaceCupStruct> cups;
-    private RaceCupStruct currCup;
-
     //private int totalVSRaces; //how many races to play for this VS race series
     private int numRacesCompleted; //Index of current race in currCup (so from 0 to length-1)
     private int numRacesToPlay;
@@ -44,8 +36,8 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
     void Start()
     {
-        //Load lobby scene
-        //SceneManager.LoadScene(mainMenuSceneIndex);
+        //Load main menu scene
+        ToMainMenu();
     }
 
     public void SetRaceType(RaceTypeEnum _raceType, int _racesToPlay = 1, bool vsRaceBackToLobby = true)
@@ -55,21 +47,21 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
         switch (_raceType)
         {
-            case (RaceTypeEnum.GrandPrix):
+            case RaceTypeEnum.GrandPrix:
                 {
                     headBackToLobbyBetweenRaces = false;
 
                     numRacesToPlay = _racesToPlay;
                     break;
                 }
-            case (RaceTypeEnum.CustomVsRace):
+            case RaceTypeEnum.CustomVsRace:
                 {
                     headBackToLobbyBetweenRaces = vsRaceBackToLobby;
 
                     numRacesToPlay = _racesToPlay;
                     break;
                 }
-            case (RaceTypeEnum.Story):
+            case RaceTypeEnum.Story:
                 {
                     Debug.LogError("Should not set sceneTransitioner racetype to \"Story\"");
                     break;
@@ -84,15 +76,52 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         }
     }
 
-    public void StartCup(int cupIndex)
+    private RaceCup currCup;
+
+    /// <summary>
+    /// Sets what cup the local player has selected
+    /// </summary>
+    /// <param name="_cup"></param>
+    public void SetCup(RaceCup _cup)
     {
+        currCup = _cup;
+        SetRaceType(RaceTypeEnum.GrandPrix, currCup.Courses.Count);
+    }
+
+    /// <summary>
+    /// Spawn in NPC racers and load the first (or only) race
+    /// </summary>
+    public void StartFirstRace()
+    {
+        //Spawn racers and load first race
         PreRaceInitializer.Instance.InitalizeRacers();
 
-        currCup = cups[cupIndex];
-        SetRaceType(RaceTypeEnum.GrandPrix, currCup.raceBuildIndices.Count);
+        switch (raceType)
+        {
+            case RaceTypeEnum.GrandPrix:
+                {
+                    LoadRace(currCup.Courses[0].BuildIndex);
+                    break;
+                }
+            case RaceTypeEnum.CustomVsRace:
+                {
+                    //TODO: Start first VS race
 
-        LoadRace(currCup.raceBuildIndices[0]);
-        //Spawn racers and load first race
+                    break;
+                }
+            case RaceTypeEnum.Story:
+                {
+                    Debug.LogError("Cannot start first race with racetype \"Story\"");
+                    break;
+                }
+            default: //time trial, battleRoyale, or quickPlay
+                {
+                    headBackToLobbyBetweenRaces = false;
+
+                    numRacesToPlay = 1;
+                    break;
+                }
+        }
     }
 
     /// <summary>
@@ -104,6 +133,18 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
         if (numRacesCompleted >= numRacesToPlay)
         {
+            //Save data
+            switch (raceType)
+            {
+                case RaceTypeEnum.GrandPrix:
+                    {
+                        MechRacer playerMech = player.GetComponent<MechRacer>();
+                        int playerPos = PreRaceInitializer.ExistingRacerStandings.IndexOf(playerMech) + 1;
+                        currCup.OnCupFinished(playerPos);
+                        break;
+                    }
+            }
+
             //Played all races, load the score scene
             SceneManager.LoadScene(scoreSceneIndex);
         }
@@ -123,7 +164,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
             else
             {
                 //Load right into the next race (Grand Prix only so far)
-                LoadRace(currCup.raceBuildIndices[numRacesCompleted]);
+                LoadRace(currCup.Courses[numRacesCompleted].BuildIndex);
             }
         }
     }
@@ -259,5 +300,15 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                     }
             }
         }
+    }
+
+    /// <summary>
+    /// Loads back to the Main Menu
+    /// </summary>
+    public void ToMainMenu()
+    {
+        player.SetActive(false);
+
+        SceneManager.LoadScene(mainMenuSceneIndex);
     }
 }
