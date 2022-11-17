@@ -29,6 +29,6 @@ public class MainCameraTracker : MonoBehaviour
                 }
         }
 
-        Debug.Log("Highest Prio Camera: " + mainCamTransform.name);
+        //Debug.Log("Highest Prio Camera: " + mainCamTransform.name);
     }
 }

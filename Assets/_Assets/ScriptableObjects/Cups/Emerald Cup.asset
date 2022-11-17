@@ -23,4 +23,4 @@ MonoBehaviour:
   silverTrophy: {fileID: 21300000, guid: 1cf478ca07e08554287b4365c0570692, type: 3}
   bronzeTrophy: {fileID: 21300000, guid: 74eb24193d20b5d4ca8b16fa247fbd60, type: 3}
   emptyTrophy: {fileID: 21300000, guid: 3de51e2837dda204181dfc5d3ac6b540, type: 3}
-  <BestPlacement>k__BackingField: 999
+  <BestPlacement>k__BackingField: 1

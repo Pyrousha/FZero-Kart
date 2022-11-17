@@ -181,6 +181,8 @@ public class RaceController : Singleton<RaceController>
             }
         }
 
+        PrintRankings(currentRacers);
+
         for (int i = 0; i < currentRacers.Count; i++)
         {
             currentRacers[i].transform.position = racerSpacePositions[numTotalRacers - 1 - i];
@@ -382,15 +384,20 @@ public class RaceController : Singleton<RaceController>
 
         SortRacerScores(scoreSortedRacers);
 
+        StartCoroutine(SpawnRacerScorecards(endingPositions, scoreSortedRacers));
+
+        PrintRankings(scoreSortedRacers);
+    }
+
+    private void PrintRankings(List<MechRacer> _racers)
+    {
         //Print curring ranking to console
         string rankings = "New Rankings: \n";
-        for (int i = 0; i < scoreSortedRacers.Count; i++)
+        for (int i = 0; i < _racers.Count; i++)
         {
-            MechRacer currRacer = scoreSortedRacers[i];
-            rankings += ("-" + (i + 1) + RacePosSuffix(i + 1) + ": " + currRacer.Score + "pts: " + currRacer.name + "\n");
+            MechRacer currRacer = _racers[i];
+            rankings += "-" + (i + 1) + RacePosSuffix(i + 1) + ": " + currRacer.Score + "pts: " + currRacer.name + "\n";
         }
-
-        StartCoroutine(SpawnRacerScorecards(endingPositions, scoreSortedRacers));
 
         Debug.Log(rankings);
     }

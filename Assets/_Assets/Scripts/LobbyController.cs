@@ -25,6 +25,7 @@ public class LobbyController : Singleton<LobbyController>
     [Header("Gamemode-Specific References")]
     [SerializeField] private GameObject lobbyList;
     [SerializeField] private NestedMenuCategory startRaceButton;
+    [SerializeField] private GameObject raceTimePopup;
     [Space(5)]
     [SerializeField] private GameObject solo_cupSelection;
     [SerializeField] private GameObject multi_cupSelection;
@@ -125,7 +126,7 @@ public class LobbyController : Singleton<LobbyController>
         if (racer.IsLocalPlayer)
             localPlayerLobbyCard = newCard;
 
-        newCard.transform.parent = cardParent;
+        newCard.transform.SetParent(cardParent);
 
         newCard.SetRacerStats(racer, posNum);
 
@@ -172,19 +173,19 @@ public class LobbyController : Singleton<LobbyController>
 
     /// <summary>
     /// Called when the host clicks "start race" (means all players are ready)
+    /// Play the "race time" popup anim and then load into the race
     /// </summary>
     public void OnClickedStartRace()
     {
-        StartCoroutine(StartRace());
+        raceTimePopup.SetActive(true);
     }
 
     /// <summary>
-    /// Called when all players are ready and host presses start
+    /// Called when raceTime anim ends, loads into race
     /// </summary>
     /// <returns></returns>
-    private IEnumerator StartRace()
+    public void StartRace()
     {
-        yield return new WaitForSeconds(0.01f);
         PreRaceInitializer.Instance.InitalizeRacers();
         SceneTransitioner.Instance.StartFirstRace();
         //SceneTransitioner.Instance.StartCup(0);
