@@ -167,7 +167,6 @@ public class LobbyController : Singleton<LobbyController>
     /// </summary>
     public void BackToMainMenu()
     {
-        Debug.Log("back to main menu?");
         SceneTransitioner.Instance.ToMainMenu();
     }
 

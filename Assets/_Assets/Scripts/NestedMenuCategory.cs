@@ -14,7 +14,7 @@ public class NestedMenuCategory : MonoBehaviour
     private Vector3 activeLocation;
     private Vector3 inactiveLocation;
 
-    private NestedMenuCategory previousMenu;
+    [SerializeField] private NestedMenuCategory previousMenu;
     private NestedMenuCategory nextMenu;
 
     private List<Button> buttons = new List<Button>();
@@ -22,7 +22,7 @@ public class NestedMenuCategory : MonoBehaviour
     private Coroutine currCoroutine = null;
     private Vector3 lerpDestination = new Vector3(500, 500, 500);
 
-    public Button LastSelectedButton { get; private set; }
+    [field: SerializeField] public Button LastSelectedButton { get; private set; }
 
     [SerializeField] private UnityEvent onCancelledEvent;
 
@@ -30,7 +30,7 @@ public class NestedMenuCategory : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            buttons.Add(transform.GetChild(i).GetComponent<Button>());
+            buttons = new List<Button>(GetComponentsInChildren<Button>());
         }
 
         LastSelectedButton = buttons[0];
@@ -66,9 +66,18 @@ public class NestedMenuCategory : MonoBehaviour
     /// lerps to "active" location and selects first button
     /// Additionally, sets previous menu var to menu which called this function
     /// </summary>
-    public void OnActivate(NestedMenuCategory _prevMenu = null)
+    public void OnActivate(NestedMenuCategory _prevMenu)
     {
         StartCoroutine(Activate(_prevMenu));
+    }
+
+    /// <summary>
+    /// Called when this menu becomes the currently active one.
+    /// lerps to "active" location and selects first button
+    /// </summary>
+    public void OnActivate()
+    {
+        StartCoroutine(Activate());
     }
 
     private IEnumerator Activate(NestedMenuCategory _prevMenu = null)
@@ -97,8 +106,16 @@ public class NestedMenuCategory : MonoBehaviour
     /// </summary>
     public void OnDeactivate(bool activatePreviousMenu = true)
     {
+        StartCoroutine(Deactivate(activatePreviousMenu));
+    }
+
+    private IEnumerator Deactivate(bool activatePreviousMenu = true)
+    {
+        yield return null;
+        yield return null;
+
         if (previousMenu == null && activatePreviousMenu)
-            return;
+            yield break;
 
         currActiveMenu = false;
 
