@@ -186,7 +186,7 @@ public class LobbyController : Singleton<LobbyController>
     /// <returns></returns>
     public void StartRace()
     {
-        PreRaceInitializer.Instance.InitalizeRacers();
+        //PreRaceInitializer.Instance.InitalizeRacers();
         SceneTransitioner.Instance.StartFirstRace();
         //SceneTransitioner.Instance.StartCup(0);
     }

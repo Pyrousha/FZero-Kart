@@ -49,6 +49,8 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
 
             LobbyController.Instance.CreateCard(racer, posNum);
         }
+
+        //RaceController.PrintRankings(existingRacerStandings);
     }
 
     /// <summary>
@@ -79,10 +81,14 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
             existingRacerStandings[i].GetComponent<NPCController>().SetAIParams(evoStats.stats[racerIndex]);
         }
         #endregion
+
+        //RaceController.PrintRankings(existingRacerStandings);
     }
 
     public static void UpdateRacerStandings(List<MechRacer> newStandings)
     {
         existingRacerStandings = new List<MechRacer>(newStandings);
+
+        //RaceController.PrintRankings(existingRacerStandings);
     }
 }

@@ -181,7 +181,7 @@ public class RaceController : Singleton<RaceController>
             }
         }
 
-        PrintRankings(currentRacers);
+        //PrintRankings(currentRacers);
 
         for (int i = 0; i < currentRacers.Count; i++)
         {
@@ -386,10 +386,10 @@ public class RaceController : Singleton<RaceController>
 
         StartCoroutine(SpawnRacerScorecards(endingPositions, scoreSortedRacers));
 
-        PrintRankings(scoreSortedRacers);
+        //PrintRankings(scoreSortedRacers);
     }
 
-    private void PrintRankings(List<MechRacer> _racers)
+    public static void PrintRankings(List<MechRacer> _racers)
     {
         //Print curring ranking to console
         string rankings = "New Rankings: \n";
