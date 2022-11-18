@@ -33,6 +33,9 @@ public class SelectableCup : MonoBehaviour
         cupImage.sprite = RaceCup.CupSprite;
     }
 
+    /// <summary>
+    /// Called when the local player selects a cup, sets that information on the SceneTransitioner
+    /// </summary>
     public void SetCup()
     {
         SceneTransitioner.Instance.SetCup(RaceCup);

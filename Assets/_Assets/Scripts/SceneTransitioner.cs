@@ -40,7 +40,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         ToMainMenu();
     }
 
-    public void SetRaceType(RaceTypeEnum _raceType, int _racesToPlay = 1, bool vsRaceBackToLobby = true)
+    public void SetRaceType(RaceTypeEnum _raceType, int _racesToPlay = -1, bool vsRaceBackToLobby = true)
     {
         RaceType = _raceType;
         numRacesCompleted = 0;
@@ -51,14 +51,20 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                 {
                     headBackToLobbyBetweenRaces = false;
 
-                    numRacesToPlay = _racesToPlay;
+                    if (_racesToPlay > 0)
+                        numRacesToPlay = _racesToPlay;
+                    else
+                        Debug.LogError("trying to set nonpositive number of races to play");
                     break;
                 }
             case RaceTypeEnum.CustomVsRace:
                 {
                     headBackToLobbyBetweenRaces = vsRaceBackToLobby;
 
-                    numRacesToPlay = _racesToPlay;
+                    if (_racesToPlay > 0)
+                        numRacesToPlay = _racesToPlay;
+                    else
+                        Debug.LogError("trying to set nonpositive number of races to play");
                     break;
                 }
             case RaceTypeEnum.Story:
@@ -88,6 +94,18 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         SetRaceType(RaceTypeEnum.GrandPrix, currCup.Courses.Count);
     }
 
+    private RaceCourse currTrack;
+
+    /// <summary>
+    /// Sets what track the local player has selected
+    /// </summary>
+    /// <param name="_cup"></param>
+    public void SetTrack(RaceCourse _track)
+    {
+        currTrack = _track;
+        SetRaceType(RaceTypeEnum.CustomVsRace);
+    }
+
     /// <summary>
     /// Spawn in NPC racers and load the first (or only) race
     /// </summary>
@@ -96,32 +114,34 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         //Spawn racers and load first race
         PreRaceInitializer.Instance.InitalizeRacers();
 
-        switch (RaceType)
-        {
-            case RaceTypeEnum.GrandPrix:
-                {
-                    LoadRace(currCup.Courses[0].BuildIndex);
-                    break;
-                }
-            case RaceTypeEnum.CustomVsRace:
-                {
-                    //TODO: Start first VS race
+        LoadNextRace();
 
-                    break;
-                }
-            case RaceTypeEnum.Story:
-                {
-                    Debug.LogError("Cannot start first race with racetype \"Story\"");
-                    break;
-                }
-            default: //time trial, battleRoyale, or quickPlay
-                {
-                    headBackToLobbyBetweenRaces = false;
+        // switch (RaceType)
+        // {
+        //     case RaceTypeEnum.GrandPrix:
+        //         {
+        //             LoadRace(currCup.Courses[0].BuildIndex);
+        //             break;
+        //         }
+        //     case RaceTypeEnum.CustomVsRace:
+        //         {
+        //             //Start first VS race
+        //             LoadRace(currTrack.BuildIndex);
+        //             break;
+        //         }
+        //     case RaceTypeEnum.Story:
+        //         {
+        //             Debug.LogError("Cannot start first race with racetype \"Story\"");
+        //             break;
+        //         }
+        //     default: //time trial, battleRoyale, or quickPlay
+        //         {
+        //             headBackToLobbyBetweenRaces = false;
 
-                    numRacesToPlay = 1;
-                    break;
-                }
-        }
+        //             numRacesToPlay = 1;
+        //             break;
+        //         }
+        // }
     }
 
     /// <summary>
@@ -164,23 +184,34 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
             else
             {
                 //Load right into the next race (Grand Prix only so far)
-                LoadRace(currCup.Courses[numRacesCompleted].BuildIndex);
+                LoadNextRace();
             }
         }
     }
 
     /// <summary>
-    /// Loads the given race scene index 
+    /// Loads the next race scene based on race type
     /// </summary>
-    /// <param name="raceIndex"> build index of race to load </param>
-    public void LoadRace(int raceIndex)
+    private void LoadNextRace()
     {
         foreach (MechRacer racer in PreRaceInitializer.ExistingRacerStandings)
         {
             racer.OnNewRaceLoading();
         }
 
-        SceneManager.LoadScene(raceIndex);
+        switch (RaceType)
+        {
+            case RaceTypeEnum.GrandPrix:
+                {
+                    SceneManager.LoadScene(currCup.Courses[numRacesCompleted].BuildIndex);
+                    break;
+                }
+            default:
+                {
+                    SceneManager.LoadScene(currTrack.BuildIndex);
+                    break;
+                }
+        }
     }
 
     /// <summary>
@@ -256,7 +287,10 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                     }
                 case RaceTypeEnum.CustomVsRace:
                     {
-                        //Show singleplayer vs settings menu
+                        //TODO: Show singleplayer vs settings menu
+                        player.SetActive(true);
+
+                        SceneManager.LoadScene(lobbySceneIndex);
                         break;
                     }
                 case RaceTypeEnum.BattleRoyale:
@@ -279,6 +313,9 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                 case RaceTypeEnum.TimeTrial:
                     {
                         //Load into lobby for track selection
+                        player.SetActive(true);
+
+                        SceneManager.LoadScene(lobbySceneIndex);
                         break;
                     }
                 case RaceTypeEnum.GrandPrix:
@@ -291,7 +328,10 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                     }
                 case RaceTypeEnum.CustomVsRace:
                     {
-                        //Show singleplayer vs settings menu
+                        //TODO: Show singleplayer vs settings menu
+                        player.SetActive(true);
+
+                        SceneManager.LoadScene(lobbySceneIndex);
                         break;
                     }
                 case RaceTypeEnum.BattleRoyale:

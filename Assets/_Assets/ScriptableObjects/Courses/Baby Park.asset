@@ -15,4 +15,5 @@ MonoBehaviour:
   <BuildIndex>k__BackingField: 4
   <RaceImage>k__BackingField: {fileID: 21300000, guid: ecf8ddf82a4858c4fbb7559c859994cf,
     type: 3}
+  <SelectedColor>k__BackingField: {r: 0.052431367, g: 0.34267652, b: 0.7490196, a: 1}
   <BgColor>k__BackingField: {r: 0.5153255, g: 0.61372304, b: 0.7490196, a: 1}

@@ -20,8 +20,6 @@ public class LobbyController : Singleton<LobbyController>
     private List<PlayerLobbyCard> allLobbyCards = new List<PlayerLobbyCard>();
     private List<PlayerLobbyCard> notReadyCards = new List<PlayerLobbyCard>();
 
-    [SerializeField] private NestedMenuCategory readyButton;
-
     [Header("Gamemode-Specific References")]
     [SerializeField] private GameObject lobbyList;
     [SerializeField] private NestedMenuCategory startRaceButton;
@@ -32,7 +30,12 @@ public class LobbyController : Singleton<LobbyController>
     [Space(5)]
     [SerializeField] private GameObject solo_raceSelection;
     [SerializeField] private GameObject multi_raceSelection;
+    [Space(10)]
+    [SerializeField] private NestedMenuCategory readyButton_cup;
+    [SerializeField] private NestedMenuCategory readyButton_track;
 
+
+    private NestedMenuCategory readyButton;
     // Start is called before the first frame update
     void Start()
     {
@@ -49,24 +52,28 @@ public class LobbyController : Singleton<LobbyController>
                     {
                         //Show solo track selection menu
                         solo_raceSelection.SetActive(true);
+                        readyButton = readyButton_track;
                         break;
                     }
                 case RaceTypeEnum.GrandPrix:
                     {
                         //Show solo cup selection menu
                         solo_cupSelection.SetActive(true);
+                        readyButton = readyButton_cup;
                         break;
                     }
                 case RaceTypeEnum.CustomVsRace:
                     {
                         //Show solo track selection menu
                         solo_raceSelection.SetActive(true);
+                        readyButton = readyButton_track;
                         break;
                     }
                 case RaceTypeEnum.BattleRoyale:
                     {
                         //Show solo track selection menu
                         solo_raceSelection.SetActive(true);
+                        readyButton = readyButton_track;
                         break;
                     }
             }
@@ -81,30 +88,35 @@ public class LobbyController : Singleton<LobbyController>
                     {
                         //Show multi track selection menu
                         multi_raceSelection.SetActive(true);
+                        readyButton = readyButton_track;
                         break;
                     }
                 case RaceTypeEnum.GrandPrix:
                     {
                         //Show multi cup selection menu
                         multi_cupSelection.SetActive(true);
+                        readyButton = readyButton_cup;
                         break;
                     }
                 case RaceTypeEnum.CustomVsRace:
                     {
                         //Show multi track selection menu
                         multi_raceSelection.SetActive(true);
+                        readyButton = readyButton_track;
                         break;
                     }
                 case RaceTypeEnum.BattleRoyale:
                     {
                         //Show multi track selection menu
                         multi_raceSelection.SetActive(true);
+                        readyButton = readyButton_track;
                         break;
                     }
                 case RaceTypeEnum.QuickPlay:
                     {
                         //Show multi track selection menu
                         multi_raceSelection.SetActive(true);
+                        readyButton = readyButton_track;
                         break;
                     }
             }
