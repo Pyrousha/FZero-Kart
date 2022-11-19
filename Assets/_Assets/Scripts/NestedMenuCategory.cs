@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using TMPro;
 
 public class NestedMenuCategory : MonoBehaviour
 {
@@ -17,23 +18,21 @@ public class NestedMenuCategory : MonoBehaviour
     [SerializeField] private NestedMenuCategory previousMenu;
     private NestedMenuCategory nextMenu;
 
-    private List<Button> buttons = new List<Button>();
+    [SerializeField] private List<Selectable> selectables = new List<Selectable>();
 
     private Coroutine currCoroutine = null;
     private Vector3 lerpDestination = new Vector3(500, 500, 500);
 
-    [field: SerializeField] public Button LastSelectedButton { get; private set; }
+    [field: SerializeField] public Selectable LastSelected { get; private set; }
 
     [SerializeField] private UnityEvent onCancelledEvent;
 
     void Awake()
     {
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            buttons = new List<Button>(GetComponentsInChildren<Button>());
-        }
+        if (selectables.Count == 0)
+            selectables = new List<Selectable>(GetComponentsInChildren<Selectable>());
 
-        LastSelectedButton = buttons[0];
+        LastSelected = selectables[0];
 
         activeLocation = Vector3.zero;
         inactiveLocation = transform.localPosition;
@@ -52,12 +51,17 @@ public class NestedMenuCategory : MonoBehaviour
     {
         if ((InputHandler.Instance.Menu_Back.down) && (currActiveMenu))
         {
-            SetLastSelectedButton();
+            if (SetLastSelectedButton())
+            {
+                if (onCancelledEvent != null)
+                    onCancelledEvent.Invoke();
 
-            if (onCancelledEvent != null)
-                onCancelledEvent.Invoke();
-
-            OnDeactivate();
+                OnDeactivate();
+            }
+            else
+            {
+                EventSystem.current.currentSelectedGameObject.transform.parent.parent.parent.parent.GetComponent<TMP_Dropdown>().OnCancel(new BaseEventData(EventSystem.current));
+            }
         }
     }
 
@@ -90,7 +94,7 @@ public class NestedMenuCategory : MonoBehaviour
         if (_prevMenu != null)
             previousMenu = _prevMenu;
 
-        LastSelectedButton.Select();
+        LastSelected.Select();
         if (currCoroutine != null)
         {
             //Finish current coroutine before starting next one
@@ -131,16 +135,22 @@ public class NestedMenuCategory : MonoBehaviour
         currCoroutine = StartCoroutine(LerpToPos(inactiveLocation));
     }
 
-    private void SetLastSelectedButton()
+    /// <summary>
+    /// Sets the last selected variable if the current selected object is one of this category's selectables.
+    /// </summary>
+    /// <returns> true if current selected object is one of this category's selectables </returns>
+    private bool SetLastSelectedButton()
     {
-        foreach (Button button in buttons)
+        foreach (Selectable select in selectables)
         {
-            if (button.gameObject == EventSystem.current.currentSelectedGameObject)
+            if (select.gameObject == EventSystem.current.currentSelectedGameObject)
             {
-                LastSelectedButton = button;
-                break;
+                LastSelected = select;
+                return true;
             }
         }
+
+        return false;
     }
 
     /// <summary>
@@ -151,7 +161,7 @@ public class NestedMenuCategory : MonoBehaviour
     {
         currActiveMenu = false;
 
-        LastSelectedButton = _buttonPressed.Button;
+        LastSelected = _buttonPressed.Button;
 
         if (deactiveAfterPress)
             OnDeactivate(false);
