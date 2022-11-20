@@ -60,7 +60,9 @@ public class NestedMenuCategory : MonoBehaviour
             }
             else
             {
-                EventSystem.current.currentSelectedGameObject.transform.parent.parent.parent.parent.GetComponent<TMP_Dropdown>().OnCancel(new BaseEventData(EventSystem.current));
+                GameObject selectedObj = EventSystem.current.currentSelectedGameObject;
+                if (selectedObj.tag == "DropdownItem")
+                    selectedObj.transform.parent.parent.parent.parent.GetComponent<TMP_Dropdown>().OnCancel(new BaseEventData(EventSystem.current));
             }
         }
     }

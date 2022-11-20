@@ -605,10 +605,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 184531583}
+    m_SelectOnDown: {fileID: 1240205632}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -671,7 +671,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 526567967}
+        m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
+        m_MethodName: NumTracksInputFieldUpdated
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1136,13 +1148,13 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 526567967}
+        m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
+        m_MethodName: NumRacersSliderUpdated
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1239,13 +1251,13 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 526567967}
+        m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
+        m_MethodName: NumTracksSliderUpdated
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2344,10 +2356,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91ee2b4dcbd95ac40a24bb256d597010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numRacers_Slider: {fileID: 0}
-  numRacers_InputField: {fileID: 0}
-  numRacesToPlay_Slider: {fileID: 0}
-  numRacesToPlay_InputField: {fileID: 0}
+  numRacers_Slider: {fileID: 184531583}
+  numRacers_InputField: {fileID: 1347286051}
+  numRacesToPlay_Slider: {fileID: 195038837}
+  numRacesToPlay_InputField: {fileID: 136408439}
 --- !u!114 &526567968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2821,7 +2833,19 @@ MonoBehaviour:
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 526567967}
+        m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
+        m_MethodName: OnGamemodeUpdated
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &545938698
 MonoBehaviour:
@@ -4813,7 +4837,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 30
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 72f6540e2bcb4244c93c84f2129fc08e, type: 2}
   m_sharedMaterial: {fileID: -909255995192643006, guid: 72f6540e2bcb4244c93c84f2129fc08e,
@@ -5957,7 +5981,19 @@ MonoBehaviour:
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 526567967}
+        m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
+        m_MethodName: OnVoteTypeUpdated
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &1240205633
 MonoBehaviour:
@@ -6375,10 +6411,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 545938697}
+    m_SelectOnDown: {fileID: 195038837}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -6441,7 +6477,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 526567967}
+        m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
+        m_MethodName: NumRacersInputFieldUpdated
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -6960,7 +7008,7 @@ GameObject:
   - component: {fileID: 1458660748}
   m_Layer: 0
   m_Name: Item
-  m_TagString: Untagged
+  m_TagString: DropdownItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7048,7 +7096,7 @@ GameObject:
   - component: {fileID: 1485167918}
   m_Layer: 0
   m_Name: Item
-  m_TagString: Untagged
+  m_TagString: DropdownItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8718,7 +8766,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 32
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 72f6540e2bcb4244c93c84f2129fc08e, type: 2}
   m_sharedMaterial: {fileID: -909255995192643006, guid: 72f6540e2bcb4244c93c84f2129fc08e,
