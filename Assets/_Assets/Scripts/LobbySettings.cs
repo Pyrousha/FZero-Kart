@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static SceneTransitioner;
 
 /// <summary>
 /// Holds data for what settings the user has specified in the lobby.
@@ -18,7 +19,7 @@ public class LobbySettings : MonoBehaviour
         BattleRoyale
     }
 
-    private enum LobbyVoteType_Enum
+    public enum LobbyVoteType_Enum
     {
         HostPick,
         Vote,
@@ -38,6 +39,7 @@ public class LobbySettings : MonoBehaviour
     private int numRacers; //# of racers to have in the lobby max
     private int numRacesToPlay; //# of tracks to play before showing score screen
     private LobbyVoteType_Enum voteType; //how tracks should be selected
+    private bool spawnAI = true;
 
 
     void Start()
@@ -126,5 +128,38 @@ public class LobbySettings : MonoBehaviour
     public void OnVoteTypeUpdated(int _newVoteType)
     {
         voteType = (LobbyVoteType_Enum)_newVoteType;
+    }
+
+    public void SetSpawnAI(bool _newSpawnAI)
+    {
+        spawnAI = _newSpawnAI;
+    }
+
+    /// <summary>
+    /// Called when the "create lobby" button is pressed.
+    /// Sends info about settings to sceneTransitioner and loads into lobby scene
+    /// </summary>
+    public void CreateLobby()
+    {
+        RaceTypeEnum raceType = RaceTypeEnum.Story;
+        switch (gamemode)
+        {
+            case LobbyGamemode_Enum.GrandPrix:
+                raceType = RaceTypeEnum.GrandPrix;
+                break;
+            case LobbyGamemode_Enum.VSRace:
+                raceType = RaceTypeEnum.CustomVsRace;
+                break;
+            case LobbyGamemode_Enum.TimeTrial:
+                raceType = RaceTypeEnum.TimeTrial;
+                break;
+            case LobbyGamemode_Enum.BattleRoyale:
+                raceType = RaceTypeEnum.BattleRoyale;
+                break;
+        }
+
+        SceneTransitioner.Instance.SetRaceType(raceType, numRacesToPlay, voteType);
+        PreRaceInitializer.NumTotalRacers = numRacers;
+        PreRaceInitializer.SpawnAIRacers = spawnAI;
     }
 }

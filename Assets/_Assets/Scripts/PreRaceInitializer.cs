@@ -9,8 +9,10 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
     //[SerializeField] private GameObject PlayerPrefab;
     [SerializeField] private GameObject NPCPrefab;
 
+
+    public static int NumTotalRacers { get; set; } = 30;
+    public static bool SpawnAIRacers { get; set; } = false;
     [Header("Parameters")]
-    [SerializeField] private int numTotalRacers;
     [SerializeField] private AIEvolutionStats evoStats;
 
     private static List<MechRacer> existingRacerStandings = new List<MechRacer>();
@@ -62,7 +64,7 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
         existingRacerStandings = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
 
         int n = existingRacerStandings.Count;
-        while (existingRacerStandings.Count < numTotalRacers)
+        while (existingRacerStandings.Count < NumTotalRacers)
         {
             MechRacer newRacer = Instantiate(NPCPrefab, Vector3.zero, Quaternion.identity).GetComponent<MechRacer>();
             existingRacerStandings.Add(newRacer);

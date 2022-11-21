@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static LobbySettings;
 
 public class SceneTransitioner : Singleton<SceneTransitioner>
 {
@@ -19,6 +20,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     public bool SingleplayerMode { get; private set; }
     public RaceTypeEnum RaceType { get; private set; }
 
+    private LobbyVoteType_Enum voteType;
     [SerializeField] private GameObject player;
 
     [SerializeField] private int StorySceneIndex;
@@ -40,9 +42,17 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         ToMainMenu();
     }
 
-    public void SetRaceType(RaceTypeEnum _raceType, int _racesToPlay = -1, bool vsRaceBackToLobby = true)
+    /// <summary>
+    /// Called when the player selects a gamemode, either when creating or entering a lobby
+    /// </summary>
+    /// <param name="_raceType"> Race gamemode to play </param>
+    /// <param name="_racesToPlay"> How many races to play before seeing score screen and reseting scores </param>
+    /// <param name="_voteType"> How courses are selected (defaults to host pick) </param>
+    public void SetRaceType(RaceTypeEnum _raceType, int _racesToPlay = -1, LobbyVoteType_Enum _voteType = LobbyVoteType_Enum.HostPick)
     {
         RaceType = _raceType;
+
+        voteType = _voteType;
         numRacesCompleted = 0;
 
         switch (_raceType)
@@ -59,7 +69,10 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                 }
             case RaceTypeEnum.CustomVsRace:
                 {
-                    headBackToLobbyBetweenRaces = vsRaceBackToLobby;
+                    if (_voteType == LobbyVoteType_Enum.InOrder || _voteType == LobbyVoteType_Enum.Random)
+                        headBackToLobbyBetweenRaces = false;
+                    else
+                        headBackToLobbyBetweenRaces = true;
 
                     if (_racesToPlay > 0)
                         numRacesToPlay = _racesToPlay;
@@ -239,18 +252,6 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         //Load lobby scene
         SceneManager.LoadScene(lobbySceneIndex);
     }
-
-    public enum VoteTypeEnum
-    {
-        HostChoice,
-        HighestVote,
-        InOrder,
-        Roulette,
-        TakeTurns,
-        Random
-    }
-
-    private VoteTypeEnum voteType;
 
     public void ButtonPressed(GamemodeButton _gameModeButton, bool hostNewLobby = false)
     {
