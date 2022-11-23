@@ -7,4 +7,5 @@ public class GamemodeButton : MonoBehaviour
 {
     [field: SerializeField] public bool Singleplayer { get; set; }
     [field: SerializeField] public RaceTypeEnum RaceType { get; set; }
+    [field: SerializeField] public bool LoadSceneWhenClicked { get; set; } = true;
 }

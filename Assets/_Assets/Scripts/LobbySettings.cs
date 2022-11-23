@@ -28,8 +28,6 @@ public class LobbySettings : MonoBehaviour
         InOrder
     }
 
-
-
     [SerializeField] private Slider numRacers_Slider;
     [SerializeField] private TMP_InputField numRacers_InputField;
     [SerializeField] private Slider numRacesToPlay_Slider;
@@ -67,7 +65,7 @@ public class LobbySettings : MonoBehaviour
     /// </summary>
     public void NumRacersSliderUpdated()
     {
-        Debug.Log("S");
+        //Debug.Log("S");
 
         numRacers = Mathf.Clamp((int)numRacers_Slider.value, 2, 99);
         numRacers_InputField.text = numRacers.ToString();
@@ -79,7 +77,7 @@ public class LobbySettings : MonoBehaviour
     /// </summary>
     public void NumRacersInputFieldUpdated(string _newValue)
     {
-        Debug.Log("I");
+        //Debug.Log("I");
 
         if (int.TryParse(_newValue, out int parsedNumRacers))
         {
@@ -97,7 +95,7 @@ public class LobbySettings : MonoBehaviour
     /// </summary>
     public void NumTracksSliderUpdated()
     {
-        Debug.Log("S");
+        //Debug.Log("S");
 
         numRacesToPlay = Mathf.Clamp((int)numRacesToPlay_Slider.value, 1, 64);
         numRacesToPlay_InputField.text = numRacesToPlay.ToString();
@@ -109,7 +107,7 @@ public class LobbySettings : MonoBehaviour
     /// </summary>
     public void NumTracksInputFieldUpdated(string _newValue)
     {
-        Debug.Log("I");
+        //Debug.Log("I");
 
         if (int.TryParse(_newValue, out int parsedNumTracks))
         {
@@ -120,7 +118,6 @@ public class LobbySettings : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// Called when the player selects a new vote options type
     /// </summary>
@@ -128,6 +125,26 @@ public class LobbySettings : MonoBehaviour
     public void OnVoteTypeUpdated(int _newVoteType)
     {
         voteType = (LobbyVoteType_Enum)_newVoteType;
+    }
+
+    /// <summary>
+    /// Called when the player selects a new vote options type
+    /// </summary>
+    /// <param name="_newVoteType"> what voteType was just selected </param>
+    public void OnVoteTypeUpdated_Solo(int _newVoteType)
+    {
+        switch (_newVoteType)
+        {
+            case 0:
+                voteType = LobbyVoteType_Enum.HostPick;
+                break;
+            case 1:
+                voteType = LobbyVoteType_Enum.Random;
+                break;
+            case 2:
+                voteType = LobbyVoteType_Enum.InOrder;
+                break;
+        }
     }
 
     public void SetSpawnAI(bool _newSpawnAI)
@@ -139,27 +156,39 @@ public class LobbySettings : MonoBehaviour
     /// Called when the "create lobby" button is pressed.
     /// Sends info about settings to sceneTransitioner and loads into lobby scene
     /// </summary>
-    public void CreateLobby()
+    public void CreateLobby(bool _singleplayer)
     {
         RaceTypeEnum raceType = RaceTypeEnum.Story;
-        switch (gamemode)
+        if (_singleplayer)
         {
-            case LobbyGamemode_Enum.GrandPrix:
-                raceType = RaceTypeEnum.GrandPrix;
-                break;
-            case LobbyGamemode_Enum.VSRace:
-                raceType = RaceTypeEnum.CustomVsRace;
-                break;
-            case LobbyGamemode_Enum.TimeTrial:
-                raceType = RaceTypeEnum.TimeTrial;
-                break;
-            case LobbyGamemode_Enum.BattleRoyale:
-                raceType = RaceTypeEnum.BattleRoyale;
-                break;
+            raceType = RaceTypeEnum.CustomVsRace;
+        }
+        else
+        {
+            switch (gamemode)
+            {
+                case LobbyGamemode_Enum.GrandPrix:
+                    raceType = RaceTypeEnum.GrandPrix;
+                    break;
+                case LobbyGamemode_Enum.VSRace:
+                    raceType = RaceTypeEnum.CustomVsRace;
+                    break;
+                case LobbyGamemode_Enum.TimeTrial:
+                    raceType = RaceTypeEnum.TimeTrial;
+                    break;
+                case LobbyGamemode_Enum.BattleRoyale:
+                    raceType = RaceTypeEnum.BattleRoyale;
+                    break;
+            }
         }
 
+        SceneTransitioner.Instance.SingleplayerMode = _singleplayer;
+
         SceneTransitioner.Instance.SetRaceType(raceType, numRacesToPlay, voteType);
+
         PreRaceInitializer.NumTotalRacers = numRacers;
         PreRaceInitializer.SpawnAIRacers = spawnAI;
+
+        SceneTransitioner.Instance.LoadIntoLobby(true);
     }
 }

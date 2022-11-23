@@ -36,6 +36,6 @@ public class SelectableTrack : MonoBehaviour
     /// </summary>
     public void SetTrack()
     {
-        SceneTransitioner.Instance.SetTrack(Track);
+        SceneTransitioner.Instance.SetLocalTrack(Track);
     }
 }
