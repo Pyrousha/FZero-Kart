@@ -409,8 +409,15 @@ public class MechRacer : MonoBehaviour
         }
 
         //Rotate the player to face the new "down"
-        Quaternion newRotateTransform = Quaternion.FromToRotation(transform.up, upDirection);
-        transform.rotation = newRotateTransform * transform.rotation;
+        Vector3 newPlayerRight = Vector3.Cross(upDirection, transform.forward);
+        Vector3 newPlayerForward = Vector3.Cross(newPlayerRight, upDirection);
+
+        Quaternion newRotation = Quaternion.LookRotation(newPlayerForward, upDirection);
+
+        //modelHolder.rotation = Quaternion.Slerp(modelHolder.rotation, newRotation, Time.deltaTime * modelRotationSmoothing);
+
+        //Quaternion newRotateTransform = Quaternion.FromToRotation(transform.up, upDirection, transform.forward);
+        transform.rotation = newRotation;// * transform.rotation;
 
 
         //Set position and scale of "shadow" object
