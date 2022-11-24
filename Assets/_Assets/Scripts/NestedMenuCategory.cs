@@ -19,6 +19,7 @@ public class NestedMenuCategory : MonoBehaviour
     private NestedMenuCategory nextMenu;
 
     [SerializeField] private List<Selectable> selectables = new List<Selectable>();
+    public List<Selectable> Selectables => selectables;
 
     private Coroutine currCoroutine = null;
     private Vector3 lerpDestination = new Vector3(500, 500, 500);

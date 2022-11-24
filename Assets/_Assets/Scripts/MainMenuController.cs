@@ -46,4 +46,12 @@ public class MainMenuController : MonoBehaviour
     {
         SceneTransitioner.Instance.GamemodeSelected(_gameModeButton);
     }
+
+    /// <summary>
+    /// Called when the player clicks "Exit", closes the game
+    /// </summary>
+    public void CloseGame()
+    {
+        Application.Quit();
+    }
 }

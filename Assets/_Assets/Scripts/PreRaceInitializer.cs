@@ -11,7 +11,7 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
 
 
     public static int NumTotalRacers { get; set; } = 30;
-    public static bool SpawnAIRacers { get; set; } = false;
+    public static bool SpawnAIRacers { get; set; } = true;
     [Header("Parameters")]
     [SerializeField] private AIEvolutionStats evoStats;
 

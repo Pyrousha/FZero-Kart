@@ -75,7 +75,7 @@ public class Utils
     {
         List<Transform> children = new List<Transform>();
 
-        for(int i = 0; i < parent.childCount; i++)
+        for (int i = 0; i < parent.childCount; i++)
         {
             children.Add(parent.GetChild(i));
         }
@@ -92,10 +92,10 @@ public class Utils
     public static string AddLeadingZeroes(int number, int numCharactersTotal)
     {
         string toReturn = number.ToString();
-        
-        while(toReturn.Length < numCharactersTotal)
+
+        while (toReturn.Length < numCharactersTotal)
         {
-            toReturn = "0"+toReturn;
+            toReturn = "0" + toReturn;
         }
 
         return toReturn;
@@ -109,7 +109,7 @@ public class Utils
 
         S *= saturationMultiplier;
 
-        return Color.HSVToRGB(H,S,V);
+        return Color.HSVToRGB(H, S, V);
     }
 
     public static Color MultiplyValue(Color col, float valueMultiplierBG, float valueMax)
@@ -120,6 +120,6 @@ public class Utils
 
         V = Mathf.Min(V * valueMultiplierBG, valueMax);
 
-        return Color.HSVToRGB(H,S,V);
+        return Color.HSVToRGB(H, S, V);
     }
 }

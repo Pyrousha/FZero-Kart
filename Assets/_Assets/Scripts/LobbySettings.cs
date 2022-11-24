@@ -11,14 +11,6 @@ using static SceneTransitioner;
 /// </summary>
 public class LobbySettings : MonoBehaviour
 {
-    private enum LobbyGamemode_Enum
-    {
-        GrandPrix,
-        VSRace,
-        TimeTrial,
-        BattleRoyale
-    }
-
     public enum LobbyVoteType_Enum
     {
         HostPick,
@@ -32,16 +24,25 @@ public class LobbySettings : MonoBehaviour
     [SerializeField] private TMP_InputField numRacers_InputField;
     [SerializeField] private Slider numRacesToPlay_Slider;
     [SerializeField] private TMP_InputField numRacesToPlay_InputField;
+    [Space(10)]
 
-    private LobbyGamemode_Enum gamemode; //what gamemode to play
-    private int numRacers; //# of racers to have in the lobby max
-    private int numRacesToPlay; //# of tracks to play before showing score screen
-    private LobbyVoteType_Enum voteType; //how tracks should be selected
+    [SerializeField] private Selectable gamemode_dropdown;
+    [SerializeField] private Toggle aiRacers_toggle;
+    [SerializeField] private Selectable votetype_dropdown;
+
+    private RaceTypeEnum gamemode = RaceTypeEnum.CustomVsRace; //what gamemode to play
+    private int numRacers = 32; //# of racers to have in the lobby max
     private bool spawnAI = true;
+    private int numRacesToPlay = 4; //# of tracks to play before showing score screen
+    private LobbyVoteType_Enum voteType = LobbyVoteType_Enum.HostPick; //how tracks should be selected
+
+    private List<Selectable> selectablesToDisableForGP;
 
 
     void Start()
     {
+        selectablesToDisableForGP = new List<Selectable> { numRacers_Slider, numRacers_InputField, aiRacers_toggle, numRacesToPlay_Slider, numRacers_InputField };
+
         //Call these on start so the input fields aren't blank
         //Also initializes #racers and #tracks variables 
         NumRacersSliderUpdated();
@@ -53,11 +54,70 @@ public class LobbySettings : MonoBehaviour
     /// Called when the player selects a new gamemode type
     /// </summary>
     /// <param name="_newGamemode"> what gamemode was just selected </param>
-    public void OnGamemodeUpdated(int _newGamemode)
+    public void OnGamemodeUpdated(RaceTypeEnum _newGamemode)
     {
-        gamemode = (LobbyGamemode_Enum)_newGamemode;
+        gamemode = _newGamemode;
+
+        if (gamemode == RaceTypeEnum.GrandPrix)
+        {
+            //Disable #racers, Ai racers, and #tracks
+            foreach (Selectable select in selectablesToDisableForGP)
+            {
+                select.interactable = false;
+
+                ColorBlock colBlock = select.colors;
+                Color col = colBlock.normalColor;
+                col.a = 0.5f;
+                colBlock.normalColor = col;
+                select.colors = colBlock;
+            }
+
+            //Link remaining menus together
+            SetNavigationDown(gamemode_dropdown, votetype_dropdown);
+            SetNavigationUp(votetype_dropdown, gamemode_dropdown);
+
+            //Set values for #racers and such
+            numRacers_Slider.value = 32;
+            numRacesToPlay_Slider.value = 4;
+            aiRacers_toggle.isOn = true;
+
+            NumRacersSliderUpdated();
+            NumTracksSliderUpdated();
+            spawnAI = true;
+        }
+        else
+        {
+            //Enable #racers, Ai racers, and #tracks
+            foreach (Selectable select in selectablesToDisableForGP)
+            {
+                select.interactable = true;
+
+                ColorBlock colBlock = select.colors;
+                Color col = colBlock.normalColor;
+                col.a = 1.0f;
+                colBlock.normalColor = col;
+                select.colors = colBlock;
+            }
+
+            //Link remaining menus together
+            SetNavigationDown(gamemode_dropdown, numRacers_Slider);
+            SetNavigationUp(votetype_dropdown, numRacesToPlay_Slider);
+        }
     }
 
+    private void SetNavigationUp(Selectable _select, Selectable _target)
+    {
+        Navigation nav = _select.navigation;
+        nav.selectOnUp = _target;
+        _select.navigation = nav;
+    }
+
+    private void SetNavigationDown(Selectable _select, Selectable _target)
+    {
+        Navigation nav = _select.navigation;
+        nav.selectOnDown = _target;
+        _select.navigation = nav;
+    }
 
     /// <summary>
     /// Called when the numRacers slider has its value updated, 
@@ -122,29 +182,9 @@ public class LobbySettings : MonoBehaviour
     /// Called when the player selects a new vote options type
     /// </summary>
     /// <param name="_newVoteType"> what voteType was just selected </param>
-    public void OnVoteTypeUpdated(int _newVoteType)
+    public void OnVoteTypeUpdated(LobbyVoteType_Enum _newVoteType)
     {
-        voteType = (LobbyVoteType_Enum)_newVoteType;
-    }
-
-    /// <summary>
-    /// Called when the player selects a new vote options type
-    /// </summary>
-    /// <param name="_newVoteType"> what voteType was just selected </param>
-    public void OnVoteTypeUpdated_Solo(int _newVoteType)
-    {
-        switch (_newVoteType)
-        {
-            case 0:
-                voteType = LobbyVoteType_Enum.HostPick;
-                break;
-            case 1:
-                voteType = LobbyVoteType_Enum.Random;
-                break;
-            case 2:
-                voteType = LobbyVoteType_Enum.InOrder;
-                break;
-        }
+        voteType = _newVoteType;
     }
 
     public void SetSpawnAI(bool _newSpawnAI)
@@ -158,33 +198,14 @@ public class LobbySettings : MonoBehaviour
     /// </summary>
     public void CreateLobby(bool _singleplayer)
     {
-        RaceTypeEnum raceType = RaceTypeEnum.Story;
         if (_singleplayer)
         {
-            raceType = RaceTypeEnum.CustomVsRace;
-        }
-        else
-        {
-            switch (gamemode)
-            {
-                case LobbyGamemode_Enum.GrandPrix:
-                    raceType = RaceTypeEnum.GrandPrix;
-                    break;
-                case LobbyGamemode_Enum.VSRace:
-                    raceType = RaceTypeEnum.CustomVsRace;
-                    break;
-                case LobbyGamemode_Enum.TimeTrial:
-                    raceType = RaceTypeEnum.TimeTrial;
-                    break;
-                case LobbyGamemode_Enum.BattleRoyale:
-                    raceType = RaceTypeEnum.BattleRoyale;
-                    break;
-            }
+            gamemode = RaceTypeEnum.CustomVsRace;
         }
 
         SceneTransitioner.Instance.SingleplayerMode = _singleplayer;
 
-        SceneTransitioner.Instance.SetRaceType(raceType, numRacesToPlay, voteType);
+        SceneTransitioner.Instance.SetRaceType(gamemode, numRacesToPlay, voteType);
 
         PreRaceInitializer.NumTotalRacers = numRacers;
         PreRaceInitializer.SpawnAIRacers = spawnAI;

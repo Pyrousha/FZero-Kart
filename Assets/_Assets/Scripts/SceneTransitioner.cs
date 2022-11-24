@@ -43,6 +43,25 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     }
 
     /// <summary>
+    /// Called when the player clicks on a gamemode button,
+    /// Sets the gamemode type and singleplayer/multiplayer
+    /// </summary>
+    /// <param name="_gameModeButton"></param>
+    public void GamemodeSelected(GamemodeButton _gameModeButton)
+    {
+        RaceType = _gameModeButton.RaceType;
+        SingleplayerMode = _gameModeButton.Singleplayer;
+
+        //TEMP: Set preraceinitializer settings
+        PreRaceInitializer.SpawnAIRacers = true;
+        PreRaceInitializer.NumTotalRacers = 32;
+
+        //TEMP: assume selecting gamemode makes local player host
+        if (_gameModeButton.LoadSceneWhenClicked)
+            LoadIntoLobby(!SingleplayerMode);
+    }
+
+    /// <summary>
     /// Called when the player selects a gamemode, either when creating or entering a lobby
     /// </summary>
     /// <param name="_raceType"> Race gamemode to play </param>
@@ -104,6 +123,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     public void SetCup(RaceCup _cup)
     {
         currCup = _cup;
+        numRacesToPlay = _cup.Courses.Count;
     }
 
     private RaceCourse currTrack;
@@ -236,21 +256,6 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
             LobbyController.HostRacer = player.GetComponent<MechRacer>();
 
         SceneManager.LoadScene(lobbySceneIndex);
-    }
-
-    /// <summary>
-    /// Called when the player clicks on a gamemode button,
-    /// Sets the gamemode type and singleplayer/multiplayer
-    /// </summary>
-    /// <param name="_gameModeButton"></param>
-    public void GamemodeSelected(GamemodeButton _gameModeButton)
-    {
-        RaceType = _gameModeButton.RaceType;
-        SingleplayerMode = _gameModeButton.Singleplayer;
-
-        //TEMP: assume selecting gamemode makes local player host
-        if (_gameModeButton.LoadSceneWhenClicked)
-            LoadIntoLobby(!SingleplayerMode);
     }
 
     /// <summary>
