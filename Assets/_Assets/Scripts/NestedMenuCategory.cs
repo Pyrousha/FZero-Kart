@@ -92,6 +92,8 @@ public class NestedMenuCategory : MonoBehaviour
         yield return null;
         yield return null;
 
+        //Debug.Log($"NestedMenu {gameObject.name} activated by {_prevMenu?.gameObject.name}");
+
         currActiveMenu = true;
 
         if (_prevMenu != null)

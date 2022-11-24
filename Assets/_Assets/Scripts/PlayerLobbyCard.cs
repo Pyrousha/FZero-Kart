@@ -22,6 +22,8 @@ public class PlayerLobbyCard : MonoBehaviour
 
     public bool isReady { get; private set; }
 
+    public MechRacer Racer { get; private set; }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,6 +53,8 @@ public class PlayerLobbyCard : MonoBehaviour
     /// <param name="currPos"> Overall position rank (set to 0 if no races have been played yet) </param>
     public void SetRacerStats(MechRacer racer, int currPos = 0)
     {
+        Racer = racer;
+
         if (currPos > 0)
             SetVisualsForPosition(currPos);
         else
@@ -73,7 +77,7 @@ public class PlayerLobbyCard : MonoBehaviour
     {
         posNumText.text = _posNum.ToString();
         posNumSuffixText.text = RaceController.RacePosSuffix(_posNum);
-        Color posColor = RaceController.Instance.GetColorForPos(_posNum);
+        Color posColor = RaceController.Static_GetColorForPos(_posNum, PreRaceInitializer.ExistingRacerStandings.Count);
         posNumText.color = posColor;
         posNumSuffixText.color = posColor;
 

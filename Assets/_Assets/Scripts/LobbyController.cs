@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,6 +16,9 @@ public class LobbyController : Singleton<LobbyController>
     [SerializeField] private Transform cardParent;
 
     [SerializeField] private TextMeshProUGUI numPlayersReadyText;
+
+    [Space(10)]
+    [SerializeField] private TextMeshProUGUI raceNumber_Text;
 
     private PlayerLobbyCard localPlayerLobbyCard;
     private List<PlayerLobbyCard> allLobbyCards = new List<PlayerLobbyCard>();
@@ -122,15 +126,9 @@ public class LobbyController : Singleton<LobbyController>
             }
         }
 
-        //if (SceneTransitioner.Instance.SingleplayerMode)
-        //    gameObject.SetActive(false);
+        raceNumber_Text.text = $"Race {SceneTransitioner.Instance.NumRacesCompleted + 1} / {SceneTransitioner.Instance.NumRacesToPlay}";
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void CreateCard(MechRacer racer, int posNum)
     {
@@ -146,9 +144,6 @@ public class LobbyController : Singleton<LobbyController>
         notReadyCards.Add(newCard);
 
         UpdateReadyText();
-
-        if (racer.IsHuman == false)
-            OnPlayerReadiedUp(newCard);
     }
 
     /// <summary>
@@ -167,7 +162,6 @@ public class LobbyController : Singleton<LobbyController>
             if (notReadyCards.Count == 0)
             {
                 //All players are ready, show start race button to host
-
                 if (HostRacer.IsLocalPlayer)
                     startRaceButton.OnActivate();
             }
@@ -198,7 +192,7 @@ public class LobbyController : Singleton<LobbyController>
     public void StartRace()
     {
         //PreRaceInitializer.Instance.InitalizeRacers();
-        SceneTransitioner.Instance.StartFirstRace();
+        SceneTransitioner.Instance.StartRace();
         //SceneTransitioner.Instance.StartCup(0);
     }
 
@@ -221,5 +215,21 @@ public class LobbyController : Singleton<LobbyController>
         OnPlayerReadiedUp(localPlayerLobbyCard);
 
         readyButton.OnDeactivate(false);
+    }
+
+    /// <summary>
+    /// Sets all AI racer cards to "ready"
+    /// </summary>
+    public void ReadyUpAIRacers()
+    {
+        for (int i = 0; i < notReadyCards.Count; i++)
+        {
+            PlayerLobbyCard currCard = notReadyCards[i];
+            if (currCard.Racer.IsHuman == false)
+            {
+                OnPlayerReadiedUp(currCard);
+                i--;
+            }
+        }
     }
 }

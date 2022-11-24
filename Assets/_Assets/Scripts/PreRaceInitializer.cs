@@ -52,6 +52,8 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
             LobbyController.Instance.CreateCard(racer, posNum);
         }
 
+        LobbyController.Instance.ReadyUpAIRacers();
+
         //RaceController.PrintRankings(existingRacerStandings);
     }
 

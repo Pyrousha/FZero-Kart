@@ -223,8 +223,7 @@ public class MechRacer : MonoBehaviour
     {
         if (resetScore)
         {
-            score = 0;
-            lastScore = 0;
+            ResetScore();
 
             if (!isHuman)
                 Debug.LogError("Tried to send nonplayer racer " + name + " to the preRaceLobby scene");
@@ -236,6 +235,12 @@ public class MechRacer : MonoBehaviour
         DisableNameplate();
 
         EnableSpeedometer();
+    }
+
+    public void ResetScore()
+    {
+        score = 0;
+        lastScore = 0;
     }
 
     private void LoadStatsFromFile(MechStats stats)

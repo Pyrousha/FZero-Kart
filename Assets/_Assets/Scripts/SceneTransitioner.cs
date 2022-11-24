@@ -29,12 +29,12 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     [SerializeField] private int mainMenuSceneIndex;
 
     //private int totalVSRaces; //how many races to play for this VS race series
-    private int numRacesCompleted; //Index of current race in currCup (so from 0 to length-1)
-    private int numRacesToPlay;
+    public int NumRacesCompleted { get; private set; } //Index of current race in currCup (so from 0 to length-1)
+    public int NumRacesToPlay { get; private set; }
 
     private bool headBackToLobbyBetweenRaces;
 
-    public bool IsFirstRace => (numRacesCompleted == 0);
+    public bool IsFirstRace => (NumRacesCompleted == 0);
 
     void Start()
     {
@@ -72,7 +72,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         RaceType = _raceType;
 
         VoteType = _voteType;
-        numRacesCompleted = 0;
+        NumRacesCompleted = 0;
 
         switch (_raceType)
         {
@@ -81,7 +81,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                     headBackToLobbyBetweenRaces = false;
 
                     if (_racesToPlay > 0)
-                        numRacesToPlay = _racesToPlay;
+                        NumRacesToPlay = _racesToPlay;
                     else
                         Debug.LogError("trying to set nonpositive number of races to play");
                     break;
@@ -94,7 +94,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                         headBackToLobbyBetweenRaces = true;
 
                     if (_racesToPlay > 0)
-                        numRacesToPlay = _racesToPlay;
+                        NumRacesToPlay = _racesToPlay;
                     else
                         Debug.LogError("trying to set nonpositive number of races to play");
                     break;
@@ -108,7 +108,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                 {
                     headBackToLobbyBetweenRaces = false;
 
-                    numRacesToPlay = 1;
+                    NumRacesToPlay = 1;
                     break;
                 }
         }
@@ -123,7 +123,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     public void SetCup(RaceCup _cup)
     {
         currCup = _cup;
-        numRacesToPlay = _cup.Courses.Count;
+        NumRacesToPlay = _cup.Courses.Count;
     }
 
     private RaceCourse currTrack;
@@ -138,12 +138,12 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     }
 
     /// <summary>
-    /// Spawn in NPC racers and load the first (or only) race
+    /// Called after host presses "start race", initializes racers (if needed) and loads race
     /// </summary>
-    public void StartFirstRace()
+    public void StartRace()
     {
-        //Spawn racers and load first race
-        PreRaceInitializer.Instance.InitalizeRacers();
+        if (IsFirstRace)
+            PreRaceInitializer.Instance.InitalizeRacers();
 
         LoadNextRace();
     }
@@ -153,9 +153,9 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     /// </summary>
     public void OnRaceFinished()
     {
-        numRacesCompleted++;
+        NumRacesCompleted++;
 
-        if (numRacesCompleted >= numRacesToPlay)
+        if (NumRacesCompleted >= NumRacesToPlay)
         {
             //Save data
             switch (RaceType)
@@ -207,7 +207,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         {
             case RaceTypeEnum.GrandPrix:
                 {
-                    SceneManager.LoadScene(currCup.Courses[numRacesCompleted].BuildIndex);
+                    SceneManager.LoadScene(currCup.Courses[NumRacesCompleted].BuildIndex);
                     break;
                 }
             default:
@@ -224,13 +224,24 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     public void BackToLobbyAfterScoreScene()
     {
         //Destroy all AI racers
+        DestroyAIRacers();
+
+        //Reset how many races have been played
+        NumRacesCompleted = 0;
+
+        //Load lobby scene
+        SceneManager.LoadScene(lobbySceneIndex);
+    }
+
+    private void DestroyAIRacers()
+    {
         for (int i = 0; i < PreRaceInitializer.ExistingRacerStandings.Count; i++)
         {
             MechRacer currRacer = PreRaceInitializer.ExistingRacerStandings[i];
             if (currRacer.IsHuman)
             {
-                //Cup has ended, so reset score
-                currRacer.OnEnterLobby(true);
+                //reset score
+                currRacer.ResetScore();
             }
             else
             {
@@ -239,9 +250,6 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                 i--;
             }
         }
-
-        //Load lobby scene
-        SceneManager.LoadScene(lobbySceneIndex);
     }
 
     /// <summary>
@@ -263,6 +271,8 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     /// </summary>
     public void ToMainMenu()
     {
+        DestroyAIRacers();
+
         player.SetActive(false);
 
         SceneManager.LoadScene(mainMenuSceneIndex);
