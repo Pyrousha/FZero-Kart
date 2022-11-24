@@ -63,15 +63,18 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
     {
         existingRacerStandings = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
 
-        int n = existingRacerStandings.Count;
-        while (existingRacerStandings.Count < NumTotalRacers)
+        if (SpawnAIRacers)
         {
-            MechRacer newRacer = Instantiate(NPCPrefab, Vector3.zero, Quaternion.identity).GetComponent<MechRacer>();
-            existingRacerStandings.Add(newRacer);
+            int n = existingRacerStandings.Count;
+            while (existingRacerStandings.Count < NumTotalRacers)
+            {
+                MechRacer newRacer = Instantiate(NPCPrefab, Vector3.zero, Quaternion.identity).GetComponent<MechRacer>();
+                existingRacerStandings.Add(newRacer);
 
-            newRacer.gameObject.name = "AI RACER #" + n;
+                newRacer.gameObject.name = "AI RACER #" + n;
 
-            n++;
+                n++;
+            }
         }
 
 
