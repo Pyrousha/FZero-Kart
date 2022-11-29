@@ -399,31 +399,27 @@ public class MechRacer : MonoBehaviour
             upDirection = -gravityDirection;
         }
 
+        upDirection.Normalize();
+
+
+        Vector3 newPlayerForward = transform.forward - Vector3.Project(transform.forward, upDirection);
+        Quaternion targRotation = Quaternion.LookRotation(newPlayerForward, upDirection);
+
         //Lerp up-direction (or jump if close enough)
-        if (Vector3.Angle(transform.up, upDirection) >= 2)
+        if (Quaternion.Angle(transform.rotation, targRotation) >= 2)
         {
             if (isGrounded)  //Angle between current rotation and target rotation big enough to lerp
-                upDirection = Vector3.Lerp(transform.up, upDirection, lerpSpeed);
+                targRotation = Quaternion.Lerp(transform.rotation, targRotation, lerpSpeed);
             else
-                upDirection = Vector3.Lerp(transform.up, upDirection, lerpSpeed / 1.25f);
+                targRotation = Quaternion.Lerp(transform.rotation, targRotation, lerpSpeed / 1.25f);
         }
 
-        //Rotate the player to face the new "down"
-        Vector3 newPlayerRight = Vector3.Cross(upDirection, transform.forward);
-        Vector3 newPlayerForward = Vector3.Cross(newPlayerRight, upDirection);
-
-        Quaternion newRotation = Quaternion.LookRotation(newPlayerForward, upDirection);
-
-        //modelHolder.rotation = Quaternion.Slerp(modelHolder.rotation, newRotation, Time.deltaTime * modelRotationSmoothing);
-
-        //Quaternion newRotateTransform = Quaternion.FromToRotation(transform.up, upDirection, transform.forward);
-        transform.rotation = newRotation;// * transform.rotation;
+        transform.rotation = targRotation;
 
 
         //Set position and scale of "shadow" object
-        RaycastHit _hit;
         float newScale = 0;
-        if (Physics.Raycast(raycastPoints[4].position, -transform.up, out _hit, 50, groundLayer))
+        if (Physics.Raycast(raycastPoints[4].position, -transform.up, out RaycastHit _hit, 50, groundLayer))
         {
             shadowTransform.position = _hit.point;
             float distToGround = _hit.distance;
