@@ -308,16 +308,17 @@ public class MechRacer : MonoBehaviour
         }
     }
 
+    void LateUpdate()
+    {
+        //Make nameplate face camera
+        Transform cameraTransform = MainCameraTracker.MainCamTransform;
+        if (cameraTransform != null)
+            namePlateTransform.LookAt(namePlateTransform.position + cameraTransform.rotation * Vector3.forward, cameraTransform.rotation * Vector3.up);
+
+    }
+
     void Update()
     {
-        //if (!isLocalPlayer)
-        {
-            //Make nameplate face camera
-            Transform cameraTransform = MainCameraTracker.MainCamTransform;
-            if (cameraTransform != null)
-                namePlateTransform.LookAt(namePlateTransform.position + cameraTransform.rotation * Vector3.forward, cameraTransform.rotation * Vector3.up);
-        }
-
         UpdateAndApplyTurning();
 
         float turnPercent = Mathf.Max(0, (Mathf.Abs(currTurnSpeed + currDriftSpeed) - maxTurnSpeed) / (maxDriftSpeed));
