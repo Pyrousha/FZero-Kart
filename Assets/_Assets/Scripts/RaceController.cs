@@ -201,6 +201,9 @@ public class RaceController : Singleton<RaceController>
     private void StartCountdown()
     {
         countdownAnim.enabled = true;
+
+        countdownAnim.GetComponentInChildren<AudioClipPlayer>().PlayClipWithIndex(0);
+
         Invoke("StartRace", 3.5f);
     }
 
