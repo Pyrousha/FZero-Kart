@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 329812801}
   - component: {fileID: 329812800}
   - component: {fileID: 329812802}
-  - component: {fileID: 3234511869254334728}
   m_Layer: 13
   m_Name: PlayerInteractHitbox
   m_TagString: Untagged
@@ -79,18 +78,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactButtonText: {fileID: 1243035864241221988}
   popupText: {fileID: 5640593900817643162}
---- !u!114 &3234511869254334728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 329812798}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6897226e17429ad43b78edaa1a5d7731, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1084238769
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,7 +412,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 99.5
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -498,7 +485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHitbox: {fileID: 8307567329534496162}
-  minFov: 80
+  minFov: 90
   maxFov: 120
 --- !u!1 &604613087011884379
 GameObject:
@@ -625,7 +612,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604613087280804959}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.574, z: 0}
+  m_LocalPosition: {x: 0, y: 0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

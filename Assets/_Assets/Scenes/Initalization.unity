@@ -193,16 +193,6 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 604613086950415256, guid: 26f2371bac9e9fe4da7860f8363b1203,
-        type: 3}
-      propertyPath: field of view
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 604613086950415261, guid: 26f2371bac9e9fe4da7860f8363b1203,
-        type: 3}
-      propertyPath: minFov
-      value: 90
-      objectReference: {fileID: 0}
     - target: {fileID: 5781899695073906027, guid: 26f2371bac9e9fe4da7860f8363b1203,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -303,13 +293,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pyrousha
       objectReference: {fileID: 0}
-    - target: {fileID: 8647395980506502936, guid: 26f2371bac9e9fe4da7860f8363b1203,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 3234511869254334728, guid: 26f2371bac9e9fe4da7860f8363b1203, type: 3}
+    m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 26f2371bac9e9fe4da7860f8363b1203, type: 3}
 --- !u!1 &996206671 stripped
