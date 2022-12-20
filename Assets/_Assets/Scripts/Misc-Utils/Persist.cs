@@ -5,7 +5,7 @@ using UnityEngine;
 public class Persist : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         transform.parent = null;
         DontDestroyOnLoad(gameObject);

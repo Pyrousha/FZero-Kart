@@ -2810,6 +2810,11 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 452853308}
     m_Modifications:
+    - target: {fileID: 3133506457302016143, guid: 1059a7700110b4340acb63429da78724,
+        type: 3}
+      propertyPath: sceneId
+      value: 3980115122
+      objectReference: {fileID: 0}
     - target: {fileID: 5805340193360686626, guid: 1059a7700110b4340acb63429da78724,
         type: 3}
       propertyPath: m_RootOrder

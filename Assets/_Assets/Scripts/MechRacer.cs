@@ -3,27 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Mirror;
 
 /// <summary>
 /// Represents a racer for the current race, handles non-input related things related to racing (checkpoints, race position, etc)
 /// </summary>
-public class MechRacer : MonoBehaviour
+public class MechRacer : NetworkBehaviour
 {
     [SerializeField] private Color playerNameColor;
     public Color PlayerNameColor => playerNameColor;
-    private bool isLocalPlayer;
     public bool IsLocalPlayer => isLocalPlayer;
     private bool isHuman;
     public bool IsHuman => isHuman;
 
     //States
-    private bool inLobby = true;
+    [SyncVar] private bool inLobby = true;
     public bool InLobby => inLobby;
-    private bool raceFinished = false;
-    private int lapsFinished = 0;
-    private int checkpointsHit = 0;
-    private bool isDead;
-    private bool canMove = true;
+    [SyncVar] private bool raceFinished = false;
+    [SyncVar] private int lapsFinished = 0;
+    [SyncVar] private int checkpointsHit = 0;
+    [SyncVar] private bool isDead;
+    [SyncVar] private bool canMove = true;
 
     private Checkpoint nextCheckpoint;
     public Checkpoint NextCheckpoint => nextCheckpoint;
@@ -123,7 +123,6 @@ public class MechRacer : MonoBehaviour
         npcController = GetComponent<NPCController>();
 
         isHuman = playerController != null;
-        isLocalPlayer = isHuman; //TEMP: This is assuming only 1 player is in the scene
 
         //Set nameplate vars
         namePlateTransform = namePlateText.transform;
@@ -271,26 +270,88 @@ public class MechRacer : MonoBehaviour
             checkpointTimer = timeToHitCheckpoint;
     }
 
-    private float currSteerAxis;
-    private float currDriftAxis;
-    private bool acceleratePressed;
-    private bool accelerateHeld;
-    private bool brakeHeld;
+    [SyncVar] private float currSteerAxis;
+    [SyncVar] private float currDriftAxis;
+    [SyncVar] private bool acceleratePressed;
+    [SyncVar] private bool accelerateHeld;
+    [SyncVar] private bool brakeHeld;
+
+    #region Input sending/recieving 
+    /// <summary>
+    /// Called on the server from an AI. Processes their input and send it to all clients (since input vars are synced)
+    /// </summary>
+    /// <param name="_turning"></param>
+    /// <param name="_drifting"></param>
+    /// <param name="_acceleratePressed"></param>
+    /// <param name="_accelerateHeld"></param>
+    /// <param name="_brakeHeld"></param>
+    [Server]
+    public void SetInputFromAIServer(float _turning, float _drifting, bool _acceleratePressed, bool _accelerateHeld, bool _brakeHeld)
+    {
+        if (isDead == false)
+        {
+            //No need to clamp, AI can't cheat
+            currSteerAxis = _turning;
+            currDriftAxis = _drifting;
+            acceleratePressed = _acceleratePressed;
+            accelerateHeld = _accelerateHeld;
+            brakeHeld = _brakeHeld;
+        }
+        else
+        {
+            currSteerAxis = 0;
+            currDriftAxis = 0;
+            acceleratePressed = false;
+            accelerateHeld = false;
+            brakeHeld = false;
+        }
+    }
 
     /// <summary>
-    /// Called by the player that owns this racer, then processed on the server.
-    /// Sets the server-side input information for this racer.
+    /// Called by the player that owns this racer
+    /// Sets the client-side input
     /// </summary>
     /// <param name="_turning"> Turning axis from -1 to 1 </param>
     /// <param name="_drifting"> Drifting axis from -1 to 1 </param>
     /// <param name="_acceleratePressed"> Did the player start pressing accelerate this frame </param>
     /// <param name="_accelerateHeld"> Is the player holding accelerate </param>
     /// <param name="_brakeHeld"> Is the player holding brake </param>
-    public void SetInput(float _turning, float _drifting, bool _acceleratePressed, bool _accelerateHeld, bool _brakeHeld)
+    [Client]
+    public void SetInputOnAndFromClient(float _turning, float _drifting, bool _acceleratePressed, bool _accelerateHeld, bool _brakeHeld)
     {
-        if (isHuman && !isLocalPlayer)
-            return; //Anticheat to prevent players from controlling each other
+        if (isDead == false)
+        {
+            currSteerAxis = Mathf.Clamp(_turning, -1.0f, 1.0f); //clamp to prevent cheatin
+            currDriftAxis = Mathf.Clamp(_drifting, -1.0f, 1.0f);
+            acceleratePressed = _acceleratePressed;
+            accelerateHeld = _accelerateHeld;
+            brakeHeld = _brakeHeld;
+        }
+        else
+        {
+            currSteerAxis = 0;
+            currDriftAxis = 0;
+            acceleratePressed = false;
+            accelerateHeld = false;
+            brakeHeld = false;
+        }
 
+        //Send input to the server, and then to any other connected players (since input vars are synced)
+        SetInputOnServer(currSteerAxis, currDriftAxis, acceleratePressed, accelerateHeld, brakeHeld);
+    }
+
+    /// <summary>
+    /// Called by the player that owns this racer, validates input and sets it on the server.
+    /// Then sends input to all other connected players.
+    /// </summary>
+    /// <param name="_turning"> Turning axis from -1 to 1 </param>
+    /// <param name="_drifting"> Drifting axis from -1 to 1 </param>
+    /// <param name="_acceleratePressed"> Did the player start pressing accelerate this frame </param>
+    /// <param name="_accelerateHeld"> Is the player holding accelerate </param>
+    /// <param name="_brakeHeld"> Is the player holding brake </param>
+    [Command]
+    public void SetInputOnServer(float _turning, float _drifting, bool _acceleratePressed, bool _accelerateHeld, bool _brakeHeld)
+    {
         if (isDead == false)
         {
             currSteerAxis = Mathf.Clamp(_turning, -1.0f, 1.0f); //clamp to prevent cheatin
@@ -308,6 +369,7 @@ public class MechRacer : MonoBehaviour
             brakeHeld = false;
         }
     }
+    #endregion
 
     void LateUpdate()
     {
@@ -323,13 +385,30 @@ public class MechRacer : MonoBehaviour
         UpdateAndApplyTurning();
 
         float turnPercent = Mathf.Max(0, (Mathf.Abs(currTurnSpeed + currDriftSpeed) - maxTurnSpeed) / (maxDriftSpeed));
-        //float turnPercent = Mathf.Abs(currDriftSpeed)/(maxDriftSpeed) - ;
         currMaxSpeed = Utils.RemapPercent(1 - turnPercent, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
 
         CalcAcceleration();
         CalcFriction();
 
-        if (isLocalPlayer)
+        //Set left/right turn particles
+        leftTurnFX.UpdateParticleSystem(Mathf.Abs(Mathf.Min(currDriftSpeed, 0)) / maxDriftSpeed);
+        rightTurnFX.UpdateParticleSystem(Mathf.Max(0, currDriftSpeed) / maxDriftSpeed);
+
+        //Set drift anim based on drift input
+        driftAnim.SetFloat("Drift", currDriftSpeed / maxDriftSpeed);
+
+        Update_Client();
+        Update_Server();
+    }
+
+    [Client]
+    /// <summary>
+    /// Update method for the client.
+    /// Sets client-side visuals and effects, such as camera FOV and speednumber text.
+    /// </summary>
+    private void Update_Client()
+    {
+        if (isHuman && isLocalPlayer)
         {
             //Set speedlines based on speed
             float maxSpeedForVisuals = Utils.RemapPercent(0.35f, maxSpeedWhileMaxTurning, maxSpeedWhileStraight);
@@ -342,31 +421,15 @@ public class MechRacer : MonoBehaviour
             //set speedometer
             speedNumberText.text = (currSpeed * 100).ToString("F1") + " fasts/h";
         }
-        else
-        {
-            if (inLobby == false)
-            {
-                //Update checkpoint timer to destroy stuck AIs
-                if ((canMove) && (raceFinished == false) && (isDead == false))
-                {
-                    checkpointTimer -= Time.deltaTime;
-                    if (checkpointTimer <= 0)
-                    {
-                        RaceController.Instance.DestroyRacer(this);
-                        isDead = true;
-                    }
-                }
-            }
-        }
+    }
 
-
-        //Set left/right turn particles
-        leftTurnFX.UpdateParticleSystem(Mathf.Abs(Mathf.Min(currDriftSpeed, 0)) / maxDriftSpeed);
-        rightTurnFX.UpdateParticleSystem(Mathf.Max(0, currDriftSpeed) / maxDriftSpeed);
-
-        //Set drift anim based on drift input
-        driftAnim.SetFloat("Drift", currDriftSpeed / maxDriftSpeed);
-
+    [Server]
+    /// <summary>
+    /// Update method for the server
+    /// Calculates current position in the race, and determines when to disable AI racers
+    /// </summary>
+    private void Update_Server()
+    {
         //Calculate and set race position rank
         if (raceFinished || inLobby)
             return;
@@ -374,6 +437,21 @@ public class MechRacer : MonoBehaviour
         //Ratio of how far the player has traveled from the previous checkpoint to the next one
         float ratioToNextCheck = 1 - (Vector3.Distance(transform.position, nextCheckpoint.transform.position) / nextCheckpoint.distToPrevCheck);
         trackPos = checkpointsHit + ratioToNextCheck;
+
+        //Checkpoint timer stuff for AI racers
+        if ((inLobby == false) && (isHuman == false))
+        {
+            //Update checkpoint timer to destroy stuck AIs
+            if ((canMove) && (raceFinished == false) && (isDead == false))
+            {
+                checkpointTimer -= Time.deltaTime;
+                if (checkpointTimer <= 0)
+                {
+                    RaceController.Instance.DestroyRacer(this);
+                    isDead = true;
+                }
+            }
+        }
     }
 
     //Called when there is only 1 racer left, stops input
@@ -650,7 +728,7 @@ public class MechRacer : MonoBehaviour
 
         checkpointsHit++;
         checkpointTimer = timeToHitCheckpoint;
-        //Debug.Log("Racer " + name + " has hit checkpoint " + checkpointsHit);
+        Debug.Log("Racer " + name + " has hit checkpoint " + checkpointsHit);
 
         if (isLocalPlayer)
         {

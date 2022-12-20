@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static LobbySettings;
@@ -21,12 +22,15 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     public RaceTypeEnum RaceType { get; private set; }
 
     public LobbyVoteType_Enum VoteType { get; private set; } = LobbyVoteType_Enum.HostPick;
-    [SerializeField] private GameObject player;
+    //[SerializeField] private GameObject player;
+    private GameObject player;
 
     [SerializeField] private int StorySceneIndex;
     [SerializeField] private int lobbySceneIndex;
     [SerializeField] private int scoreSceneIndex;
     [SerializeField] private int mainMenuSceneIndex;
+    [SerializeField] private int emptySceneIndex;
+    [SerializeField] private bool loadIntoEmptySceneInsteadOfMainMenu;
 
     //private int totalVSRaces; //how many races to play for this VS race series
     public int NumRacesCompleted { get; private set; } //Index of current race in currCup (so from 0 to length-1)
@@ -36,10 +40,23 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
     public bool IsFirstRace => (NumRacesCompleted == 0);
 
+    public void SetPlayer(GameObject _player)
+    {
+        player = _player;
+        //DontDestroyOnLoad(player);
+
+        //Load main menu scene
+        //This is called here instead of Start() to allow for the solo network stuff to be setup first
+        ToMainMenu();
+    }
+
     void Start()
     {
+        //Debug.Log("start");
+        //player = NetworkClient.localPlayer.gameObject;
+
         //Load main menu scene
-        ToMainMenu();
+        //ToMainMenu();
     }
 
     /// <summary>
@@ -271,10 +288,17 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     /// </summary>
     public void ToMainMenu()
     {
-        DestroyAIRacers();
+        if (loadIntoEmptySceneInsteadOfMainMenu)
+        {
+            SceneManager.LoadScene(emptySceneIndex);
+        }
+        else
+        {
+            DestroyAIRacers();
 
-        player.SetActive(false);
+            player.SetActive(false);
 
-        SceneManager.LoadScene(mainMenuSceneIndex);
+            SceneManager.LoadScene(mainMenuSceneIndex);
+        }
     }
 }
