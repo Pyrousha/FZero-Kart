@@ -9,7 +9,7 @@ public class PostLobbyPositionStands : MonoBehaviour
 
     void Start()
     {
-        PlaceRacers(PreRaceInitializer.ExistingRacerStandings);
+        PlaceRacers(RacerStandingsTracker.ExistingRacerStandings);
     }
     void PlaceRacers(List<MechRacer> racers)
     {

@@ -30,11 +30,19 @@ public class LobbySettings : MonoBehaviour
     [SerializeField] private Toggle aiRacers_toggle;
     [SerializeField] private Selectable votetype_dropdown;
 
-    private RaceTypeEnum gamemode = RaceTypeEnum.CustomVsRace; //what gamemode to play
-    private int numRacers = 32; //# of racers to have in the lobby max
-    private bool spawnAI = true;
-    private int numRacesToPlay = 4; //# of tracks to play before showing score screen
-    private LobbyVoteType_Enum voteType = LobbyVoteType_Enum.HostPick; //how tracks should be selected
+
+    private static RaceTypeEnum gamemode = RaceTypeEnum.CustomVsRace; //what gamemode to play
+
+    private static int numRacers = 32; //# of racers to have in the lobby max
+    public static int NumRacers => numRacers;
+
+    private static bool spawnAI = true;
+    public static bool SpawnAI => spawnAI;
+
+    private static int numRacesToPlay = 4; //# of tracks to play before showing score screen
+
+    private static LobbyVoteType_Enum voteType = LobbyVoteType_Enum.HostPick; //how tracks should be selected
+
 
     private List<Selectable> selectablesToDisableForGP;
 
@@ -203,13 +211,16 @@ public class LobbySettings : MonoBehaviour
             gamemode = RaceTypeEnum.CustomVsRace;
         }
 
+        //Set race parameters
         SceneTransitioner.Instance.SingleplayerMode = _singleplayer;
-
         SceneTransitioner.Instance.SetRaceType(gamemode, numRacesToPlay, voteType);
+        RacerStandingsTracker.NumTotalRacers = numRacers;
+        RacerStandingsTracker.SpawnAIRacers = spawnAI;
 
-        PreRaceInitializer.NumTotalRacers = numRacers;
-        PreRaceInitializer.SpawnAIRacers = spawnAI;
+        //Tell scenetransitioner the local player is host
+        SceneTransitioner.Instance.IsLocalPlayerHost = true;
 
-        SceneTransitioner.Instance.LoadIntoLobby(true);
+        //Start a server (spawns a player, sets local player var in SceneTransitioner, and loads to the lobby scene)
+        NetworkManagerFZeroKart.MultiServer.StartHost();
     }
 }

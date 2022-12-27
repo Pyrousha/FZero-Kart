@@ -1,28 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 ///Handles spawning in as many NPC racers as needed, and intializes any needed parameters
-public class PreRaceInitializer : Singleton<PreRaceInitializer>
+public class RacerStandingsTracker : NetworkBehaviour
 {
+
+    //TODO: Spawn on the server
+    //TODO: update existingRacerStandings on the clients each time it is updated on the server
+    // OR don't update on clients and have some basic system for when no races have been played 
+
+    #region Singleton stuff
+    private static RacerStandingsTracker instance = null;
+
+    public static RacerStandingsTracker Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = FindObjectOfType<RacerStandingsTracker>();
+            return instance;
+        }
+    }
+    #endregion
+
     [Header("References")]
     //[SerializeField] private GameObject PlayerPrefab;
     [SerializeField] private GameObject NPCPrefab;
 
-
-    public static int NumTotalRacers { get; set; } = 30;
-    public static bool SpawnAIRacers { get; set; } = true;
     [Header("Parameters")]
     [SerializeField] private AIEvolutionStats evoStats;
 
     private static List<MechRacer> existingRacerStandings = new List<MechRacer>();
     public static List<MechRacer> ExistingRacerStandings => existingRacerStandings;
 
+    bool showPositionInCard = false;
+
+    public static void OnPlayerJoined(MechRacer racer)
+    {
+        if (!existingRacerStandings.Contains(racer))
+            existingRacerStandings.Add(racer);
+        else
+            Debug.LogError("Duplicate player joining lobby: " + racer.gameObject.name);
+
+        RaceController.SortRacerScores(existingRacerStandings);
+    }
+
     /// <summary>
     /// Get all racers that are in the lobby, check if they are in the existingRacer list, then spawn cards for all racers.
     /// </summary>
     public void Start()
     {
+        if ((Instance != null) && (Instance != this))
+        {
+            Debug.Log("Destroyed script type" + typeof(RacerStandingsTracker) + " on gameObject" + gameObject.name);
+            Destroy(gameObject);
+        }
+
+
         List<MechRacer> racersInLobby = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
         foreach (MechRacer racer in racersInLobby)
         {
@@ -36,7 +72,10 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
         RaceController.SortRacerScores(existingRacerStandings);
 
         //If the first place player has score > 0, then at least 1 race has been played, so rankings should be shown in card
-        bool showPositionInCard = existingRacerStandings[0].Score > 0;
+        if ((existingRacerStandings.Count > 0) && (existingRacerStandings[0].Score > 0))
+            showPositionInCard = true;
+        else
+            showPositionInCard = false;
 
 
         for (int i = 0; i < existingRacerStandings.Count; i++)
@@ -61,17 +100,19 @@ public class PreRaceInitializer : Singleton<PreRaceInitializer>
     /// Called when everyone is ready and the cup starts.
     /// Spawns as many NPC racers as needed, and initializes their parameters.
     /// </summary>
+    [Server]
     public void InitalizeRacers()
     {
         existingRacerStandings = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
 
-        if (SpawnAIRacers)
+        if (LobbySettings.SpawnAI)
         {
             int n = existingRacerStandings.Count;
-            while (existingRacerStandings.Count < NumTotalRacers)
+            while (existingRacerStandings.Count < LobbySettings.NumRacers)
             {
-                MechRacer newRacer = Instantiate(NPCPrefab, Vector3.zero, Quaternion.identity).GetComponent<MechRacer>();
-                existingRacerStandings.Add(newRacer);
+                GameObject newRacer = Instantiate(NPCPrefab, Vector3.zero, Quaternion.identity);
+                existingRacerStandings.Add(newRacer.GetComponent<MechRacer>());
+                NetworkServer.Spawn(newRacer);
 
                 newRacer.gameObject.name = "AI RACER #" + n;
 

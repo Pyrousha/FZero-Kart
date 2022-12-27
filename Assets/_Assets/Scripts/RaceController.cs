@@ -145,7 +145,7 @@ public class RaceController : Singleton<RaceController>
         #endregion
 
         //Get list of current racers
-        currentRacers = new List<MechRacer>(PreRaceInitializer.ExistingRacerStandings);
+        currentRacers = new List<MechRacer>(RacerStandingsTracker.ExistingRacerStandings);
         numTotalRacers = currentRacers.Count;
 
         scoreSortedRacers = new List<MechRacer>(currentRacers);
@@ -414,7 +414,7 @@ public class RaceController : Singleton<RaceController>
     /// <summary>
     private IEnumerator SpawnRacerScorecards(List<MechRacer> thisRacePlacements, List<MechRacer> newOverallPlacements)
     {
-        List<MechRacer> previousOverallPlacements = new List<MechRacer>(PreRaceInitializer.ExistingRacerStandings);
+        List<MechRacer> previousOverallPlacements = new List<MechRacer>(RacerStandingsTracker.ExistingRacerStandings);
         if (SceneTransitioner.Instance.IsFirstRace)
             previousOverallPlacements.Reverse();
 
@@ -527,7 +527,7 @@ public class RaceController : Singleton<RaceController>
 
 
         //Save new racer standing to persistent data
-        PreRaceInitializer.UpdateRacerStandings(scoreSortedRacers);
+        RacerStandingsTracker.UpdateRacerStandings(scoreSortedRacers);
 
 
         Debug.Log("Time for the next race!");

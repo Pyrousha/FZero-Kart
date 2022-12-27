@@ -40,23 +40,24 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
     public bool IsFirstRace => (NumRacesCompleted == 0);
 
-    public void SetPlayer(GameObject _player)
+    public bool IsLocalPlayerHost { get; set; } = false;
+
+    /// <summary>
+    /// Called right after the local player is created, but before the lobby scene is loaded 
+    /// </summary>
+    /// <param name="_player"> Newly spawned player GameObject </param>
+    public void SetLocalPlayer(GameObject _player)
     {
         player = _player;
-        //DontDestroyOnLoad(player);
 
-        //Load main menu scene
-        //This is called here instead of Start() to allow for the solo network stuff to be setup first
-        ToMainMenu();
+        if (IsLocalPlayerHost)
+            LobbyController.HostRacer = player.GetComponent<MechRacer>();
     }
 
-    void Start()
+    public void Start()
     {
-        //Debug.Log("start");
-        //player = NetworkClient.localPlayer.gameObject;
-
         //Load main menu scene
-        //ToMainMenu();
+        ToMainMenu();
     }
 
     /// <summary>
@@ -70,12 +71,17 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         SingleplayerMode = _gameModeButton.Singleplayer;
 
         //TEMP: Set preraceinitializer settings
-        PreRaceInitializer.SpawnAIRacers = true;
-        PreRaceInitializer.NumTotalRacers = 32;
+        RacerStandingsTracker.SpawnAIRacers = true;
+        RacerStandingsTracker.NumTotalRacers = 32;
 
         //TEMP: assume selecting gamemode makes local player host
         if (_gameModeButton.LoadSceneWhenClicked)
-            LoadIntoLobby(!SingleplayerMode);
+        {
+            if (SingleplayerMode)
+                NetworkManagerFZeroKart.SoloServer.StartServer();
+            else
+                NetworkManagerFZeroKart.MultiServer.StartServer();
+        }
     }
 
     /// <summary>
@@ -160,7 +166,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     public void StartRace()
     {
         if (IsFirstRace)
-            PreRaceInitializer.Instance.InitalizeRacers();
+            RacerStandingsTracker.Instance.InitalizeRacers();
 
         LoadNextRace();
     }
@@ -180,7 +186,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                 case RaceTypeEnum.GrandPrix:
                     {
                         MechRacer playerMech = player.GetComponent<MechRacer>();
-                        int playerPos = PreRaceInitializer.ExistingRacerStandings.IndexOf(playerMech) + 1;
+                        int playerPos = RacerStandingsTracker.ExistingRacerStandings.IndexOf(playerMech) + 1;
                         currCup.OnCupFinished(playerPos);
                         break;
                     }
@@ -194,9 +200,9 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
             if (headBackToLobbyBetweenRaces)
             {
                 //Head back to the lobby for voting
-                for (int i = 0; i < PreRaceInitializer.ExistingRacerStandings.Count; i++)
+                for (int i = 0; i < RacerStandingsTracker.ExistingRacerStandings.Count; i++)
                 {
-                    MechRacer currRacer = PreRaceInitializer.ExistingRacerStandings[i];
+                    MechRacer currRacer = RacerStandingsTracker.ExistingRacerStandings[i];
                     currRacer.OnEnterLobby(false);
                 }
 
@@ -215,7 +221,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     /// </summary>
     private void LoadNextRace()
     {
-        foreach (MechRacer racer in PreRaceInitializer.ExistingRacerStandings)
+        foreach (MechRacer racer in RacerStandingsTracker.ExistingRacerStandings)
         {
             racer.OnNewRaceLoading();
         }
@@ -252,9 +258,9 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
     private void DestroyAIRacers()
     {
-        for (int i = 0; i < PreRaceInitializer.ExistingRacerStandings.Count; i++)
+        for (int i = 0; i < RacerStandingsTracker.ExistingRacerStandings.Count; i++)
         {
-            MechRacer currRacer = PreRaceInitializer.ExistingRacerStandings[i];
+            MechRacer currRacer = RacerStandingsTracker.ExistingRacerStandings[i];
             if (currRacer.IsHuman)
             {
                 //reset score
@@ -262,7 +268,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
             }
             else
             {
-                PreRaceInitializer.ExistingRacerStandings.RemoveAt(i);
+                RacerStandingsTracker.ExistingRacerStandings.RemoveAt(i);
                 Destroy(currRacer.gameObject);
                 i--;
             }
@@ -272,16 +278,16 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     /// <summary>
     /// Called when the player creates or joins a lobby (both singleplayer or multiplayer)
     /// </summary>
-    /// <param name="_hostNewLobby"> Is the player hosting a new lobby (host for start game comfirmation) </param>
-    public void LoadIntoLobby(bool _hostNewLobby = false)
-    {
-        player.SetActive(true);
+    /// <param name="_hostNewLobby"> Is the player hosting a new lobby (track host for who gets to start the game) </param>
+    // public void LoadIntoLobby(bool _hostNewLobby = false)
+    // {
+    //     //player.SetActive(true);
 
-        if (_hostNewLobby)
-            LobbyController.HostRacer = player.GetComponent<MechRacer>();
+    //     if (_hostNewLobby)
+    //         LobbyController.HostRacer = player.GetComponent<MechRacer>();
 
-        SceneManager.LoadScene(lobbySceneIndex);
-    }
+    //     //SceneManager.LoadScene(lobbySceneIndex);
+    // }
 
     /// <summary>
     /// Loads back to the Main Menu
@@ -295,8 +301,6 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         else
         {
             DestroyAIRacers();
-
-            player.SetActive(false);
 
             SceneManager.LoadScene(mainMenuSceneIndex);
         }

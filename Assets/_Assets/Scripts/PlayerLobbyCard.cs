@@ -77,7 +77,7 @@ public class PlayerLobbyCard : MonoBehaviour
     {
         posNumText.text = _posNum.ToString();
         posNumSuffixText.text = RaceController.RacePosSuffix(_posNum);
-        Color posColor = RaceController.Static_GetColorForPos(_posNum, PreRaceInitializer.ExistingRacerStandings.Count);
+        Color posColor = RaceController.Static_GetColorForPos(_posNum, RacerStandingsTracker.ExistingRacerStandings.Count);
         posNumText.color = posColor;
         posNumSuffixText.color = posColor;
 

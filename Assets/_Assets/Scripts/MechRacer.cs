@@ -102,9 +102,9 @@ public class MechRacer : NetworkBehaviour
 
     #endregion
 
-    private int score;
+    [SyncVar] private int score;
     public int Score => score;
-    private int lastScore;
+    [SyncVar] private int lastScore;
     public int LastScore => lastScore;
     public void AddPoints(int pointsToAdd)
     {

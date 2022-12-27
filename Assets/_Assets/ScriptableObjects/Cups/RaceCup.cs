@@ -19,6 +19,11 @@ public class RaceCup : ScriptableObject
 
     [field: SerializeField] public int BestPlacement { get; private set; }
 
+    /// <summary>
+    /// Called when a cup is finished. Saves the local player's race position.
+    /// TODO: save best placement to a file 
+    /// </summary>
+    /// <param name="localPlayerPos"> Position ranking of the local player </param>
     public void OnCupFinished(int localPlayerPos)
     {
         Debug.Log("Setting new best placement for " + name);

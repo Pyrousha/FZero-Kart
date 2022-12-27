@@ -130,8 +130,21 @@ public class LobbyController : Singleton<LobbyController>
     }
 
 
-    public void CreateCard(MechRacer racer, int posNum)
+    /// <summary>
+    /// Checks if there is already a card for this player, and if not creates one
+    /// </summary>
+    /// <param name="racer"></param>
+    /// <param name="posNum"></param>
+    public void TryCreateCard(MechRacer racer, int posNum)
     {
+        //Check to make sure a card for this player doesn't already exist
+        foreach (PlayerLobbyCard card in allLobbyCards)
+        {
+            if (card.Racer == racer)
+                return;
+        }
+
+        //create a new card for this player
         PlayerLobbyCard newCard = Instantiate(lobbyCardPrefab).GetComponent<PlayerLobbyCard>();
         if (racer.IsLocalPlayer)
             localPlayerLobbyCard = newCard;

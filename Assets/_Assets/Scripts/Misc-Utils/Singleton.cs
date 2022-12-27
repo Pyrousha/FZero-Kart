@@ -1,20 +1,19 @@
 using UnityEngine;
-public class Singleton<T> : MonoBehaviour where T : Component 
+public class Singleton<T> : MonoBehaviour where T : Component
 {
-
     void Start()
     {
         if ((Instance != null) && (Instance != this))
         {
-            Debug.Log("Destroyed script type" + typeof(T) + " on gameObject"+ gameObject.name);
+            Debug.Log("Destroyed script type" + typeof(T) + " on gameObject" + gameObject.name);
             Destroy(gameObject);
         }
     }
     private static T instance = null;
 
-    public static T Instance 
+    public static T Instance
     {
-        get 
+        get
         {
             if (instance == null)
                 instance = FindObjectOfType<T>();
