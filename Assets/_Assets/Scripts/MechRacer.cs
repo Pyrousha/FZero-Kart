@@ -13,7 +13,12 @@ public class MechRacer : NetworkBehaviour
     [SerializeField] private Color playerNameColor;
     public Color PlayerNameColor => playerNameColor;
     public bool IsLocalPlayer => isLocalPlayer;
-    private bool isHuman;
+    public void SetIsHuman()
+    {
+        isHuman = true;
+    }
+
+    [SyncVar] private bool isHuman;
     public bool IsHuman => isHuman;
 
     //States
@@ -112,6 +117,18 @@ public class MechRacer : NetworkBehaviour
         score += pointsToAdd;
     }
 
+    //Setup client-side references, and add this racer to the list of all racers for all other clients
+    [Client]
+    void Awake()
+    {
+        //Set reference to local player on client that owns this racer
+        if (isLocalPlayer)
+            SceneTransitioner.Instance.SetLocalPlayer(gameObject);
+
+        //Signify to all players that this player has joined
+        RacerStandingsTracker.OnPlayerJoined_Client(this);
+    }
+
     void Start()
     {
         LoadStatsFromFile(mechStats);
@@ -121,8 +138,6 @@ public class MechRacer : NetworkBehaviour
 
         playerController = GetComponent<PlayerController>();
         npcController = GetComponent<NPCController>();
-
-        isHuman = playerController != null;
 
         //Set nameplate vars
         namePlateTransform = namePlateText.transform;

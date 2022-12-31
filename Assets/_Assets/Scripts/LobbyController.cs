@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using static SceneTransitioner;
+using Mirror;
 
 /// <summary>
 /// Controls spawning in new lobby cards, and also starts the race once all players have readied up.
 /// </summary>
-public class LobbyController : Singleton<LobbyController>
+public class LobbyController : NetworkBehaviour
 {
     public static MechRacer HostRacer { get; set; }
 
@@ -40,6 +41,30 @@ public class LobbyController : Singleton<LobbyController>
 
 
     private NestedMenuCategory readyButton;
+
+    #region Singleton stuff
+    private static LobbyController instance = null;
+
+    void Awake()
+    {
+        if ((Instance != null) && (Instance != this))
+        {
+            Debug.Log("Destroyed script type" + typeof(LobbyController) + " on gameObject" + gameObject.name);
+            Destroy(gameObject);
+        }
+    }
+
+    public static LobbyController Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = FindObjectOfType<LobbyController>();
+            return instance;
+        }
+    }
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
@@ -131,10 +156,11 @@ public class LobbyController : Singleton<LobbyController>
 
 
     /// <summary>
-    /// Checks if there is already a card for this player, and if not creates one
+    /// Checks if there is already a card for this player, and if not creates one (client only)
     /// </summary>
     /// <param name="racer"></param>
     /// <param name="posNum"></param>
+    [Client]
     public void TryCreateCard(MechRacer racer, int posNum)
     {
         //Check to make sure a card for this player doesn't already exist
@@ -144,10 +170,18 @@ public class LobbyController : Singleton<LobbyController>
                 return;
         }
 
+        Debug.Log($"creating card for player {racer.gameObject.name}");
+
         //create a new card for this player
         PlayerLobbyCard newCard = Instantiate(lobbyCardPrefab).GetComponent<PlayerLobbyCard>();
+        Debug.Log($"player: {racer.gameObject.name}");
         if (racer.IsLocalPlayer)
+        {
             localPlayerLobbyCard = newCard;
+            Debug.Log("setting localPlayerCard");
+        }
+        else
+            Debug.Log("not local player, do not set localPlayerCard");
 
         newCard.transform.SetParent(cardParent);
 
@@ -223,6 +257,7 @@ public class LobbyController : Singleton<LobbyController>
     /// <summary>
     /// Called when the local player clicks the "ready" button
     /// </summary>
+    [Client]
     public void OnClickedReady()
     {
         OnPlayerReadiedUp(localPlayerLobbyCard);

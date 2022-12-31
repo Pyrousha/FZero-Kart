@@ -147,7 +147,7 @@ PrefabInstance:
     - target: {fileID: 8647395980506502936, guid: 26f2371bac9e9fe4da7860f8363b1203,
         type: 3}
       propertyPath: m_Name
-      value: Player Hitbox-Multiplayer
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 9123263947770082267, guid: 26f2371bac9e9fe4da7860f8363b1203,
         type: 3}

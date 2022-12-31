@@ -39,11 +39,15 @@ public class NetworkManagerFZeroKart : NetworkManager
             ? Instantiate(playerPrefab, startPos.position, startPos.rotation)
             : Instantiate(playerPrefab);
 
-        SceneTransitioner.Instance.SetLocalPlayer(player);
-
         // instantiating a "Player" prefab gives it the name "Player(clone)"
         // => appending the connectionId is WAY more useful for debugging!
         player.name = $"{playerPrefab.name} [connId={conn.connectionId}]";
         NetworkServer.AddPlayerForConnection(conn, player);
+
+        //Add player to list of all racers
+        MechRacer newPlayerMech = player.GetComponent<MechRacer>();
+
+        RacerStandingsTracker.OnPlayerJoined_Server(newPlayerMech);
+        newPlayerMech.SetIsHuman();
     }
 }

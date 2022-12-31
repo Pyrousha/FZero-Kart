@@ -6,7 +6,6 @@ using Mirror;
 ///Handles spawning in as many NPC racers as needed, and intializes any needed parameters
 public class RacerStandingsTracker : NetworkBehaviour
 {
-
     //TODO: Spawn on the server
     //TODO: update existingRacerStandings on the clients each time it is updated on the server
     // OR don't update on clients and have some basic system for when no races have been played 
@@ -37,14 +36,44 @@ public class RacerStandingsTracker : NetworkBehaviour
 
     bool showPositionInCard = false;
 
-    public static void OnPlayerJoined(MechRacer racer)
+    /// <summary>
+    /// Called on each client when a player joins a lobby.
+    /// Adds the new player to the list of all racers and creates a lobby card if needed.
+    /// </summary>
+    /// <param name="racer"> Mechracer of player who has just joined </param>
+    [Client]
+    public static void OnPlayerJoined_Client(MechRacer racer)
     {
         if (!existingRacerStandings.Contains(racer))
+        {
+            //Add new racer to array of all racers and sort based on score
             existingRacerStandings.Add(racer);
-        else
-            Debug.LogError("Duplicate player joining lobby: " + racer.gameObject.name);
+            RaceController.SortRacerScores(existingRacerStandings);
 
-        RaceController.SortRacerScores(existingRacerStandings);
+            int posNum;
+            //If the first place player has score > 0, then at least 1 race has been played, so rankings should be shown in card
+            if ((existingRacerStandings.Count > 0) && (existingRacerStandings[0].Score > 0))
+                posNum = RaceController.GetCurrentSharedPosition(existingRacerStandings.IndexOf(racer), racer, existingRacerStandings);
+            else
+                posNum = 0; //A position of < 1 means do not display the ranking on the lobby cards
+
+            LobbyController.Instance.TryCreateCard(racer, posNum);
+        }
+        else
+            Debug.Log("Duplicate player joining lobby: " + racer.gameObject.name);
+    }
+
+    [Server]
+    public static void OnPlayerJoined_Server(MechRacer racer)
+    {
+        if (!existingRacerStandings.Contains(racer))
+        {
+            //Add new racer to array of all racers and sort based on score
+            existingRacerStandings.Add(racer);
+            RaceController.SortRacerScores(existingRacerStandings);
+        }
+        else
+            Debug.Log("Duplicate player joining lobby: " + racer.gameObject.name);
     }
 
     /// <summary>
@@ -88,7 +117,7 @@ public class RacerStandingsTracker : NetworkBehaviour
             else
                 posNum = 0;
 
-            LobbyController.Instance.CreateCard(racer, posNum);
+            LobbyController.Instance.TryCreateCard(racer, posNum);
         }
 
         LobbyController.Instance.ReadyUpAIRacers();

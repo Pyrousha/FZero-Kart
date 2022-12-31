@@ -70,10 +70,6 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         RaceType = _gameModeButton.RaceType;
         SingleplayerMode = _gameModeButton.Singleplayer;
 
-        //TEMP: Set preraceinitializer settings
-        RacerStandingsTracker.SpawnAIRacers = true;
-        RacerStandingsTracker.NumTotalRacers = 32;
-
         //TEMP: assume selecting gamemode makes local player host
         if (_gameModeButton.LoadSceneWhenClicked)
         {

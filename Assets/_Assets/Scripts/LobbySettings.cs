@@ -214,8 +214,6 @@ public class LobbySettings : MonoBehaviour
         //Set race parameters
         SceneTransitioner.Instance.SingleplayerMode = _singleplayer;
         SceneTransitioner.Instance.SetRaceType(gamemode, numRacesToPlay, voteType);
-        RacerStandingsTracker.NumTotalRacers = numRacers;
-        RacerStandingsTracker.SpawnAIRacers = spawnAI;
 
         //Tell scenetransitioner the local player is host
         SceneTransitioner.Instance.IsLocalPlayerHost = true;
