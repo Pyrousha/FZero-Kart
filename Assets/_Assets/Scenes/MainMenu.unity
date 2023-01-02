@@ -2333,6 +2333,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b31388dbe0d8ba4886ee85e206f5609, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &961888509 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 259369041243811345, guid: 49c8d57419baeb94c9f47f54c2550661,
+    type: 3}
+  m_PrefabInstance: {fileID: 259369041199686670}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91ee2b4dcbd95ac40a24bb256d597010, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1010841291
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4431,22 +4443,27 @@ PrefabInstance:
     - target: {fileID: 5838277705321355909, guid: 23a2bdeb5246733459d47eaf28dc4ce5,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5838277705321355909, guid: 23a2bdeb5246733459d47eaf28dc4ce5,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5838277705321355909, guid: 23a2bdeb5246733459d47eaf28dc4ce5,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 667618944}
+      objectReference: {fileID: 961888509}
     - target: {fileID: 5838277705321355909, guid: 23a2bdeb5246733459d47eaf28dc4ce5,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnGamemodeButtonPressed
+      value: CreateLobby
       objectReference: {fileID: 0}
     - target: {fileID: 5838277705321355909, guid: 23a2bdeb5246733459d47eaf28dc4ce5,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: MainMenuController, Assembly-CSharp
+      value: LobbySettings, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5838277705321355909, guid: 23a2bdeb5246733459d47eaf28dc4ce5,
         type: 3}
@@ -4456,7 +4473,7 @@ PrefabInstance:
     - target: {fileID: 5838277705321355909, guid: 23a2bdeb5246733459d47eaf28dc4ce5,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: GamemodeButton, Assembly-CSharp
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5838277705321355910, guid: 23a2bdeb5246733459d47eaf28dc4ce5,
         type: 3}

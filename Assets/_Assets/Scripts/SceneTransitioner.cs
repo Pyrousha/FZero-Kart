@@ -159,6 +159,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     /// <summary>
     /// Called after host presses "start race", initializes racers (if needed) and loads race
     /// </summary>
+    [Server]
     public void StartRace()
     {
         if (IsFirstRace)
@@ -168,7 +169,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     }
 
     /// <summary>
-    /// Called when the race has finished forr all players, determines what scene to load next (either to lobby, next race, or end screen)
+    /// Called when the race has finished for all players, determines what scene to load next (either to lobby, next race, or end screen)
     /// </summary>
     public void OnRaceFinished()
     {
@@ -203,6 +204,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                 }
 
                 SceneManager.LoadScene(lobbySceneIndex);
+                StartCoroutine(EnableLobbyController());
             }
             else
             {
@@ -215,11 +217,12 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     /// <summary>
     /// Loads the next race scene based on race type
     /// </summary>
+    [Server]
     private void LoadNextRace()
     {
         foreach (MechRacer racer in RacerStandingsTracker.ExistingRacerStandings)
         {
-            racer.OnNewRaceLoading();
+            racer.OnNewRaceLoading_Server();
         }
 
         switch (RaceType)
@@ -250,6 +253,51 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
 
         //Load lobby scene
         SceneManager.LoadScene(lobbySceneIndex);
+        StartCoroutine(EnableLobbyController());
+    }
+
+    private IEnumerator EnableLobbyController()
+    {
+        yield return new WaitForSeconds(0.1f);
+        LobbyController.Instance.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Loads into the Lobby scene and then joins the localhost server
+    /// </summary>
+    public void JoinExistingServer()
+    {
+        StartCoroutine(ClientInitialization());
+    }
+
+    private IEnumerator ClientInitialization()
+    {
+        //Load lobby scene
+        SceneManager.LoadScene(lobbySceneIndex);
+
+        yield return new WaitForSeconds(0.1f);
+
+        //Join server
+        NetworkManagerFZeroKart.MultiServer.StartClient();
+    }
+
+    /// <summary>
+    /// Loads into the Lobby scene and then opens the server
+    /// </summary>
+    public void StartNewServer()
+    {
+        StartCoroutine(ServerInitialization());
+    }
+
+    private IEnumerator ServerInitialization()
+    {
+        //Load lobby scene
+        SceneManager.LoadScene(lobbySceneIndex);
+
+        yield return new WaitForSeconds(0.1f);
+
+        //Start server
+        NetworkManagerFZeroKart.MultiServer.StartHost();
     }
 
     private void DestroyAIRacers()

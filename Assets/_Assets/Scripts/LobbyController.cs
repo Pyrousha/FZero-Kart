@@ -52,6 +52,8 @@ public class LobbyController : NetworkBehaviour
             Debug.Log("Destroyed script type" + typeof(LobbyController) + " on gameObject" + gameObject.name);
             Destroy(gameObject);
         }
+
+        gameObject.SetActive(true);
     }
 
     public static LobbyController Instance
@@ -227,7 +229,20 @@ public class LobbyController : NetworkBehaviour
     /// Called when the host clicks "start race" (means all players are ready)
     /// Play the "race time" popup anim and then load into the race
     /// </summary>
+    [Client]
     public void OnClickedStartRace()
+    {
+        OnHostClickedStart();
+    }
+
+    [Command(requiresAuthority = false)]
+    private void OnHostClickedStart()
+    {
+        StartRacetimePopup();
+    }
+
+    [ClientRpc]
+    private void StartRacetimePopup()
     {
         raceTimePopup.SetActive(true);
     }
@@ -236,6 +251,7 @@ public class LobbyController : NetworkBehaviour
     /// Called when raceTime anim ends, loads into race
     /// </summary>
     /// <returns></returns>
+    [Server]
     public void StartRace()
     {
         //PreRaceInitializer.Instance.InitalizeRacers();
@@ -260,6 +276,8 @@ public class LobbyController : NetworkBehaviour
     [Client]
     public void OnClickedReady()
     {
+        Debug.Log("amogus");
+        Debug.Log(localPlayerLobbyCard);
         OnPlayerReadiedUp(localPlayerLobbyCard);
 
         readyButton.OnDeactivate(false);

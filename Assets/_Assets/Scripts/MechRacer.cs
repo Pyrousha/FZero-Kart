@@ -121,12 +121,20 @@ public class MechRacer : NetworkBehaviour
     [Client]
     void Awake()
     {
-        //Set reference to local player on client that owns this racer
-        if (isLocalPlayer)
-            SceneTransitioner.Instance.SetLocalPlayer(gameObject);
+        playerController = GetComponent<PlayerController>();
+        npcController = GetComponent<NPCController>();
 
-        //Signify to all players that this player has joined
+        isHuman = (playerController != null);
+
+        //Signify to all players that this player has joined (since this will be called on all clients)
         RacerStandingsTracker.OnPlayerJoined_Client(this);
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+
+        SceneTransitioner.Instance.SetLocalPlayer(gameObject);
     }
 
     void Start()
@@ -135,9 +143,6 @@ public class MechRacer : NetworkBehaviour
 
         gravityDirection = trueGravDir;
         raycastPoints = Utils.GetChildrenOfTransform(groundRaycastParent);
-
-        playerController = GetComponent<PlayerController>();
-        npcController = GetComponent<NPCController>();
 
         //Set nameplate vars
         namePlateTransform = namePlateText.transform;
@@ -184,7 +189,8 @@ public class MechRacer : NetworkBehaviour
     /// called when the race has ended for all players, and the next race scene is about to be loaded. 
     /// Disable input, reset speed, etc.
     /// </summary>
-    public void OnNewRaceLoading()
+    [Server]
+    public void OnNewRaceLoading_Server()
     {
         canMove = false;
         isDead = false;
@@ -205,8 +211,28 @@ public class MechRacer : NetworkBehaviour
         {
             playerController.enabled = true;
             npcController.enabled = false;
+        }
 
-            StartCoroutine(playerController.CameraRotate.UndoRotate());
+        OnNewRaceLoading_Client();
+    }
+
+    [ClientRpc]
+    private void OnNewRaceLoading_Client()
+    {
+        currTurnSpeed = 0;
+        currDriftAxis = 0;
+        Vector3 newModelRotation = playerModel.localEulerAngles;
+        newModelRotation.y = currTurnSpeed * 0.5f + currDriftSpeed * 0.7f;
+        playerModel.localEulerAngles = newModelRotation;
+
+        currSpeed = 0;
+        if (isHuman)
+        {
+            playerController.enabled = true;
+            npcController.enabled = false;
+
+            if (isLocalPlayer)
+                StartCoroutine(playerController.CameraRotate.UndoRotate());
         }
     }
 

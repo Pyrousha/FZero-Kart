@@ -140,15 +140,24 @@ public class RacerStandingsTracker : NetworkBehaviour
             while (existingRacerStandings.Count < LobbySettings.NumRacers)
             {
                 GameObject newRacer = Instantiate(NPCPrefab, Vector3.zero, Quaternion.identity);
-                existingRacerStandings.Add(newRacer.GetComponent<MechRacer>());
                 NetworkServer.Spawn(newRacer);
 
+                //Spawning a racer automatically adds them to the list of racer standings on clients, no need to manually add
+
                 newRacer.gameObject.name = "AI RACER #" + n;
+                Debug.Log($"Spawned AI racer {n}, there are now {existingRacerStandings.Count}/{LobbySettings.NumRacers} racers");
 
                 n++;
             }
         }
 
+        //Server needs to grab all spawned racers and add them to list of existing racers
+        List<MechRacer> foundRacers = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
+        foreach (MechRacer racer in foundRacers)
+        {
+            if (!existingRacerStandings.Contains(racer))
+                existingRacerStandings.Add(racer);
+        }
 
         #region Set AI Input Parameters
         //Set AI race stats from evolution iteration

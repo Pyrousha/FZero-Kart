@@ -544,6 +544,16 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2880142383736289412, guid: 4ade8ad55736c8f41994af905c9bcb59,
+        type: 3}
+      propertyPath: onlineScene
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2880142383736289412, guid: 4ade8ad55736c8f41994af905c9bcb59,
+        type: 3}
+      propertyPath: offlineScene
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8386023348256023954, guid: 4ade8ad55736c8f41994af905c9bcb59,
         type: 3}
       propertyPath: m_RootOrder

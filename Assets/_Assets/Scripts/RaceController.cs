@@ -533,7 +533,7 @@ public class RaceController : Singleton<RaceController>
         Debug.Log("Time for the next race!");
         foreach (MechRacer racer in thisRacePlacements)
         {
-            racer.OnNewRaceLoading();
+            racer.OnNewRaceLoading_Server();
         }
 
         SceneTransitioner.Instance.OnRaceFinished();

@@ -7,10 +7,10 @@ using Mirror;
 public class NPCController : NetworkBehaviour
 {
     [Header("NPC-Specific Parameters")]
-    [SerializeField] private float turnThreshold; //how much of an angle difference to target to start turning
-    [SerializeField] private float driftThreshold; //how much of an angle difference to target to start drifting
-    [SerializeField] private float noAccelerateThreshold; //how much of an angle difference to target to stop accelerating
-    [SerializeField] private float brakeThreshold; //how much of an angle difference to target to stop accelerating
+    [SerializeField][SyncVar] private float turnThreshold; //how much of an angle difference to target to start turning
+    [SerializeField][SyncVar] private float driftThreshold; //how much of an angle difference to target to start drifting
+    [SerializeField][SyncVar] private float noAccelerateThreshold; //how much of an angle difference to target to stop accelerating
+    [SerializeField][SyncVar] private float brakeThreshold; //how much of an angle difference to target to stop accelerating
 
 
     #region NPC Buttons

@@ -218,7 +218,12 @@ public class LobbySettings : MonoBehaviour
         //Tell scenetransitioner the local player is host
         SceneTransitioner.Instance.IsLocalPlayerHost = true;
 
-        //Start a server (spawns a player, sets local player var in SceneTransitioner, and loads to the lobby scene)
-        NetworkManagerFZeroKart.MultiServer.StartHost();
+        //Load into lobby scene and start server
+        SceneTransitioner.Instance.StartNewServer();
+    }
+
+    public void JoinLobby()
+    {
+        SceneTransitioner.Instance.JoinExistingServer();
     }
 }
