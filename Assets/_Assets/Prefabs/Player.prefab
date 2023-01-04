@@ -106,7 +106,7 @@ PrefabInstance:
     - target: {fileID: 8307567329534496165, guid: 26f2371bac9e9fe4da7860f8363b1203,
         type: 3}
       propertyPath: thingsToDisableIfNotMine.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8307567329534496165, guid: 26f2371bac9e9fe4da7860f8363b1203,
         type: 3}
@@ -127,7 +127,7 @@ PrefabInstance:
         type: 3}
       propertyPath: thingsToDisableIfNotMine.Array.data[3]
       value: 
-      objectReference: {fileID: 1378818103956221652}
+      objectReference: {fileID: 410595543790523634}
     - target: {fileID: 8307567329534496165, guid: 26f2371bac9e9fe4da7860f8363b1203,
         type: 3}
       propertyPath: thingsToDisableIfNotMine.Array.data[4]
@@ -160,12 +160,6 @@ PrefabInstance:
 --- !u!1 &410595543790523634 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 329812798, guid: 26f2371bac9e9fe4da7860f8363b1203,
-    type: 3}
-  m_PrefabInstance: {fileID: 410595543527890892}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1378818103956221652 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1625854140656038168, guid: 26f2371bac9e9fe4da7860f8363b1203,
     type: 3}
   m_PrefabInstance: {fileID: 410595543527890892}
   m_PrefabAsset: {fileID: 0}

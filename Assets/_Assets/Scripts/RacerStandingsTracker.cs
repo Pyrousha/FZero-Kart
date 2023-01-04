@@ -6,7 +6,6 @@ using Mirror;
 ///Handles spawning in as many NPC racers as needed, and intializes any needed parameters
 public class RacerStandingsTracker : NetworkBehaviour
 {
-    //TODO: Spawn on the server
     //TODO: update existingRacerStandings on the clients each time it is updated on the server
     // OR don't update on clients and have some basic system for when no races have been played 
 
@@ -25,14 +24,13 @@ public class RacerStandingsTracker : NetworkBehaviour
     #endregion
 
     [Header("References")]
-    //[SerializeField] private GameObject PlayerPrefab;
     [SerializeField] private GameObject NPCPrefab;
 
     [Header("Parameters")]
     [SerializeField] private AIEvolutionStats evoStats;
 
-    private static List<MechRacer> existingRacerStandings = new List<MechRacer>();
-    public static List<MechRacer> ExistingRacerStandings => existingRacerStandings;
+    private List<MechRacer> existingRacerStandings = new List<MechRacer>();
+    public static List<MechRacer> ExistingRacerStandings => Instance.existingRacerStandings;
 
     bool showPositionInCard = false;
 
@@ -41,8 +39,34 @@ public class RacerStandingsTracker : NetworkBehaviour
     /// Adds the new player to the list of all racers and creates a lobby card if needed.
     /// </summary>
     /// <param name="racer"> Mechracer of player who has just joined </param>
-    [Client]
-    public static void OnPlayerJoined_Client(MechRacer racer)
+    // [Client]
+    // public static void OnPlayerJoined_Client(MechRacer racer)
+    // {
+    //     if (!existingRacerStandings.Contains(racer))
+    //     {
+    //         //Add new racer to array of all racers and sort based on score
+    //         existingRacerStandings.Add(racer);
+    //         RaceController.SortRacerScores(existingRacerStandings);
+
+    //         int posNum;
+    //         //If the first place player has score > 0, then at least 1 race has been played, so rankings should be shown in card
+    //         if ((existingRacerStandings.Count > 0) && (existingRacerStandings[0].Score > 0))
+    //             posNum = RaceController.GetCurrentSharedPosition(existingRacerStandings.IndexOf(racer), racer, existingRacerStandings);
+    //         else
+    //             posNum = 0; //A position of < 1 means do not display the ranking on the lobby cards
+
+    //         LobbyController.Instance.TryCreateCard(racer, posNum);
+    //     }
+    //     else
+    //         Debug.Log("Duplicate player joining lobby: " + racer.gameObject.name);
+    // }
+
+    /// <summary>
+    /// Called when a player (or AI) is spawned and connects to the server. Adds their racer to the list of connected racers
+    /// </summary>
+    /// <param name="racer"></param>
+    [Server]
+    public void OnPlayerJoined_Server(MechRacer racer)
     {
         if (!existingRacerStandings.Contains(racer))
         {
@@ -50,30 +74,29 @@ public class RacerStandingsTracker : NetworkBehaviour
             existingRacerStandings.Add(racer);
             RaceController.SortRacerScores(existingRacerStandings);
 
-            int posNum;
-            //If the first place player has score > 0, then at least 1 race has been played, so rankings should be shown in card
-            if ((existingRacerStandings.Count > 0) && (existingRacerStandings[0].Score > 0))
-                posNum = RaceController.GetCurrentSharedPosition(existingRacerStandings.IndexOf(racer), racer, existingRacerStandings);
-            else
-                posNum = 0; //A position of < 1 means do not display the ranking on the lobby cards
-
-            LobbyController.Instance.TryCreateCard(racer, posNum);
+            UpdateRacerStandingsFromServer(existingRacerStandings.Count);
         }
         else
             Debug.Log("Duplicate player joining lobby: " + racer.gameObject.name);
     }
 
-    [Server]
-    public static void OnPlayerJoined_Server(MechRacer racer)
+    /// <summary>
+    /// Called when the racer standings updates on the server (when race finishes or new player joins)
+    /// </summary>
+    /// <param name="_numTotalRacers">Length of existingRacerStandings on the server, used to check if more players need to be added to the client-side list</param>
+    [ClientRpc]
+    private void UpdateRacerStandingsFromServer(int _numTotalRacers)
     {
-        if (!existingRacerStandings.Contains(racer))
+        if (existingRacerStandings.Count != _numTotalRacers)
         {
-            //Add new racer to array of all racers and sort based on score
-            existingRacerStandings.Add(racer);
-            RaceController.SortRacerScores(existingRacerStandings);
+            //Need to aquire racers that aren't in this client's list
+            existingRacerStandings = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
+
+            if (existingRacerStandings.Count != _numTotalRacers)
+                Debug.LogError($"excpected {_numTotalRacers} racers, instead found {existingRacerStandings.Count}.");
         }
-        else
-            Debug.Log("Duplicate player joining lobby: " + racer.gameObject.name);
+
+        RaceController.SortRacerScores(existingRacerStandings);
     }
 
     /// <summary>
@@ -88,39 +111,39 @@ public class RacerStandingsTracker : NetworkBehaviour
         }
 
 
-        List<MechRacer> racersInLobby = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
-        foreach (MechRacer racer in racersInLobby)
-        {
-            if (!existingRacerStandings.Contains(racer))
-            {
-                //Add this racer to the array
-                existingRacerStandings.Add(racer);
-            }
-        }
+        // List<MechRacer> racersInLobby = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
+        // foreach (MechRacer racer in racersInLobby)
+        // {
+        //     if (!existingRacerStandings.Contains(racer))
+        //     {
+        //         //Add this racer to the array
+        //         existingRacerStandings.Add(racer);
+        //     }
+        // }
 
-        RaceController.SortRacerScores(existingRacerStandings);
+        // RaceController.SortRacerScores(existingRacerStandings);
 
-        //If the first place player has score > 0, then at least 1 race has been played, so rankings should be shown in card
-        if ((existingRacerStandings.Count > 0) && (existingRacerStandings[0].Score > 0))
-            showPositionInCard = true;
-        else
-            showPositionInCard = false;
+        // //If the first place player has score > 0, then at least 1 race has been played, so rankings should be shown in card
+        // if ((existingRacerStandings.Count > 0) && (existingRacerStandings[0].Score > 0))
+        //     showPositionInCard = true;
+        // else
+        //     showPositionInCard = false;
 
 
-        for (int i = 0; i < existingRacerStandings.Count; i++)
-        {
-            MechRacer racer = existingRacerStandings[i];
+        // for (int i = 0; i < existingRacerStandings.Count; i++)
+        // {
+        //     MechRacer racer = existingRacerStandings[i];
 
-            int posNum;
-            if (showPositionInCard)
-                posNum = RaceController.GetCurrentSharedPosition(i, racer, existingRacerStandings);
-            else
-                posNum = 0;
+        //     int posNum;
+        //     if (showPositionInCard)
+        //         posNum = RaceController.GetCurrentSharedPosition(i, racer, existingRacerStandings);
+        //     else
+        //         posNum = 0;
 
-            LobbyController.Instance.TryCreateCard(racer, posNum);
-        }
+        //     LobbyController.Instance.TryCreateCard(racer, posNum);
+        // }
 
-        LobbyController.Instance.ReadyUpAIRacers();
+        // LobbyController.Instance.ReadyUpAIRacers();
 
         //RaceController.PrintRankings(existingRacerStandings);
     }
@@ -132,15 +155,17 @@ public class RacerStandingsTracker : NetworkBehaviour
     [Server]
     public void InitalizeRacers()
     {
-        existingRacerStandings = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
+        //existingRacerStandings = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
 
         if (LobbySettings.SpawnAI)
         {
             int n = existingRacerStandings.Count;
-            while (existingRacerStandings.Count < LobbySettings.NumRacers)
+            while (n < LobbySettings.NumRacers)
             {
                 GameObject newRacer = Instantiate(NPCPrefab, Vector3.zero, Quaternion.identity);
                 NetworkServer.Spawn(newRacer);
+
+                OnPlayerJoined_Server(newRacer.GetComponent<MechRacer>());
 
                 //Spawning a racer automatically adds them to the list of racer standings on clients, no need to manually add
 
@@ -152,12 +177,12 @@ public class RacerStandingsTracker : NetworkBehaviour
         }
 
         //Server needs to grab all spawned racers and add them to list of existing racers
-        List<MechRacer> foundRacers = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
-        foreach (MechRacer racer in foundRacers)
-        {
-            if (!existingRacerStandings.Contains(racer))
-                existingRacerStandings.Add(racer);
-        }
+        // List<MechRacer> foundRacers = new List<MechRacer>(FindObjectsOfType(typeof(MechRacer)) as MechRacer[]);
+        // foreach (MechRacer racer in foundRacers)
+        // {
+        //     if (!existingRacerStandings.Contains(racer))
+        //         existingRacerStandings.Add(racer);
+        // }
 
         #region Set AI Input Parameters
         //Set AI race stats from evolution iteration
@@ -171,7 +196,11 @@ public class RacerStandingsTracker : NetworkBehaviour
         //RaceController.PrintRankings(existingRacerStandings);
     }
 
-    public static void UpdateRacerStandings(List<MechRacer> newStandings)
+    /// <summary>
+    /// Called when a race ends and each racer has earned their corresponding points
+    /// </summary>
+    /// <param name="newStandings"></param>
+    public void UpdateRacerStandings(List<MechRacer> newStandings)
     {
         existingRacerStandings = new List<MechRacer>(newStandings);
 

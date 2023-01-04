@@ -13,10 +13,6 @@ public class MechRacer : NetworkBehaviour
     [SerializeField] private Color playerNameColor;
     public Color PlayerNameColor => playerNameColor;
     public bool IsLocalPlayer => isLocalPlayer;
-    public void SetIsHuman()
-    {
-        isHuman = true;
-    }
 
     [SyncVar] private bool isHuman;
     public bool IsHuman => isHuman;
@@ -29,6 +25,13 @@ public class MechRacer : NetworkBehaviour
     [SyncVar] private int checkpointsHit = 0;
     [SyncVar] private bool isDead;
     [SyncVar] private bool canMove = true;
+
+    [Server]
+    public void SetPosNum(int _newPosNum)
+    {
+        posNum = _newPosNum;
+    }
+    [SyncVar] private int posNum = 0; //Position in the race (1 = 1st, 2 = 2nd, etc. 0 indicates no races have been played, default to last)
 
     private Checkpoint nextCheckpoint;
     public Checkpoint NextCheckpoint => nextCheckpoint;
@@ -117,19 +120,19 @@ public class MechRacer : NetworkBehaviour
         score += pointsToAdd;
     }
 
-    //Setup client-side references, and add this racer to the list of all racers for all other clients
-    [Client]
     void Awake()
     {
         playerController = GetComponent<PlayerController>();
         npcController = GetComponent<NPCController>();
-
         isHuman = (playerController != null);
 
-        //Signify to all players that this player has joined (since this will be called on all clients)
-        RacerStandingsTracker.OnPlayerJoined_Client(this);
+        raycastPoints = Utils.GetChildrenOfTransform(groundRaycastParent);
+
+        //Set nameplate vars
+        namePlateTransform = namePlateText.transform;
     }
 
+    [Client]
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
@@ -140,12 +143,7 @@ public class MechRacer : NetworkBehaviour
     void Start()
     {
         LoadStatsFromFile(mechStats);
-
         gravityDirection = trueGravDir;
-        raycastPoints = Utils.GetChildrenOfTransform(groundRaycastParent);
-
-        //Set nameplate vars
-        namePlateTransform = namePlateText.transform;
 
         namePlateText.text = gameObject.name;
         namePlateText.color = playerNameColor;
@@ -416,9 +414,10 @@ public class MechRacer : NetworkBehaviour
     {
         //Make nameplate face camera
         Transform cameraTransform = MainCameraTracker.MainCamTransform;
-        if (cameraTransform != null)
+        if (cameraTransform != null && namePlateTransform != null)
+        {
             namePlateTransform.LookAt(namePlateTransform.position + cameraTransform.rotation * Vector3.forward, cameraTransform.rotation * Vector3.up);
-
+        }
     }
 
     void Update()

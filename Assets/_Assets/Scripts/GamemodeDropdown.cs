@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static SceneTransitioner;
+using static LobbySettings;
 
 public class GamemodeDropdown : MonoBehaviour
 {

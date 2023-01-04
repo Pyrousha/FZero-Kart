@@ -527,7 +527,7 @@ public class RaceController : Singleton<RaceController>
 
 
         //Save new racer standing to persistent data
-        RacerStandingsTracker.UpdateRacerStandings(scoreSortedRacers);
+        RacerStandingsTracker.Instance.UpdateRacerStandings(scoreSortedRacers);
 
 
         Debug.Log("Time for the next race!");

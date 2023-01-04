@@ -10,7 +10,7 @@ public class MainCamera : Singleton<MainCamera>
     [SerializeField] private float maxFov;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         cam = GetComponent<Camera>();
     }

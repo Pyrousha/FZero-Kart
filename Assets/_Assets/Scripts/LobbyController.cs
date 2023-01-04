@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using static SceneTransitioner;
 using Mirror;
+using static LobbySettings;
 
 /// <summary>
 /// Controls spawning in new lobby cards, and also starts the race once all players have readied up.
@@ -70,9 +71,9 @@ public class LobbyController : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (SceneTransitioner.Instance.SingleplayerMode)
+        if (IsSingleplayer)
         {
-            switch (SceneTransitioner.Instance.RaceType)
+            switch (RaceType)
             {
                 case RaceTypeEnum.Story:
                     {
@@ -113,7 +114,7 @@ public class LobbyController : NetworkBehaviour
         {
             lobbyList.SetActive(true);
 
-            switch (SceneTransitioner.Instance.RaceType)
+            switch (RaceType)
             {
                 case RaceTypeEnum.TimeTrial:
                     {

@@ -6,31 +6,36 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static LobbySettings;
 
-public class SceneTransitioner : Singleton<SceneTransitioner>
+public class SceneTransitioner : NetworkBehaviour
 {
-    public enum RaceTypeEnum
+    public static SceneTransitioner Instance;
+
+    void Awake()
     {
-        Story,
-        TimeTrial,
-        GrandPrix, //structed set of bundled races (predetermined order) (4 races per cup)
-        CustomVsRace, //Series of races, # set by the player, option to vote for each track or random
-        BattleRoyale, //Only 1 race at a time, defeat other players and survive
-        QuickPlay, //Online multiplayer, only 1 race at a time and then voting between, also points earned is persistent
+        if ((Instance != null) && (Instance != this))
+        {
+            Debug.Log("Destroyed script type" + typeof(SceneTransitioner) + " on gameObject" + gameObject.name);
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
-    public bool SingleplayerMode { get; set; }
-    public RaceTypeEnum RaceType { get; private set; }
+    void Start()
+    {
+        SceneManager.LoadScene(LobbySceneIndex);
+    }
 
-    public LobbyVoteType_Enum VoteType { get; private set; } = LobbyVoteType_Enum.HostPick;
-    //[SerializeField] private GameObject player;
     private GameObject player;
 
-    [SerializeField] private int StorySceneIndex;
-    [SerializeField] private int lobbySceneIndex;
-    [SerializeField] private int scoreSceneIndex;
-    [SerializeField] private int mainMenuSceneIndex;
-    [SerializeField] private int emptySceneIndex;
-    [SerializeField] private bool loadIntoEmptySceneInsteadOfMainMenu;
+    public static int StorySceneIndex { get; set; }
+    public static int LobbySceneIndex { get; set; }
+    public static int ScoreSceneIndex { get; set; }
+    public static int MainMenuSceneIndex { get; set; }
+    public static int EmptySceneIndex { get; set; }
+    public static bool LoadIntoEmptySceneInsteadOfMainMenu { get; set; }
 
     //private int totalVSRaces; //how many races to play for this VS race series
     public int NumRacesCompleted { get; private set; } //Index of current race in currCup (so from 0 to length-1)
@@ -54,12 +59,6 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
             LobbyController.HostRacer = player.GetComponent<MechRacer>();
     }
 
-    public void Start()
-    {
-        //Load main menu scene
-        ToMainMenu();
-    }
-
     /// <summary>
     /// Called when the player clicks on a gamemode button,
     /// Sets the gamemode type and singleplayer/multiplayer
@@ -68,12 +67,12 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     public void GamemodeSelected(GamemodeButton _gameModeButton)
     {
         RaceType = _gameModeButton.RaceType;
-        SingleplayerMode = _gameModeButton.Singleplayer;
+        IsSingleplayer = _gameModeButton.Singleplayer;
 
         //TEMP: assume selecting gamemode makes local player host
         if (_gameModeButton.LoadSceneWhenClicked)
         {
-            if (SingleplayerMode)
+            if (IsSingleplayer)
                 NetworkManagerFZeroKart.SoloServer.StartServer();
             else
                 NetworkManagerFZeroKart.MultiServer.StartServer();
@@ -190,7 +189,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
             }
 
             //Played all races, load the score scene
-            SceneManager.LoadScene(scoreSceneIndex);
+            SceneManager.LoadScene(ScoreSceneIndex);
         }
         else
         {
@@ -203,7 +202,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
                     currRacer.OnEnterLobby(false);
                 }
 
-                SceneManager.LoadScene(lobbySceneIndex);
+                SceneManager.LoadScene(LobbySceneIndex);
                 StartCoroutine(EnableLobbyController());
             }
             else
@@ -252,7 +251,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
         NumRacesCompleted = 0;
 
         //Load lobby scene
-        SceneManager.LoadScene(lobbySceneIndex);
+        SceneManager.LoadScene(LobbySceneIndex);
         StartCoroutine(EnableLobbyController());
     }
 
@@ -273,7 +272,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     private IEnumerator ClientInitialization()
     {
         //Load lobby scene
-        SceneManager.LoadScene(lobbySceneIndex);
+        SceneManager.LoadScene(LobbySceneIndex);
 
         yield return new WaitForSeconds(0.1f);
 
@@ -292,7 +291,7 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     private IEnumerator ServerInitialization()
     {
         //Load lobby scene
-        SceneManager.LoadScene(lobbySceneIndex);
+        SceneManager.LoadScene(LobbySceneIndex);
 
         yield return new WaitForSeconds(0.1f);
 
@@ -338,15 +337,8 @@ public class SceneTransitioner : Singleton<SceneTransitioner>
     /// </summary>
     public void ToMainMenu()
     {
-        if (loadIntoEmptySceneInsteadOfMainMenu)
-        {
-            SceneManager.LoadScene(emptySceneIndex);
-        }
-        else
-        {
-            DestroyAIRacers();
+        DestroyAIRacers();
 
-            SceneManager.LoadScene(mainMenuSceneIndex);
-        }
+        SceneManager.LoadScene(MainMenuSceneIndex);
     }
 }

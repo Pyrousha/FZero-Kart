@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using static SceneTransitioner;
 
 /// <summary>
 /// Holds data for what settings the user has specified in the lobby.
@@ -11,6 +10,16 @@ using static SceneTransitioner;
 /// </summary>
 public class LobbySettings : MonoBehaviour
 {
+    public enum RaceTypeEnum
+    {
+        Story,
+        TimeTrial,
+        GrandPrix, //structed set of bundled races (predetermined order) (4 races per cup)
+        CustomVsRace, //Series of races, # set by the player, option to vote for each track or random
+        BattleRoyale, //Only 1 race at a time, defeat other players and survive
+        QuickPlay, //Online multiplayer, only 1 race at a time and then voting between, also points earned is persistent
+    }
+
     public enum LobbyVoteType_Enum
     {
         HostPick,
@@ -31,7 +40,9 @@ public class LobbySettings : MonoBehaviour
     [SerializeField] private Selectable votetype_dropdown;
 
 
-    private static RaceTypeEnum gamemode = RaceTypeEnum.CustomVsRace; //what gamemode to play
+    public static bool IsSingleplayer { get; set; } = false;
+
+    public static RaceTypeEnum RaceType { get; set; } = RaceTypeEnum.CustomVsRace; //what gamemode to play
 
     private static int numRacers = 32; //# of racers to have in the lobby max
     public static int NumRacers => numRacers;
@@ -41,7 +52,7 @@ public class LobbySettings : MonoBehaviour
 
     private static int numRacesToPlay = 4; //# of tracks to play before showing score screen
 
-    private static LobbyVoteType_Enum voteType = LobbyVoteType_Enum.HostPick; //how tracks should be selected
+    public static LobbyVoteType_Enum VoteType { get; set; } = LobbyVoteType_Enum.HostPick; //how tracks should be selected
 
 
     private List<Selectable> selectablesToDisableForGP;
@@ -64,9 +75,9 @@ public class LobbySettings : MonoBehaviour
     /// <param name="_newGamemode"> what gamemode was just selected </param>
     public void OnGamemodeUpdated(RaceTypeEnum _newGamemode)
     {
-        gamemode = _newGamemode;
+        RaceType = _newGamemode;
 
-        if (gamemode == RaceTypeEnum.GrandPrix)
+        if (RaceType == RaceTypeEnum.GrandPrix)
         {
             //Disable #racers, Ai racers, and #tracks
             foreach (Selectable select in selectablesToDisableForGP)
@@ -192,7 +203,7 @@ public class LobbySettings : MonoBehaviour
     /// <param name="_newVoteType"> what voteType was just selected </param>
     public void OnVoteTypeUpdated(LobbyVoteType_Enum _newVoteType)
     {
-        voteType = _newVoteType;
+        VoteType = _newVoteType;
     }
 
     public void SetSpawnAI(bool _newSpawnAI)
@@ -208,12 +219,8 @@ public class LobbySettings : MonoBehaviour
     {
         if (_singleplayer)
         {
-            gamemode = RaceTypeEnum.CustomVsRace;
+            RaceType = RaceTypeEnum.CustomVsRace;
         }
-
-        //Set race parameters
-        SceneTransitioner.Instance.SingleplayerMode = _singleplayer;
-        SceneTransitioner.Instance.SetRaceType(gamemode, numRacesToPlay, voteType);
 
         //Tell scenetransitioner the local player is host
         SceneTransitioner.Instance.IsLocalPlayerHost = true;

@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.SceneManagement;
 
 public class NetworkManagerFZeroKart : NetworkManager
 {
-    #region Dual singleton stuff
-    [Header("Parameters")]
+    [Header("FZero-Kart Custom Parameters/References")]
     [SerializeField] private bool isThisServerMultiplayer;
+    [SerializeField] private GameObject MultiplayerSceneTransitioner_Prefab;
+
+    #region Dual singleton stuff
     public override void Start()
     {
         if (((MultiServer != null) && (MultiServer != this)) || ((SoloServer != null) && (SoloServer != this)))
@@ -44,10 +47,26 @@ public class NetworkManagerFZeroKart : NetworkManager
         player.name = $"{playerPrefab.name} [connId={conn.connectionId}]";
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        //Add player to list of all racers
+        //Add player to list of all racers on the server
         MechRacer newPlayerMech = player.GetComponent<MechRacer>();
+        RacerStandingsTracker.Instance.OnPlayerJoined_Server(newPlayerMech);
+    }
 
-        RacerStandingsTracker.OnPlayerJoined_Server(newPlayerMech);
-        newPlayerMech.SetIsHuman();
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        //Create multiplayer sceneTransitioner
+        GameObject sceneTransitioner = Instantiate(MultiplayerSceneTransitioner_Prefab);
+        sceneTransitioner.name = MultiplayerSceneTransitioner_Prefab.name; //remove (clone)
+        NetworkServer.Spawn(sceneTransitioner);
+
+        //Load into lobby scene
+        //print($"lobbyIndex: {SceneTransitioner.LobbySceneIndex}");
+        //string lobbySceneName = SceneManager.GetSceneByBuildIndex(SceneTransitioner.LobbySceneIndex).name;
+        //print($"sceneName: {SceneTransitioner.LobbySceneIndex}");
+        //ServerChangeScene(lobbySceneName);
+
+        //ServerChangeScene("LobbyV2");
     }
 }
