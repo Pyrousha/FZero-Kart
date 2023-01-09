@@ -21,7 +21,7 @@ public class TrackMeshGenerator : MonoBehaviour
     private List<Vector3> trackMeshVertices;
     private List<int> trackMeshTris;
 
-    void Start()
+    public void GenerateTrack()
     {
         trackMeshVertices = new List<Vector3>();
         trackMeshTris = new List<int>();        
@@ -49,8 +49,6 @@ public class TrackMeshGenerator : MonoBehaviour
         float splineLength = trackSpline.GetLength();
         
         float maxIndex = splineLength / subdivisionSize;
-
-        Debug.Log("max: " + maxIndex);
 
         int i;
 
@@ -95,7 +93,6 @@ public class TrackMeshGenerator : MonoBehaviour
             // bottom face - (old bottom right, new bottom right, new bottom left) & (new bottom left, old bottom left, old bottm left)  FIX ORDER
             trackMeshTris.AddRange(new List<int>() {previousVertexIndices[0], currentVertexIndices[0], currentVertexIndices[1]});
             trackMeshTris.AddRange(new List<int>() {currentVertexIndices[1], previousVertexIndices[1], previousVertexIndices[0]});
-            Debug.Log(i);
         }
 
         i--;
@@ -138,13 +135,5 @@ public class TrackMeshGenerator : MonoBehaviour
         GetComponent<MeshCollider>().sharedMesh = trackMesh;
         trackMesh.vertices = vertexArray;
         trackMesh.triangles = trisArray;
-
-        Debug.Log(trisArray.Length / 3);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

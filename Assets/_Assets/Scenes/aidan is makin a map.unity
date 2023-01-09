@@ -19612,17 +19612,17 @@ PrefabInstance:
     - target: {fileID: 3697262632258096025, guid: c2ab17845c375c84a814390b040b18a0,
         type: 3}
       propertyPath: m_Spline.m_Knots.Array.data[19].TangentOut.x
-      value: -0.000061035065
+      value: -0.00006103505
       objectReference: {fileID: 0}
     - target: {fileID: 3697262632258096025, guid: c2ab17845c375c84a814390b040b18a0,
         type: 3}
       propertyPath: m_Spline.m_Knots.Array.data[19].TangentOut.y
-      value: -0.000015258766
+      value: -0.000015258763
       objectReference: {fileID: 0}
     - target: {fileID: 3697262632258096025, guid: c2ab17845c375c84a814390b040b18a0,
         type: 3}
       propertyPath: m_Spline.m_Knots.Array.data[19].TangentOut.z
-      value: 156.58768
+      value: 156.58765
       objectReference: {fileID: 0}
     - target: {fileID: 3697262632258096025, guid: c2ab17845c375c84a814390b040b18a0,
         type: 3}
