@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3697262632258096024}
   - component: {fileID: 3697262632258096025}
-  - component: {fileID: 3816479541896473074}
   - component: {fileID: 7047270034077762376}
+  - component: {fileID: 3059582355724747478}
   - component: {fileID: 2440218558863562577}
   - component: {fileID: 3534758909891171893}
   m_Layer: 0
@@ -51,22 +51,8 @@ MonoBehaviour:
   m_Spline:
     m_EditModeType: 1
     m_Knots: []
-    m_Length: -1
+    m_Length: 0
     m_Closed: 1
---- !u!114 &3816479541896473074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3697262632258096039}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3ea4ac057cb14c478681d28505e5189, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  trackSplineComponent: {fileID: 3697262632258096025}
-  subdivisionSize: 5
 --- !u!64 &7047270034077762376
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -81,6 +67,25 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &3059582355724747478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3697262632258096039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3ea4ac057cb14c478681d28505e5189, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackSplineComponent: {fileID: 3697262632258096025}
+  subdivisionSize: 5
+  trackWidthPoints:
+    m_IndexUnit: 0
+    m_DataPoints:
+    - m_Index: 0
+      m_Value: 0
 --- !u!33 &2440218558863562577
 MeshFilter:
   m_ObjectHideFlags: 0

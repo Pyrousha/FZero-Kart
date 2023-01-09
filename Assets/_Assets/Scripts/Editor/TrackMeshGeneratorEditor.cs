@@ -12,9 +12,14 @@ public class TrackMeshGeneratorEditor : Editor
 
         base.OnInspectorGUI();
 
+        if(GUILayout.Button("Add Max Distance to Widths"))
+        {
+            meshGenData.CreateMaxWidthPoint();
+        }
+
         if(GUILayout.Button("Generate Track"))
         {
             meshGenData.GenerateTrack();
-        }
+        }        
     }
 }

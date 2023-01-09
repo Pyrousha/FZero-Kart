@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
+using UnityEngine.Splines.Interpolators;
 using Unity.Mathematics;
 
 public class TrackMeshGenerator : MonoBehaviour
@@ -14,7 +15,8 @@ public class TrackMeshGenerator : MonoBehaviour
     [SerializeField]
     private float subdivisionSize;
 
-    //private SplineData<float> trackWidth;
+    [SerializeField]
+    private SplineData<float> trackWidthPoints;
 
     private float trackWidth = 80.0f;
 
@@ -34,6 +36,7 @@ public class TrackMeshGenerator : MonoBehaviour
         float3 upDirectionF3;
 
         SplineUtility.Evaluate(trackSpline, normalizedT, out positionF3, out tangentF3, out upDirectionF3);
+        trackWidth = trackWidthPoints.Evaluate(trackSpline, normalizedT, PathIndexUnit.Normalized, new LerpFloat());
 
         Vector3 position = (Vector3) positionF3;
         Vector3 currentForward = (Vector3) tangentF3;
@@ -50,15 +53,18 @@ public class TrackMeshGenerator : MonoBehaviour
         
         float maxIndex = splineLength / subdivisionSize;
 
+        Debug.Log(trackSpline.GetLength());
+
         int i;
 
         for(i = 1; i < maxIndex; i++) {
+
             SplineUtility.GetPointAtLinearDistance(trackSpline, normalizedT, subdivisionSize, out normalizedT);
             if(normalizedT >= 1.0f) {
-                Debug.Log("Brokey");
                 break;
             }
             SplineUtility.Evaluate(trackSpline, normalizedT, out positionF3, out tangentF3, out upDirectionF3);
+            trackWidth = trackWidthPoints.Evaluate(trackSpline, normalizedT, PathIndexUnit.Normalized, new LerpFloat());
 
             position = (Vector3) positionF3;
             currentForward = (Vector3) tangentF3;
@@ -135,5 +141,19 @@ public class TrackMeshGenerator : MonoBehaviour
         GetComponent<MeshCollider>().sharedMesh = trackMesh;
         trackMesh.vertices = vertexArray;
         trackMesh.triangles = trisArray;
+    }
+
+    public void CreateMaxWidthPoint()
+    {
+        trackWidthPoints.Add(trackSpline.GetLength(), 0.0f);
+    }
+
+    void OnValidate()
+    {
+        if(trackWidthPoints.PathIndexUnit != PathIndexUnit.Distance)
+        {
+            trackWidthPoints.PathIndexUnit = PathIndexUnit.Distance;
+            Debug.LogWarning("Keep the track width PathIndexUnit on distance mode!");
+        }
     }
 }
