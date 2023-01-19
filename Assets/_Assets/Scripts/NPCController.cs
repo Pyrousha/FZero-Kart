@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Mirror;
 
-public class NPCController : NetworkBehaviour
+public class NPCController : MonoBehaviour
 {
     [Header("NPC-Specific Parameters")]
     [SerializeField] private float turnThreshold; //how much of an angle difference to target to start turning
@@ -74,12 +73,8 @@ public class NPCController : NetworkBehaviour
     [SerializeField] private MechRacer mechRacer;
 
     // Update is called once per frame
-    [Server]
     void Update()
     {
-        if (mechRacer.InLobby)
-            return;
-
         //determine angle between forward and next checkpoint
         Vector3 toNextCheckpoint = mechRacer.NextCheckpoint.transform.position - transform.position;
         Vector3 downProj = Vector3.Project(toNextCheckpoint, -transform.up);
@@ -112,7 +107,7 @@ public class NPCController : NetworkBehaviour
             brake.Set(false);
 
         //Finally, pass all input to mechRacer to apply
-        mechRacer.SetInputFromAIServer(steering, driftAxis, accelerateBoost.down, accelerateBoost.held, brake.held);
+        mechRacer.SetInput(steering, driftAxis, accelerateBoost.down, accelerateBoost.held, brake.held);
     }
 
     private void LateUpdate()
