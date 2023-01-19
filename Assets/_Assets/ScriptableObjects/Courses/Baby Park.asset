@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acceb90f28d83984f8a125f9f092a680, type: 3}
+  m_Name: Baby Park
+  m_EditorClassIdentifier: 
+  <BuildIndex>k__BackingField: 4
+  <RaceImage>k__BackingField: {fileID: 21300000, guid: ecf8ddf82a4858c4fbb7559c859994cf,
+    type: 3}
+  <SelectedColor>k__BackingField: {r: 0.052431367, g: 0.34267652, b: 0.7490196, a: 1}
+  <BgColor>k__BackingField: {r: 0.5153255, g: 0.61372304, b: 0.7490196, a: 1}

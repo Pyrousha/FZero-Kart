@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class InputHandler : Singleton<InputHandler>
-{ 
+{
     public struct ButtonState
     {
         private bool firstFrame;
-        public bool held{get; private set;}
+        public bool held { get; private set; }
         public bool down
         {
             get
@@ -22,11 +23,37 @@ public class InputHandler : Singleton<InputHandler>
             }
         }
 
+        public string buttonName { get; private set; }
+
         public void Set(InputAction.CallbackContext ctx)
         {
             held = !ctx.canceled;
             firstFrame = true;
+
+            SetName(ctx);
         }
+
+        private void SetName(InputAction.CallbackContext ctx)
+        {
+            if ((buttonName != null) && (buttonName.Length > 0))
+                return;
+
+            string[] updatedButtons = ctx.action.ToString().Split(char.Parse(","));
+            //TEMP: only check for keyboard buttons
+            foreach (string buttonNamePath in updatedButtons)
+            {
+                string[] keyNameArr = buttonNamePath.Split(char.Parse("/"));
+                string keyName = keyNameArr[keyNameArr.Length - 1].Split(char.Parse("]"))[0];
+                if (keyName.Length == 1)
+                {
+                    buttonName = keyName.ToUpper();
+                    break;
+                }
+            }
+
+            //Debug.Log("updated button: " + buttonName);
+        }
+
         public void Reset()
         {
             firstFrame = false;

@@ -75,7 +75,7 @@ public class Utils
     {
         List<Transform> children = new List<Transform>();
 
-        for(int i = 0; i < parent.childCount; i++)
+        for (int i = 0; i < parent.childCount; i++)
         {
             children.Add(parent.GetChild(i));
         }
@@ -86,16 +86,16 @@ public class Utils
     /// <summary>
     /// Adds enough leading zeroes to an int to have a string of specified size
     /// </summary>
-    /// <param name="number"></param> number to add zeroes in front of
+    /// <param name="number">number to add zeroes in front of</param>
     /// <param name="numCharactersTotal"></param> number of characters to have total in returned string
     /// <returns> given number as a string, with enough leading zeroes to make string size equal to numCharactersTotal. </returns>
     public static string AddLeadingZeroes(int number, int numCharactersTotal)
     {
         string toReturn = number.ToString();
-        
-        while(toReturn.Length < numCharactersTotal)
+
+        while (toReturn.Length < numCharactersTotal)
         {
-            toReturn = "0"+toReturn;
+            toReturn = "0" + toReturn;
         }
 
         return toReturn;
@@ -109,7 +109,7 @@ public class Utils
 
         S *= saturationMultiplier;
 
-        return Color.HSVToRGB(H,S,V);
+        return Color.HSVToRGB(H, S, V);
     }
 
     public static Color MultiplyValue(Color col, float valueMultiplierBG, float valueMax)
@@ -120,6 +120,6 @@ public class Utils
 
         V = Mathf.Min(V * valueMultiplierBG, valueMax);
 
-        return Color.HSVToRGB(H,S,V);
+        return Color.HSVToRGB(H, S, V);
     }
 }
