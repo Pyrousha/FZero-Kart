@@ -15,6 +15,7 @@ public class PlayerController : NetworkBehaviour
 
     [Header("misc")]
     [SerializeField] private List<GameObject> thingsToDisableIfNotMine;
+    [SerializeField] private List<GameObject> thingsToDisableIfMine;
 
 
     void Start()
@@ -22,6 +23,11 @@ public class PlayerController : NetworkBehaviour
         if (!isLocalPlayer)
         {
             foreach (GameObject obj in thingsToDisableIfNotMine)
+                Destroy(obj);
+        }
+        else
+        {
+            foreach (GameObject obj in thingsToDisableIfMine)
                 Destroy(obj);
         }
     }

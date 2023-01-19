@@ -416,7 +416,11 @@ public class MechRacer : NetworkBehaviour
             speedLines.UpdateParticleSystem(speedPercent);
 
             //Set Fov based on speed
-            MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
+            //MainCamera.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
+            MainCameraVirtual.Instance.SetFov(Mathf.Abs(currSpeed) / maxSpeedForVisuals);
+
+            float turnSignedPercent = currDriftSpeed / maxDriftSpeed;
+            MainCameraVirtual.Instance.SetLook(turnSignedPercent);
 
             //set speedometer
             speedNumberText.text = (currSpeed * 100).ToString("F1") + " fasts/h";

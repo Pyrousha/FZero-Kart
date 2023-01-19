@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class MainCamera : Singleton<MainCamera>
 {
@@ -12,6 +13,9 @@ public class MainCamera : Singleton<MainCamera>
     // Start is called before the first frame update
     void Start()
     {
+        if(GetComponent<CinemachineBrain>() != null) {
+            this.enabled = false;
+        }
         cam = GetComponent<Camera>();
     }
 
